@@ -1,33 +1,44 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
-const path = require('path');
+const { app, BrowserWindow } = require('electron');
+const { autoUpdater } = require('electron-updater');
+const log = require('electron-log');
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1000,
-    height: 700,
+    width: 800,
+    height: 600,
     webPreferences: {
-      contextIsolation: true,
-      nodeIntegration: false,
-      preload: path.join(__dirname, 'preload.js')
-    }
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
   });
 
- // 메뉴바 제거
- win.removeMenu();
-
- // 메인 HTML 로드
-  win.loadFile(path.join(__dirname, '../renderer/index.html'));
+  win.loadFile('src/renderer/index.html');
 }
-
-ipcMain.handle('ping', async () => 'pong');
 
 app.whenReady().then(() => {
   createWindow();
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
-  });
+
+  // 로그 저장 위치
+  autoUpdater.logger = log;
+  autoUpdater.logger.transports.file.level = 'info';
+
+  // 업데이트 체크
+  autoUpdater.checkForUpdatesAndNotify();
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+autoUpdater.on('checking-for-update', () => {
+  log.info('Checking for update...');
+});
+autoUpdater.on('update-available', (info) => {
+  log.info('Update available: ', info);
+});
+autoUpdater.on('update-not-available', () => {
+  log.info('No update available');
+});
+autoUpdater.on('error', (err) => {
+  log.error('Error in auto-updater:', err);
+});
+autoUpdater.on('update-downloaded', () => {
+  log.info('Update downloaded; will install now');
+  autoUpdater.quitAndInstall();
 });
