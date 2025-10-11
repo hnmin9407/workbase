@@ -1,18 +1,13 @@
-const { remote } = require('electron');
-const win = remote.getCurrentWindow();
+const { ipcRenderer } = require('electron');
 
 document.getElementById('min-btn').addEventListener('click', () => {
-  win.minimize();
+  ipcRenderer.send('window-minimize');
 });
 
 document.getElementById('max-btn').addEventListener('click', () => {
-  if (win.isMaximized()) {
-    win.unmaximize();
-  } else {
-    win.maximize();
-  }
+  ipcRenderer.send('window-maximize');
 });
 
 document.getElementById('close-btn').addEventListener('click', () => {
-  win.close();
+  ipcRenderer.send('window-close');
 });
