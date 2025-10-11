@@ -15,8 +15,7 @@ body {
 
 #titlebar {
   height: 42px;
-  background: rgba(255,255,255,0.8);
-  backdrop-filter: blur(5px);
+  background: rgba(255,255,255,1);
   color: #393939;
   display: flex;
   justify-content: space-between;

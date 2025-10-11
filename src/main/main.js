@@ -17,10 +17,7 @@ function createWindow() {
     minWidth: 500,
     minHeight: 500,
     frame: false, // 기본 타이틀바 제거
-    titleBarStyle: "hidden", // ← 오타 수정 (titmeBarStyle → titleBarStyle)
-    transparent: true,        // ✅ 창 배경 투명하게
-    vibrancy: 'under-window', // ✅ macOS용 반투명 효과 (macOS에서만)
-    backgroundColor: '#00000000', // ✅ 완전 투명 (Windows용)
+    titleBarStyle: "hidden",
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
