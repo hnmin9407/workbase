@@ -25,7 +25,7 @@ body {
 
 .app-name {
   display: flex;
-  margin-left: 6px;
+  margin-left: 12px;
   align-items: center;
   gap: 8px;
   font-family: 'montserrat';
@@ -46,6 +46,7 @@ body {
   background: rgba(0,0,0,0.1);
   border-radius: 50px;
   color: #777;
+  margin-left: -4px;
 }
 
 #window-controls {
