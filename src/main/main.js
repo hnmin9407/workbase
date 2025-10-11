@@ -14,6 +14,8 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1280,
     height: 800,
+    minwidth: 500,
+    minheight: 500,
     frame: false, // 기본 타이틀바 제거
     titleBarStyle: "hidden", // ← 오타 수정 (titmeBarStyle → titleBarStyle)
     webPreferences: {
