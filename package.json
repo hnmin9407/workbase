@@ -14,8 +14,8 @@
     "electron-builder": "*"
   },
   "build": {
-    "appId": "com.example.helloelectron",
-    "productName": "HelloElectron",
+    "appId": "com.example.workbase",
+    "productName": "WORKBASE",
     "directories": {
       "output": "dist"
     },
@@ -40,8 +40,8 @@
   "publish": [
     {
       "provider": "github",
-      "owner": "GitHub계정명",
-      "repo": "hello-electron-updater"
+      "owner": "hnmin9407",
+      "repo": "workbase"
     }
   ]
 },
