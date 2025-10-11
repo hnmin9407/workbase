@@ -1,0 +1,51 @@
+{
+  "name": "hello-electron",
+  "version": "1.0.0",
+  "description": "Example Electron app packaged to .exe",
+  "main": "src/main/main.js",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "*",
+    "electron-builder": "*"
+  },
+  "build": {
+    "appId": "com.example.helloelectron",
+    "productName": "HelloElectron",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/icon.ico",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false
+    },
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "GitHub계정명",
+      "repo": "hello-electron-updater"
+    }
+  ]
+},
+  "dependencies": {
+    "electron-updater": "^6.6.2"
+  }
+}
