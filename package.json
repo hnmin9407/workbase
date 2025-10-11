@@ -1,5 +1,5 @@
 {
-  "name": "workbase",
+  "name": "workplan",
   "version": "1.0.3",
   "description": "Example Electron app packaged to .exe",
   "main": "src/main/main.js",
@@ -14,8 +14,8 @@
     "electron-builder": "*"
   },
   "build": {
-    "appId": "com.example.workbase",
-    "productName": "WORKBASE",
+    "appId": "com.example.workplan",
+    "productName": "WORKPLAN",
     "directories": {
       "output": "dist"
     },
