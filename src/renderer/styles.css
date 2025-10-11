@@ -25,13 +25,13 @@ body {
 
 .app-name {
   display: flex;
-  margin-left: 12px;
+  margin-left: 10px;
   align-items: center;
   gap: 8px;
   font-family: 'montserrat';
   font-weight: 600;
-  font-size: 14px;
-  letter-spacing: -0.4px;
+  font-size: 13px;
+  letter-spacing: -0.2px;
 }
 
 .app-name img {
@@ -41,7 +41,7 @@ body {
 .app-name .badge {
   display: flex;
   padding: 2px 6px;
-  font-size: 10px;
+  font-size: 9px;
   letter-spacing: 0;
   background: rgba(0,0,0,0.1);
   border-radius: 50px;
