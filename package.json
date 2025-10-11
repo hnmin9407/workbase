@@ -37,15 +37,16 @@
       "perMachine": false,
       "allowToChangeInstallationDirectory": false
     },
-  "publish": [
-    {
-      "provider": "github",
-      "owner": "hnmin9407",
-      "repo": "workbase"
-    }
-  ]
-},
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "hnmin9407",
+        "repo": "workbase"
+      }
+    ]
+  },
   "dependencies": {
+    "electron-log": "^5.4.3",
     "electron-updater": "^6.6.2"
   }
 }
