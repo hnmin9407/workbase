@@ -17,6 +17,9 @@ function createWindow() {
     },
   });
 
+  // ✅ 메뉴바 제거
+  win.removeMenu();
+
   win.loadFile('src/renderer/index.html');
 }
 

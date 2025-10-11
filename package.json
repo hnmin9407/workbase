@@ -1,5 +1,5 @@
 {
-  "name": "workpbase",
+  "name": "workbase",
   "version": "0.0.1",
   "description": "Example Electron app packaged to .exe",
   "main": "src/main/main.js",
