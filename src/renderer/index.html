@@ -1,30 +1,725 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="utf-8" />
-  <title>WORKBASE 1.0</title>
-  <link rel="stylesheet" href="./styles.css" />
+  <head>
+    <meta charset="utf-8" />
+    <title>WORKBASE 1.0</title>
+    <link rel="stylesheet" href="./styles.css" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+    />
+  </head>
 
-</head>
-<body>
+  <style>
+    input {
+      outline: none;
+      background: none;
+    }
 
-<div class="titlebar" id="titlebar">
-  <div class="app-name">
-    <img src="../../assets/icon.ico">workbase
-    <div class="badge">BETA</div>
-  </div>
-  <div class="drag-region"></div>
-  <div id="window-controls">
-    <button id="min-btn"><img src="../../assets/titlebar/min.png"></button>
-    <button id="max-btn"><img src="../..//assets/titlebar/max.png"></button>
-    <button class="close-btn" id="close-btn"><img src="../..//assets/titlebar/close.png"></button>
-  </div>
-</div>
-  <script src="./renderer.js"></script>
-  <script src="./titlebar.js"></script>
-</body>
+    input::placeholder {
+      color: rgba(20, 27, 52, 0.4);
+    }
+
+    .main {
+      display: flex;
+    }
+
+    .sidebar {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 240px;
+      width: 240px;
+      max-width: 480px;
+      height: calc(100svh - 55px);
+      padding: 16px 0;
+      box-sizing: border-box;
+      background: rgba(20, 27, 52, 0.03);
+      border-right: solid 1px rgba(20, 27, 52, 0.1);
+      justify-content: space-between;
+      flex: 0 0 auto;
+    }
+
+/* 실제 드래그 영역은 4px */
+.resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 4px;
+  cursor: ew-resize;
+  z-index: 10;
+}
+
+/* 가시적인 1px 선 (before로 표시) */
+.resizer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0; /* 사이드바 경계선과 겹치게 */
+  width: 1px;
+  background: transparent; /* 기본 투명 */
+  transition: background 0.15s ease;
+  pointer-events: none; /* 마우스 이벤트 무시 */
+}
+
+/* 마우스 오버 시만 1px 선 표시 */
+.resizer:hover::before {
+  background: rgba(20, 27, 52, 0.15);
+}
+
+/* 드래그 중엔 강조 색상 */
+.resizer.active::before {
+  background: #0088ff;
+}
+
+    .menu-top {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .menu-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px;
+    }
+
+    .fold-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #fff;
+      border: solid 1px rgba(20, 27, 52, 0.1);
+      cursor: pointer;
+      transition: background 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .fold-btn img {
+      width: 16px;
+    }
+
+    .fold-btn:hover {
+      background: rgba(20, 27, 52, 0.03);
+    }
+
+    .search-container {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-container input {
+      width: 100%;
+      height: 36px;
+      padding: 0px 42px 0px 16px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50px;
+      background: #fff;
+      border: solid 1px rgba(20, 27, 52, 0.1);
+      box-sizing: border-box;
+      transition: border 0.15s ease;
+      font-family: "pretendard";
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .search-container input:focus {
+      border: solid 1px #0088ff;
+    }
+
+    .search-container .icon {
+      position: absolute;
+      right: 16px;
+      top: 53%;
+      transform: translateY(-50%);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .search-container .icon img {
+      width: 16px;
+    }
+
+    .menu-container {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 0 16px;
+    }
+
+    .menu {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 36px;
+      padding: 0 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.1s ease;
+    }
+
+    .menu:hover {
+      background: rgba(20, 27, 52, 0.03);
+    }
+
+    .menu:active {
+      background: rgba(20, 27, 52, 0.05);
+    }
+
+    .menu .left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: "pretendard";
+      font-weight: 500;
+      font-size: 15px;
+      color: #141b34;
+    }
+
+    .menu .left img {
+      width: 16px;
+    }
+
+    .badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 6px;
+      border-radius: 30px;
+      background: #fff;
+      color: #141b34;
+      font-family: "pretendard";
+      font-weight: 500;
+      font-size: 12px;
+    }
+
+    .menu-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 16px;
+    }
+
+    .add-group-btn {
+      width: 100%;
+      background: #fff;
+      border: solid 1px rgba(20, 27, 52, 0.1);
+      border-radius: 8px;
+      padding: 0 16px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: "pretendard";
+      font-weight: 500;
+      font-size: 13px;
+      color: #141b34;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .add-group-btn:hover {
+      background: rgba(20, 27, 52, 0.03);
+    }
+
+    .add-group-btn:active {
+      background: rgba(20, 27, 52, 0.05);
+    }
+
+    .add-group-btn img {
+      width: 16px;
+    }
+
+    .line {
+      width: 100%;
+      height: 1px;
+      background: rgba(20, 27, 52, 0.05);
+    }
+
+    .add-list-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      transition: background 0.15s ease;
+      cursor: pointer;
+    }
+
+    .add-list-btn:hover {
+      background: rgba(20, 27, 52, 0.05);
+    }
+
+    .add-list-btn img {
+      width: 16px;
+    }
+
+    .group-menu {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 36px;
+      padding: 0 11px 0 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.1s ease;
+    }
+
+    .group-menu:hover {
+      background: rgba(20, 27, 52, 0.03);
+    }
+
+    .group-menu:active {
+      background: rgba(20, 27, 52, 0.05);
+    }
+
+    .group-menu .left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: "pretendard";
+      font-weight: 700;
+      font-size: 15px;
+      color: #141b34;
+    }
+
+    .group-menu .left img {
+      width: 16px;
+    }
+
+    .child-menu {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 36px;
+      padding: 0 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.1s ease;
+    }
+
+    .child-menu:hover {
+      background: rgba(20, 27, 52, 0.03);
+    }
+
+    .child-menu:active {
+      background: rgba(20, 27, 52, 0.05);
+    }
+
+    .child-menu .left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: "pretendard";
+      font-weight: 500;
+      font-size: 14px;
+      color: #141b34;
+    }
+
+    .child-menu .left .child-icon-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+    }
+
+    .child-menu .left .circle {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff0000;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      width: calc(100svw - 240px);
+      height: 100%;
+      padding: 64px;
+      gap: 32px;
+    }
+
+    .todo-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: 'pretendard';
+      font-weight: 700;
+      font-size: 24px;
+      letter-spacing: -0.2px;
+      color: #141b34;
+    }
+
+    .todo-header img {
+      width: 24px
+    }
+
+    .todo-enter {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .todo-enter input {
+      width: 100%;
+      padding: 16px 16px 16px 42px;
+      border-radius: 50px;
+      background: rgba(20, 27, 52, 0.03);
+      border: none;
+      box-sizing: border-box;
+      font-family: 'pretendard';
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+      color: #141b34;
+      outline: none;
+      transition: background 0.15s ease;
+    }
+
+    .todo-enter input:focus {
+      outline: none;
+      background: rgba(20, 27, 52, 0.05);
+    }
+
+    .todo-enter .icon {
+      position: absolute;
+      left: 16px;
+      top: 53%;
+      transform: translateY(-50%);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .todo-enter .icon img {
+      width: 18px;
+    }
+
+    .todo-list {
+      display: flex;
+      align-items: center;
+      text-align: left;
+      justify-content: space-between;
+      gap: 16px;
+      font-family: 'pretendard';
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+      color: #141b34;
+      background: rgba(20, 27, 52, 0.03);
+      padding: 16px;
+      border-radius: 8px;
+      transition: background 0.15s ease;
+    }
+
+    .todo-list .left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .todo-list .left img {
+      width: 18px;
+    }
+
+    .todo-list .todo-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .todo-list .todo-content .todo-name {
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+      color: #141b34;
+    }
+
+    .todo-list .todo-content .todo-date {
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: -0.2px;
+      color: rgba(20, 27, 52, 0.4);
+    }
+
+    .todo-list .right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .todo-list .right img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .todo-list-important {
+      display: flex;
+      align-items: center;
+      text-align: left;
+      justify-content: space-between;
+      gap: 16px;
+      font-family: 'pretendard';
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+      color: #141b34;
+      background: rgba(20, 27, 52, 0.1);
+      padding: 16px;
+      border-radius: 8px;
+      transition: background 0.15s ease;
+    }
+
+    .todo-list-important .left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .todo-list-important .left img {
+      width: 18px;
+    }
+
+    .todo-list-important .todo-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .todo-list-important .todo-content .todo-name {
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: -0.2px;
+      color: #141b34;
+    }
+
+    .todo-list-important .todo-content .todo-date {
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: -0.2px;
+      color: rgba(20, 27, 52, 0.4);
+    }
+
+    .todo-list-important .right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .todo-list-important .right img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .todo-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+  </style>
+
+  <body>
+    <div class="titlebar" id="titlebar">
+      <div class="app-name">
+        <img src="../../assets/icon.ico" />workbase
+        <div class="badge">BETA</div>
+      </div>
+      <div class="drag-region"></div>
+      <div id="window-controls">
+        <button id="min-btn">
+          <img src="../../assets/titlebar/min.png" />
+        </button>
+        <button id="max-btn">
+          <img src="../..//assets/titlebar/max.png" />
+        </button>
+        <button class="close-btn" id="close-btn">
+          <img src="../..//assets/titlebar/close.png" />
+        </button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="sidebar">
+        <div class="menu-top">
+          <div class="menu-header">
+            <button class="fold-btn">
+              <img src="../../assets/icons/menu.svg" />
+            </button>
+            <div class="search-container">
+              <input class="search" placeholder="검색" />
+              <i class="icon"> <img src="../../assets/icons/search.svg" /></i>
+            </div>
+          </div>
+          <div class="menu-container">
+            <div class="menu">
+              <div class="left">
+                <img src="../../assets/icons/today.svg" />오늘 할 일
+              </div>
+              <div class="badge">3</div>
+            </div>
+            <div class="menu">
+              <div class="left">
+                <img src="../../assets/icons/star.svg" />중요
+              </div>
+              <div class="badge">3</div>
+            </div>
+            <div class="menu">
+              <div class="left">
+                <img src="../../assets/icons/checked.svg" />완료됨
+              </div>
+              <div class="badge">3</div>
+            </div>
+            <div class="menu">
+              <div class="left">
+                <img src="../../assets/icons/inbox.svg" />전체 보관함
+              </div>
+              <div class="badge">3</div>
+            </div>
+          </div>
+          <div class="line"></div>
+          <div class="menu-container">
+            <div class="group-menu" id="group-fold">
+              <div class="left">
+                <img src="../../assets/icons/folder.svg" />그룹
+              </div>
+              <div class="add-list-btn" id="add-list">
+                <img src="../../assets/icons/add-circle.svg" />
+              </div>
+            </div>
+            <div class="child-menu">
+              <div class="left">
+                <div class="child-icon-container">
+                  <div class="child-icon circle"></div>
+                </div>
+                하위 메뉴
+              </div>
+              <div class="badge">3</div>
+            </div>
+            <div class="group-menu" id="group-fold">
+              <div class="left">
+                <img src="../../assets/icons/folder.svg" />그룹2
+              </div>
+              <div class="add-list-btn" id="add-list">
+                <img src="../../assets/icons/add-circle.svg" />
+              </div>
+            </div>
+            <div class="child-menu">
+              <div class="left">
+                <div class="child-icon-container">
+                  <div class="child-icon circle"></div>
+                </div>
+                하위 메뉴2
+              </div>
+              <div class="badge">3</div>
+            </div>
+          </div>
+        </div>
+        <div class="menu-bottom">
+          <button class="add-group-btn" id="add-group">
+            <img src="../../assets/icons/add-folder.svg" />그룹 추가
+          </button>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="todo-header">
+          <img src="../../assets/icons/today.svg" />오늘 할 일
+        </div>
+        
+            <div class="todo-enter">
+              <i class="icon"> <img src="../../assets/icons/add.svg" /></i>
+              <input placeholder="할 일을 입력해 주세요" />
+            </div>
+        <div class="todo-wrap">
+        <div class="todo-list-important">
+          <div class="left">
+            <img src="../../assets/icons/circle.svg" />
+            <div class="todo-content">
+              <span class="todo-name">신한은행 적금 해지하기</span>
+              <span class="todo-date">2025년 10월 12일 월</span>
+            </div>
+          </div>
+          <div class="right">
+            <img src="../../assets/icons/star.svg" />
+          </div>
+        </div>
+        <div class="todo-list">
+          <div class="left">
+            <img src="../../assets/icons/circle.svg" />
+            <div class="todo-content">
+              <span class="todo-name">신한은행 적금 해지하기</span>
+              <span class="todo-date">2025년 10월 12일 월</span>
+            </div>
+          </div>
+          <div class="right">
+            <img src="../../assets/icons/star.svg" />
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <script src="./renderer.js"></script>
+    <script src="./titlebar.js"></script>
+
+<script>
+const sidebar = document.querySelector(".sidebar");
+
+const resizer = document.createElement("div");
+resizer.classList.add("resizer");
+sidebar.appendChild(resizer);
+
+let isResizing = false;
+let startX = 0;
+let startWidth = 0;
+
+resizer.addEventListener("mousedown", (e) => {
+  isResizing = true;
+  startX = e.clientX;                // 마우스 시작 지점
+  startWidth = sidebar.offsetWidth;  // 현재 사이드바 너비 저장
+  document.body.style.cursor = "ew-resize";
+  resizer.classList.add("active");
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (!isResizing) return;
+
+  const deltaX = e.clientX - startX;          // 이동 거리
+  const newWidth = startWidth + deltaX;       // 기존 width + 이동량
+
+  if (newWidth >= 240 && newWidth <= 480) {
+    sidebar.style.width = `${newWidth}px`;
+  }
+});
+
+document.addEventListener("mouseup", () => {
+  if (isResizing) {
+    isResizing = false;
+    document.body.style.cursor = "default";
+    resizer.classList.remove("active");
+  }
+});
+</script>
+  </body>
 </html>
