@@ -9,9 +9,11 @@ log.transports.file.resolvePath = () =>
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = "info";
 
+let win; // 윈도우 전역 변수
+
 // ✅ 윈도우 생성
 function createWindow() {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 1280,
     height: 800,
     minWidth: 500,
@@ -26,6 +28,15 @@ function createWindow() {
 
   win.removeMenu(); // 상단 메뉴 제거
   win.loadFile("src/renderer/index.html");
+
+  // ✅ 최대화/복원 시 아이콘 변경 신호 보내기
+  win.on("maximize", () => {
+    win.webContents.send("window-maximized");
+  });
+
+  win.on("unmaximize", () => {
+    win.webContents.send("window-unmaximized");
+  });
 
   // ✅ IPC 통신으로 창 제어
   ipcMain.on("window-minimize", () => win.minimize());
