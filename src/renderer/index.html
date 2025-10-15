@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title>WORKBASE</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./css/tooltip.css" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -44,11 +44,13 @@
     .content-wrap {
       display: flex;
       flex-direction: column;
+      flex-grow: 1;
+      transition: all 0.5s ease;
     }
 
     #titlebar {
       position: relative;
-      width: calc(100vw - 260px);
+      width: 100%;
       height: 48px;
       display: flex;
       justify-content: space-between;
@@ -110,17 +112,17 @@
       display: flex;
       flex-direction: column;
       background: #ffffff;
-      width: 260px;
+      width: 240px;
       height: 100vh;
       box-sizing: border-box;
-      gap: auto;
       filter: drop-shadow(0px 0px 10px rgba(20, 27, 52, 0.03));
+      transition: all 0.3s ease;
     }
 
     .sidebar-top {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
     }
 
     .sidebar-bottom {
@@ -134,7 +136,7 @@
       align-items: center;
       width: 100%;
       height: 48px;
-      padding: 0px 16px;
+      padding: 0px 8px;
     }
 
     .sidebar-logo {
@@ -151,13 +153,14 @@
       font-family: "montserrat";
       font-size: 15px;
       font-weight: 600;
+      white-space: nowrap;
     }
 
     .sidebar-menu {
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      padding: 0px 16px;
+      gap: 12px;
+      padding: 0px 8px;
     }
 
     .sidebar-menu-wrap {
@@ -199,6 +202,7 @@
     .sidebar-menu-button .left span {
       font-size: 15px;
       font-weight: 400;
+      white-space: nowrap;
     }
 
     .sidebar-menu-button-group {
@@ -222,6 +226,7 @@
     .sidebar-menu-button-group .left span {
       font-size: 15px;
       font-weight: 600;
+      white-space: nowrap;
     }
 
     .sidebar-menu-button-group .right {
@@ -283,6 +288,13 @@
       background: rgba(20, 27, 52, 0.05);
     }
 
+    /* sidebar fold */
+
+    .main.sidebar-folded .sidebar {
+      transform: translateX(-240px);
+      margin-left: -240px; 
+    }
+
     .add-button {
       display: flex;
       align-items: center;
@@ -295,7 +307,8 @@
       font-size: 14px;
       font-weight: 600;
       gap: 8px;
-      transition: background 0.15s ease;
+      transition: background 0.15s ease, opacity 0.2s ease;
+      white-space: nowrap;
       cursor: pointer;
     }
 
@@ -312,12 +325,12 @@
       filter: invert(1);
     }
 
-    .button-32 {
+    .button-36 {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       background: #ffffff;
       border-radius: 8px;
       border: solid 1px rgba(20, 27, 52, 0.1);
@@ -327,15 +340,15 @@
       box-sizing: border-box;
     }
 
-    .button-32:hover {
+    .button-36:hover {
       background: rgba(20, 27, 52, 0.03);
     }
 
-    .button-32:active {
+    .button-36:active {
       background: rgba(20, 27, 52, 0.05);
     }
 
-    .button-32 img {
+    .button-36 img {
       width: 15px;
       -webkit-app-region: no-drag;
     }
@@ -343,75 +356,132 @@
     .content {
       display: flex;
       flex-direction: column;
-      width: calc(100vw - 260px);
+      flex: 1 1 auto; /* content도 남은 공간 전부 사용 */
       padding: 16px 32px 32px 32px;
       box-sizing: border-box;
+      min-width: 0; /* 텍스트/자식 요소가 부모를 밀지 않도록 */
+      gap: 32px;
     }
 
-    .title-info {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      padding: 32px;
-      border-radius: 16px;
-      background: rgba(0, 132, 227, 0.05);
-      box-sizing: border-box;
-    }
-
-    .title-info .wrap {
+    .todo-header {
       display: flex;
       flex-direction: column;
       gap: 32px;
     }
 
-    .title-info img {
-      position: absolute;
-      align-items: center;
-      right: 0px;
-      top: 50%;
-      transform: translateY(-50%);
-      max-width: 100%;
-      height: auto;
-      z-index: -1;
-    }
-
-    .title-info .text-wrap {
+    .todo-header .title {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 16px;
+      padding: 0 16px;
     }
 
-    .title-info .text-wrap .date {
+    .todo-header .title .date {
       font-size: 15px;
       font-weight: 400;
       color: rgba(20, 27, 52, 0.4);
     }
 
-    .h1 {
+    .todo-header .title .name {
       font-size: 28px;
       font-weight: 600;
+      letter-spacing: -0.4px;
     }
 
-    .title-info .wrap input {
-      width: 100%;
-      border-radius: 8px;
+    .todo-header .input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       padding: 16px;
+      background: #FFFFFF;
+      border-radius: 8px;
+    }
+
+    .todo-header input {
+      width: 100%;
+      border: solid 1px transparent;
+      outline: none;
+      font-family: pretendard;
       font-size: 15px;
       font-weight: 400;
       color: #141b34;
-      outline: 1px solid transparent;
-      border: none;
-      box-sizing: border-box;
-      transition: outline 0.15s ease;
     }
 
-    .title-info .wrap input:hover {
-      outline: solid 1px rgba(4, 134, 233, 0.4);
+    .todo-header input::placeholder {
+      color: rgba(20, 27, 52, 0.4);
     }
 
-    .title-info .wrap input:focus {
-      outline: solid 1px rgba(4, 134, 233, 1);
+    .todo-header .input-wrap .check {
+      width: 16px;
+      height: 16px;
+      border: solid 1.5px rgba(20, 27, 52, 0.4);
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: border 0.15s ease;
+    }
+
+    .todo-list-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .todo-list {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: rgba(20, 27, 52, 0.03);
+      border-radius: 8px;
+    }
+
+    .todo-list .left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .todo-list .left .content-wrap {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .todo-list .left .content-wrap .check {
+      width: 16px;
+      height: 16px;
+      border: solid 1.5px rgba(20, 27, 52, 0.4);
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: border 0.15s ease;
+    }
+
+    .todo-list .left .content-wrap .text {
+      font-family: pretendard;
+      font-size: 15px;
+      font-weight: 400;
+      color: #141b34;
+    }
+
+    .todo-list .left .date-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 32px;
+    }
+
+    .todo-list .left .date-wrap img {
+      width: 12px;
+      opacity: 0.4;
+    }
+
+    .todo-list .left .date-wrap .date {
+      font-family: 'pretendard';
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(20, 27, 52, 0.4);
+    
     }
 
   </style>
@@ -419,7 +489,7 @@
   <body>
     <div class="main">
       <!-- 사이드바 -->
-      <div class="sidebar">
+      <div class="sidebar" id="sidebar">
         <div class="sidebar-top">
           <div class="sidebar-header">
             <div class="sidebar-logo">
@@ -467,7 +537,7 @@
                   <span>조인스엠</span>
                 </div>
                 <div class="right">
-                  <div class="button">
+                  <div class="button" data-tooltip="프로젝트 추가" data-direction="top" >
                     <img src="../../assets/icons/add.svg" />
                   </div>
                   <div class="button">
@@ -511,7 +581,7 @@
                   <span>기본 그룹</span>
                 </div>
                 <div class="right">
-                  <div class="button">
+                  <div class="button" data-tooltip="프로젝트 추가" data-direction="top">
                     <img src="../../assets/icons/add.svg" />
                   </div>
                   <div class="button">
@@ -543,7 +613,7 @@
       <div class="content-wrap">
         <!-- 타이틀바 -->
         <div class="titlebar" id="titlebar">
-          <div class="button-32">
+          <div class="button-36" id="sidebar-fold-button">
             <img src="../../assets/icons/sidebar.svg" />
           </div>
 
@@ -561,9 +631,47 @@
             </button>
           </div>
         </div>
+        <div class="content">
+          <div class="todo-header">
+            <div class="title">
+              <span class="date">2025년 10월 14일 화요일</span>
+              <span class="name">오늘 할 일</span>
+            </div>
+            <div class="input-wrap">
+              <div class="check"></div>
+              <input placeholder="할 일을 입력해 주세요">
+            </div>
+          </div>
+          <div class="todo-list-wrap">
+            <div class="todo-list">
+              <div class="left">
+                <div class="content-wrap">
+                  <div class="check"></div>
+                    <span class="text">중요한 영단어 100개 외우기</span>
+                </div>
+                <div class="date-wrap">
+                  <img class="date-small" src="../../assets/icons/today.svg">
+                  <span class="date">10월 14일 화요일</span>
+                </div>
+              </div>
+              <div class="right">
+                <button class="date-button">
+                  <img class="todo-function" src="../../assets/icons/today.svg" id="todo-date-setting">
+                </button>
+                <button class="date-button">
+                  <img class="todo-function" src="../../assets/icons/star.svg" id="todo-important">
+                </button>
+                <button class="date-button">
+                  <img class="todo-function" src="../../assets/icons/x.svg" id="todo-delete">
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <script src="./titlebar.js"></script>
+    <script src="./js/titlebar.js"></script>
+    <script src="./js/tooltip.js"></script>
   </body>
 </html>

@@ -1,0 +1,37 @@
+.tooltip {
+  position: fixed;
+  background: #141b34;
+  color: #FFFFFF;
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+}
+
+/* 방향별 초기 위치 (등장 전) */
+.tooltip[data-direction="top"] {
+  transform: translateY(10px);
+}
+.tooltip[data-direction="bottom"] {
+  transform: translateY(-10px);
+}
+.tooltip[data-direction="left"] {
+  transform: translateX(10px);
+}
+.tooltip[data-direction="right"] {
+  transform: translateX(-10px);
+}
+.tooltip[data-direction="center"] {
+  transform: translate(0, 10px);
+}
+
+/* 표시될 때 */
+.tooltip.show {
+  opacity: 1;
+  transform: translate(0, 0);
+}
