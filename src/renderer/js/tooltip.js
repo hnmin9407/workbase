@@ -66,5 +66,3 @@ function initTooltip() {
     });
   });
 }
-
-document.addEventListener("DOMContentLoaded", initTooltip);

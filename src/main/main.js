@@ -1,3 +1,5 @@
+// main.js
+
 const { app, BrowserWindow, ipcMain } = require("electron");
 const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
@@ -21,8 +23,14 @@ function createWindow() {
     frame: false, // 기본 타이틀바 제거
     titleBarStyle: "hidden",
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+      preload: path.join(__dirname, "preload.js"),
+      // ✅ ================== 보안 개선 ==================
+      // 💡 nodeIntegration과 contextIsolation은 Electron 보안의 핵심입니다.
+      // 💡 contextIsolation을 true로 설정하여 메인 프로세스와 렌더러 프로세스의 컨텍스트를 분리합니다.
+      // 💡 이는 preload 스크립트를 더 안전하게 만들어 줍니다.
+      nodeIntegration: false, // 렌더러 프로세스에서 Node.js API 사용 비활성화
+      contextIsolation: true, // 컨텍스트 분리 활성화 (가장 중요)
+      // ✅ ==============================================
     },
   });
 

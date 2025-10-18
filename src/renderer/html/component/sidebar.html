@@ -1,0 +1,124 @@
+  <!-- 사이드바 상단 -->
+
+  <div class="top">
+    <div class="header">
+      <div class="left">
+        <img src="../../assets/logo.png" />
+        <span>workbase</span>
+      </div>
+      <div class="right">
+        <button id="sidebar-fold-button" class="sidebar-fold-button">
+          <svg class="icon-fold">
+            <use href="../../assets/icons/icons.svg#icon-ArrowLeftDouble"></use>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 전체 보관함 메뉴 -->
+    <div class="menu">
+      <div class="wrap">
+        <a href="index.html">
+          <div class="item" data-tooltip="전체 보관함" data-direction="right">
+            <div class="left">
+              <svg class="icon-item delayed-icon-fold">
+                <use href="../../assets/icons/icons.svg#icon-inbox"></use>
+              </svg>
+              <span>전체 보관함</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- 오늘 할 일 메뉴 -->
+        <a href="./html/today.html">
+          <div class="item" data-tooltip="오늘 할 일" data-direction="right">
+            <div class="left">
+              <svg class="icon-item delayed-icon-fold">
+                <use href="../../assets/icons/icons.svg#icon-today"></use>
+              </svg>
+              <span>오늘 할 일</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- 중요 메뉴 -->
+
+        <div class="item" data-tooltip="중요" data-direction="right">
+          <div class="left">
+            <svg class="icon-item delayed-icon-fold">
+              <use href="../../assets/icons/icons.svg#icon-star"></use>
+            </svg>
+            <span>중요</span>
+          </div>
+        </div>
+
+        <!-- 완료됨 메뉴 -->
+
+        <div class="item" data-tooltip="완료됨" data-direction="right">
+          <div class="left">
+            <svg class="icon-item delayed-icon-fold">
+              <use href="../../assets/icons/icons.svg#icon-done"></use>
+            </svg>
+            <span>완료됨</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 사이드바 구분선 -->
+
+    <div class="line"></div>
+
+    <!-- 그룹 메뉴 -->
+
+    <div class="menu">
+      <div class="wrap">
+        <div class="group" data-tooltip="기본 그룹" data-direction="right">
+          <div class="left">
+            <svg class="icon-group delayed-icon-fold">
+              <use href="../../assets/icons/icons.svg#icon-folder-open"></use>
+            </svg>
+            <span>기본 그룹</span>
+          </div>
+          <div class="right">
+            <button class="sidebar_function delayed-icon add-project-btn">
+              <svg class="icon-item">
+                <use href="../../assets/icons/icons.svg#icon-add-project"></use>
+              </svg>
+            </button>
+            <button class="sidebar_function delayed-icon group-toggle-btn">
+              <svg class="icon-item">
+                <use href="../../assets/icons/icons.svg#icon-down"></use>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="child-wrap">
+          <div
+            class="child"
+            data-tooltip="기본 프로젝트"
+            data-direction="right"
+          >
+            <div class="left">
+              <div class="status delayed-icon-fold">
+                <div class="dot"></div>
+              </div>
+              <span>기본 프로젝트</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 사이드바 하단 -->
+
+  <div class="bottom">
+    <button class="add-group-button" id="add-group">
+      <svg class="icon-group">
+        <use href="../../assets/icons/icons.svg#icon-add-group"></use>
+      </svg>
+      <span>그룹 추가</span>
+    </button>
+  </div>

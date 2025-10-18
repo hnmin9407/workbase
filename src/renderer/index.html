@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <title>WORKBASE</title>
+    
+    <link rel="stylesheet" href="./css/styles.css" />
     <link rel="stylesheet" href="./css/tooltip.css" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -19,295 +21,88 @@
     />
   </head>
 
-  <style>
-
-/* ========== common ========== */
-
-* {
-  -webkit-user-drag: none;
-  user-select: none;
-}
-
-button {
-  background: #FFFFFF;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  transition: background 0.1s ease;
-}
-
-button:hover {
-  background: rgba(20, 27, 52, 0.03);
-}
-
-button:active {
-  background: rgba(20, 27, 52, 0.05);
-}
-
-html {
-  min-width: 500px;
-}
-
-body {
-  font-family: "pretendard";
-  letter-spacing: -0.2px;
-  background-color: #fafafa;
-  padding: 0;
-  margin: 0;
-}
-
-.main {
-  display: flex;
-}
-
-.icon-fold {
-  width: 15px;
-  height: 15px;
-  color: #141B34;
-  fill: none;
-  stroke-width: 1.6;
-  stroke: currentColor;
-  transition: transform 0.3s ease;
-}
-
-.icon-sidebar {
-  width: 16px;
-  height: 16px;
-  color: #141B34;
-  fill: none;
-  stroke-width: 1.6;
-  stroke: currentColor;
-  transition: transform 0.3s ease;
-}
-
-/* ========== 사이드바 ========== */
-
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  width: 260px;
-  height: 100vh;
-  gap: auto;
-  background: #FFFFFF;
-  transition: width 0.3s ease;
-}
-
-.sidebar .top {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* 사이드바 헤더 */
-
-.sidebar .top .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-}
-
-.sidebar .top .header .left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'montserrat';
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.2px;
-  color: #141B34;
-}
-
-.sidebar .top .header .left img {
-  width: 32px;
-}
-
-.sidebar .top .header .right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sidebar .top .header .right .sidebar-fold-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: solid 1px rgba(20, 27, 52, 0.1);
-  border-radius: 8px;
-}
-
-/* 사이드바 메뉴 */
-
-.sidebar .top .menu {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 0 16px;
-}
-
-.sidebar .top .menu .wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  transition: gap 0.2s ease;
-}
-
-.sidebar .top .menu .wrap .item {
-  display: flex;
-  align-items: center;
-  padding: 8px;
-  border-radius: 8px;
-  height: 32px;
-  box-sizing: border-box;
-  cursor: pointer;
-  transition: background 0.1s ease;
-}
-
-.sidebar .top .menu .wrap .item:hover {
-  background: rgba(20, 27, 52, 0.03);
-}
-
-.sidebar .top .menu .wrap .item:active {
-  background: rgba(20, 27, 52, 0.05);
-}
-
-.sidebar .top .menu .wrap .item .left {
-  display: flex;
-  align-items: center;
-}
-
-.sidebar .top .menu .wrap .item .left svg {
-  margin-right: 8px;
-}
-
-.sidebar .top .menu .wrap .item .left span {
-  font-family: 'pretendard';
-  font-size: 15px;
-  font-weight: 400;
-  letter-spacing: -0.2px;
-  color: #141B34;
-  white-space: nowrap;
-  opacity: 1;
-  transition: all 0.2s ease;
-}
-
-/* ========== 사이드바 접기/펼치기 ========== */
-
-/* 사이드바 사이즈 조절 */
-.sidebar-folded .sidebar {
-  width: 60px;
-}
-
-/* 사이드바 헤더 왼쪽 숨김 */
-.sidebar-folded .sidebar .top .header .left {
-  display: none;
-}
-
-/* 사이드바 폴드 버튼 아이콘 */
-.sidebar-folded .sidebar .top .header .right svg {
-  transform: scaleX(-1);
-}
-
-.sidebar-folded .sidebar .top .menu .wrap {
-}
-
-.sidebar-folded .sidebar .top .menu {
-  padding: 0 16px;
-}
-
-.sidebar-folded .sidebar .top .menu .wrap .item {
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-}
-
-/* 메뉴 이름 숨기기 */
-
-.sidebar-folded .sidebar .top .menu .wrap .item .left span {
-  display: none;
-}
-
-.sidebar-folded .sidebar .top .menu .wrap .item .left svg {
-  margin-left: 8px;
-}
-
-@media screen and (max-width: 768px) {
-}
-  </style>
-
   <body>
     <div class="main">
-      <div class="sidebar">
-        <div class="top">
+      <div id="sidebar-component" class="sidebar"></div>
 
-          <div class="header">
-            <div class="left">
-              <img src="/assets/logo.png">
-              <span>workbase</span>
-            </div>
-            <div class="right">
-              <button id="sidebar-fold-button" class="sidebar-fold-button">
-                <svg class="icon-fold">
-                  <use href="/assets/icons/icons.svg#icon-ArrowLeftDouble"></use>
-                </svg>
-              </button>
-            </div>
+      <div class="content">
+        <div class="drag-control">
+          <div class="window-control">
+            <button class="control-btn" id="min-btn">
+              <img src="../../assets/titlebar/min-icon.svg" alt="최소화" />
+            </button>
+            <button class="control-btn" id="max-btn">
+              <img
+                id="max-icon"
+                src="../../assets/titlebar/max-icon-1.svg"
+                alt="최대화"
+              />
+            </button>
+            <button class="control-btn" id="close-btn">
+              <img src="../../assets/titlebar/close-icon.svg" alt="닫기" />
+            </button>
           </div>
-
-          <div class="menu">
-            <div class="wrap">
-
-              <div class="item">
-                <div class="left">
-                    <svg class="icon-sidebar">
-                      <use href="/assets/icons/icons.svg#icon-inbox"></use>
-                    </svg>
-                  </button>
-                  <span>전체 보관함</span>
-                </div>
-              </div>
-
-              <div class="item">
-                <div class="left">
-                    <svg class="icon-sidebar">
-                      <use href="/assets/icons/icons.svg#icon-inbox"></use>
-                    </svg>
-                  </button>
-                  <span>오늘 할 일</span>
-                </div>
-              </div>
-
-              <div class="item">
-                <div class="left">
-                    <svg class="icon-sidebar">
-                      <use href="/assets/icons/icons.svg#icon-inbox"></use>
-                    </svg>
-                  </button>
-                  <span>중요</span>
-                </div>
-              </div>
-
-              <div class="item">
-                <div class="left">
-                    <svg class="icon-sidebar">
-                      <use href="/assets/icons/icons.svg#icon-inbox"></use>
-                    </svg>
-                  </button>
-                  <span>완료됨</span>
-                </div>
-              </div>
-
-            </div>
+        </div>
+        <div class="todo">
+          <div class="header">
+            <span class="date">2025년 10월 18일 토요일</span>
+            <span class="title">전체 보관함</span>
           </div>
         </div>
       </div>
     </div>
 
-    <script src="./js/titlebar.js"></script>
+    <div class="popup" id="group-add-popup">
+      <div class="top">
+        <div class="title">그룹 추가</div>
+        <input placeholder="그룹 이름을 입력해 주세요" />
+      </div>
+      <div class="bottom">
+        <button class="cancel-button popup-close">취소</button>
+        <button class="add-button" id="confirm-group-add">추가</button>
+      </div>
+    </div>
+    <div class="popup" id="project-add-popup">
+      <div class="top">
+        <div class="title">프로젝트 추가</div>
+        <input placeholder="프로젝트 이름을 입력해 주세요" />
+      </div>
+      <div class="bottom">
+        <button class="cancel-button popup-close">취소</button>
+        <button class="add-button" id="confirm-project-add">추가</button>
+      </div>
+    </div>
+    <div class="popup-overlay"></div>
+
+<div id="project-context-menu" class="context-menu">
+      <button id="rename-project-btn">
+        <svg><use href="../../assets/icons/icons.svg#icon-edit"></use></svg>
+        <span>이름 바꾸기</span>
+      </button>
+      <button id="delete-project-btn" class="delete">
+        <svg><use href="../../assets/icons/icons.svg#icon-delete"></use></svg>
+        <span>삭제하기</span>
+      </button>
+    </div>
+
+    <script src="./js/sidebar.js"></script>
     <script src="./js/tooltip.js"></script>
+    <script src="./js/titlebar.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("./html/component/sidebar.html")
+          .then((response) => response.text())
+          .then((html) => {
+            const sidebar = document.getElementById("sidebar-component");
+            if (sidebar) {
+              sidebar.innerHTML = html;
 
+              initSidebar();
+              initTooltip();
+            }
+          })
+          .catch((error) => console.error("사이드바 로딩 오류:", error));
+      });
+    </script>
   </body>
-
 </html>
