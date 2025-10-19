@@ -1,724 +1,895 @@
-
-    /* ========== common ========== */
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    * {
-      -webkit-user-drag: none;
-      user-select: none;
-    }
-
-    button {
-      background: #ffffff;
-      border: none;
-      cursor: pointer;
-      outline: none;
-      transition: background 0.1s ease;
-    }
-
-    button:hover {
-      background: rgba(20, 27, 52, 0.03);
-    }
-
-    button:active {
-      background: rgba(20, 27, 52, 0.05);
-    }
-
-    html {
-      min-width: 500px;
-    }
-
-    body {
-      font-family: "pretendard";
-      letter-spacing: -0.2px;
-      background-color: #fafafa;
-      padding: 0;
-      margin: 0;
-    }
-
-    .main {
-      display: flex;
-    }
-
-    .icon-fold {
-      width: 15px;
-      height: 15px;
-      color: #141b34;
-      fill: none;
-      stroke-width: 1.6;
-      stroke: currentColor;
-      transition: transform 0.3s ease;
-    }
-
-    .icon-item {
-      width: 16px;
-      height: 16px;
-      color: #141b34;
-      fill: none;
-      stroke-width: 1.6;
-      stroke: currentColor;
-      transition: transform 0.3s ease;
-    }
-
-    .icon-group {
-      width: 16px;
-      height: 16px;
-      color: #141b34;
-      fill: none;
-      stroke-width: 2;
-      stroke: currentColor;
-      transition: transform 0.3s ease;
-    }
-
-    /* ========== 사이드바 ========== */
-
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      width: 240px;
-      height: 100vh;
-      background: #ffffff;
-      border-right: solid 1px rgba(20, 27, 52, 0.05);
-      transition: width 0.3s ease;
-    }
-
-    .sidebar .top {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-
-    /* 사이드바 헤더 */
-
-    .sidebar .top .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px;
-      -webkit-app-region: drag; /* 이 영역을 드래그 가능하게 만듦 */
-    }
-
-    .sidebar .top .header .left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-family: "montserrat";
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: -0.2px;
-      color: #141b34;
-    }
-
-    .sidebar .top .header .left img {
-      width: 32px;
-    }
-
-    .sidebar .top .header .right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .sidebar .top .header .right .sidebar-fold-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      border: solid 1px rgba(20, 27, 52, 0.1);
-      border-radius: 8px;
-      -webkit-app-region: no-drag;
-    }
-
-    /* 사이드바 메뉴 */
-
-    .sidebar .top .menu {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      padding: 0 16px;
-    }
-
-    .sidebar .top .menu .wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      transition: gap 0.2s ease;
-    }
-
-    .sidebar .top .menu .wrap .item {
-      display: flex;
-      align-items: center;
-      padding: 8px;
-      border-radius: 8px;
-      height: 32px;
-      box-sizing: border-box;
-      cursor: pointer;
-      transition: background 0.1s ease, width 0.3s ease;
-    }
-
-    .sidebar .top .menu .wrap .item:hover {
-      background: rgba(20, 27, 52, 0.03);
-    }
-
-    .sidebar .top .menu .wrap .item:active {
-      background: rgba(20, 27, 52, 0.05);
-    }
-
-    .sidebar .top .menu .wrap .item .left {
-      display: flex;
-      align-items: center;
-    }
-
-    .sidebar .top .menu .wrap .item .left svg {
-      margin-right: 8px;
-    }
-
-    .sidebar .top .menu .wrap .item .left span {
-      font-family: "pretendard";
-      font-size: 15px;
-      font-weight: 400;
-      letter-spacing: -0.2px;
-      color: #141b34;
-      white-space: nowrap;
-      opacity: 1;
-      overflow: hidden; /* 너비가 줄어들 때 텍스트를 숨김 */
-      transition: width 0.3s ease, opacity 0.3s ease;
-    }
-
-    /* 사이드바 그룹 메뉴 */
-
-    .sidebar .top .menu .wrap .group {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 0px 8px 8px;
-      border-radius: 8px;
-      height: 32px;
-      box-sizing: border-box;
-      transition: background 0.1s ease, width 0.3s ease;
-    }
-
-    .sidebar .top .menu .wrap .group .left {
-      display: flex;
-      align-items: center;
-    }
-
-    .sidebar .top .menu .wrap .group .left svg {
-      margin-right: 8px;
-    }
-
-    .sidebar .top .menu .wrap .group .left span {
-      font-family: "pretendard";
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: -0.2px;
-      color: #141b34;
-      white-space: nowrap;
-      opacity: 1;
-      overflow: hidden; /* 너비가 줄어들 때 텍스트를 숨김 */
-      transition: width 0.3s ease, opacity 0.3s ease;
-    }
-
-    .sidebar .top .menu .wrap .group .right {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .sidebar_function {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-    }
-
-    .sidebar_function:hover {
-      background: rgba(20, 27, 52, 0.03);
-    }
-
-    .sidebar_function:active {
-      background: rgba(20, 27, 52, 0.05);
-    }
-
-    /* 그룹 버튼 토글 */
-
-    .sidebar .top .menu .wrap .group .right #group-toggle svg {
-      transform: rotate(180deg);
-      transition: transform 0.2s ease;
-    }
-
-    /* 토글 아이콘 회전 */
-    .sidebar .top .menu .wrap.group-collapsed .group .right #group-toggle svg {
-      transform: rotate(360deg);
-    }
-
-    .sidebar .top .menu .wrap.group-collapsed .child-wrap {
-      margin-bottom: 0;
-    }
-
-    /* 사이드바 하위 메뉴 */
-
-    .sidebar .top .menu .wrap .child-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      overflow: hidden; /* 이 속성은 반드시 유지해야 합니다. */
-      opacity: 1;
-      height: 0;
-      transition: height 0.2s ease; /* transition 대상을 height로 변경 */
-      margin-bottom: 8px;
-    }
-
-    .sidebar .top .menu .wrap .child {
-      display: flex;
-      align-items: center;
-      border-radius: 8px;
-      height: 32px;
-      box-sizing: border-box;
-      cursor: pointer;
-      transition: background 0.1s ease;
-    }
-
-    .sidebar .top .menu .wrap .child:hover {
-      background: rgba(20, 27, 52, 0.03);
-    }
-
-    .sidebar .top .menu .wrap .child:active {
-      background: rgba(20, 27, 52, 0.05);
-    }
-
-    .sidebar .top .menu .wrap .child .left {
-      display: flex;
-      align-items: center;
-    }
-
-    .sidebar .top .menu .wrap .child .left span {
-      font-family: "pretendard";
-      font-size: 15px;
-      font-weight: 400;
-      letter-spacing: -0.2px;
-      color: #141b34;
-      white-space: nowrap;
-      opacity: 1;
-      overflow: hidden; /* 너비가 줄어들 때 텍스트를 숨김 */
-      transition: width 0.3s ease, opacity 0.3s ease;
-    }
-
-    .sidebar .top .menu .wrap .child .left .status {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-    }
-
-    .sidebar .top .menu .wrap .child .left .status .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #141b34;
-    }
-
-    /* 사이드바 하단 영역 */
-
-    .sidebar .bottom {
-      display: flex;
-      align-items: center;
-      padding: 16px;
-      margin-top: auto;
-    }
-
-    .sidebar .bottom button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 40px;
-      border-radius: 8px;
-      cursor: pointer;
-      border: solid 1px rgba(20, 27, 52, 0.4);
-      color: #141b34;
-      font-family: "pretendard";
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: -0.2px;
-      transition: background 0.1s ease;
-    }
-
-    .sidebar .bottom button:hover {
-      background: rgba(20, 27, 52, 0.03);
-    }
-
-    .sidebar .bottom button:active {
-      background: rgba(20, 27, 52, 0.05);
-    }
-
-    .sidebar .bottom button svg {
-      width: 16px;
-      height: 16px;
-      margin-right: 8px;
-      color: #141b34;
-    }
-
-    /* 사이드바 구분선 */
-
-    .sidebar .line {
-      width: 100%;
-      height: 1px;
-      background: rgba(20, 27, 52, 0.05);
-      margin: 16px 0px;
-    }
-
-    /* ========== 사이드바 접기/펼치기 ========== */
-
-    /* 사이드바 사이즈 조절 */
-    .sidebar-folded .sidebar {
-      width: 64px;
-    }
-
-    /* 사이드바 헤더 왼쪽 숨김 */
-    .sidebar-folded .sidebar .top .header .left {
-      display: none;
-    }
-
-    /* 사이드바 폴드 버튼 아이콘 */
-    .sidebar-folded .sidebar .top .header .right svg {
-      transform: scaleX(-1);
-    }
-
-    .sidebar-folded .sidebar .top .menu {
-      padding: 0 8px;
-    }
-
-    .sidebar-folded .sidebar .top .menu .wrap .item {
-      justify-content: center;
-      height: 32px;
-    }
-
-    .sidebar-folded .sidebar .top .menu .wrap .group {
-      justify-content: center;
-      height: 32px;
-      padding: 8px;
-      cursor: pointer;
-    }
-
-    .sidebar-folded .sidebar .top .menu .wrap .group:hover {
-      background: rgba(20, 27, 52, 0.03);
-    }
-
-    .sidebar-folded .sidebar .top .menu .wrap .group:active {
-      background: rgba(20, 27, 52, 0.05);
-    }
-
-    .sidebar-folded .sidebar .top .menu .wrap .child {
-      justify-content: center;
-      height: 32px;
-    }
-
-    /* 메뉴 요소 숨기기 */
-
-    .sidebar-folded .sidebar .top .menu .wrap .item .left span {
-      opacity: 0;
-      width: 0;
-    }
-
-    .sidebar-folded .sidebar .top .menu .wrap .item .left svg {
-      margin-right: 0;
-    }
-
-    .sidebar-folded .sidebar .top .menu .wrap .group .left span {
-      opacity: 0;
-      width: 0;
-    }
-
-    .sidebar-folded .sidebar .top .menu .wrap .group .left svg {
-      margin-right: 0;
-    }
-
-    .sidebar-folded .sidebar .top .menu .wrap .group .right {
-      opacity: 0;
-      width: 0;
-    }
-
-    .sidebar-folded .sidebar .top .menu .wrap .child .left span {
-      opacity: 0;
-      width: 0;
-    }
-
-    .sidebar-folded .sidebar .top .menu .wrap .child .left .status {
-      margin-right: 0;
-    }
-
-    .sidebar-folded .sidebar .bottom button {
-      opacity: 0;
-      width: 0;
-    }
-
-    /* 사이드바 열릴 때 딜레이 */
-
-    .main.sidebar-folded .delayed-icon {
-      opacity: 0;
-      transition: opacity 0s;
-    }
-
-    .sidebar-folded .delayed-icon-fold {
-      animation: icon-fold 0.8s ease forwards;
-    }
-
-    @keyframes icon-fold {
-      0% {
-        opacity: 0;
-        transform: translateX(-20px);
-      }
-
-      30% {
-        opacity: 0;
-      }
-
-      100% {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    .delayed-icon {
-      opacity: 1;
-      transition: opacity 0.3s ease;
-      transition-delay: 0.3s;
-    }
-
-    @media screen and (max-width: 768px) {
-    }
-
-    /* ========== 콘텐츠 & 드래그 영역 ========== */
-
-    .content {
-      flex: 1;
-    }
-
-    .drag-control {
-      display: flex; /* 자식 요소를 가로로 정렬 */
-      width: 100%;
-      height: 64px; /* 일반적인 타이틀 바 높이 */
-      -webkit-app-region: drag; /* 이 영역을 드래그 가능하게 만듦 */
-    }
-
-    /* ========== 윈도우 컨트롤 버튼 ========== */
-
-    .window-control {
-      display: flex;
-      margin-left: auto;
-      -webkit-app-region: no-drag; /* 버튼들은 드래그 영역에서 제외 */
-    }
-
-    .control-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 36px;
-      background: transparent;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      transition: background-color 0.1s ease;
-    }
-
-    .control-btn img {
-      width: 12px; /* 필요에 따라 아이콘 크기 조절 */
-      height: 12px;
-    }
-
-    .control-btn:hover {
-      background-color: rgba(20, 27, 52, 0.05);
-    }
-
-    /* 닫기 버튼은 마우스 올렸을 때 빨간색으로 변경 */
-    #close-btn:hover {
-      background-color: #e81123;
-    }
-
-    /* 선택: 닫기 버튼에 마우스를 올렸을 때 아이콘 색상을 흰색으로 변경 */
-    #close-btn:hover img {
-      filter: brightness(0) invert(1);
-    }
-
-    /* 투두 */
-
-    .todo {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      padding: 0px 64px;
-    }
-    .todo .header {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .todo .header .date {
-      font-family: "pretendard";
-      font-size: 15px;
-      font-weight: 400;
-      letter-spacing: -0.2px;
-      color: #1c85eb;
-    }
-
-    .todo .header .title {
-      font-family: "pretendard";
-      font-size: 28px;
-      font-weight: 600;
-      letter-spacing: -0.2px;
-      color: #141b34;
-    }
-
-    /* 팝업 */
-
-    .popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.95); /* 시작 시 약간 작게 */
-      filter: drop-shadow(0px 4px 20px rgba(20, 27, 52, 0.1));
-      display: none; /* 기본적으로 숨김 */
-      opacity: 0;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      width: 360px;
-      padding: 32px;
-      gap: 24px;
-      background: #ffffff;
-      border-radius: 24px;
-      box-sizing: border-box;
-      filter: drop-shadow(0px 0px 10px rgba(20, 27, 52, 0.03));
-    }
-
-    .popup.show {
-      display: flex;
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1); /* 활성화 시 원래 크기로 */
-      z-index: 100;
-    }
-
-    .popup .top {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .popup .title {
-      font-family: "pretendard";
-      font-size: 20px;
-      font-weight: 600;
-      letter-spacing: -0.2px;
-      color: #141b34;
-    }
-
-    .popup input {
-      width: 100%;
-      padding: 16px;
-      border-radius: 8px;
-      outline: none;
-      border: none;
-      background: rgba(20, 27, 52, 0.03);
-      color: #141b34;
-      font-family: "pretendard";
-      font-size: 15px;
-      font-weight: 400;
-      letter-spacing: -0.2px;
-      box-sizing: border-box;
-    }
-
-    .popup input::placeholder {
-      color: rgba(20, 27, 52, 0.4);
-    }
-
-    .popup .bottom {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-    }
-
-    .add-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 42px;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #141b34;
-      color: #ffffff;
-      font-family: "pretendard";
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: -0.2px;
-      transition: background 0.1s ease;
-    }
-
-    .add-button:hover {
-      background: rgba(20, 27, 52, 0.9);
-    }
-
-    .add-button:active {
-      background: rgba(20, 27, 52, 0.95);
-    }
-
-    .cancel-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 42px;
-      border-radius: 8px;
-      cursor: pointer;
-      color: #141b34;
-      border: solid 1px rgba(20, 27, 52, 0.1);
-      font-family: "pretendard";
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: -0.2px;
-      transition: background 0.1s ease;
-    }
-
-    /* ========== 팝업 오버레이 ========== */
-
-    .popup-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(20, 27, 52, 0.4);
-      z-index: 99;
-      display: none; /* 기본적으로 숨김 */
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-
-    .popup-overlay.show {
-      display: block;
-      opacity: 1;
-    }
+/* style.css */
+
+/* ========== common ========== */
+
+/* ========== Electron 및 D&D 규칙 ========== */
+
+/* 1. Electron: 윈도우 헤더만 드래그 가능하게 설정 */
+.sidebar .top .header {
+  -webkit-app-region: drag;
+}
+
+/* 2. Electron: 그 외 모든 사이드바 요소는 윈도우 드래그 방지 */
+.sidebar * {
+  -webkit-app-region: no-drag;
+}
+
+/* 3. HTML5 D&D: 드래그할 .child 요소만 명시적으로 허용 */
+.child {
+  -webkit-user-drag: element; /* 'none'이 아닌 'element'로 변경 */
+  cursor: grab;
+}
+
+.child:active,
+body.dragging-active .child {
+  cursor: grabbing !important;
+}
+
+.child .left * {
+  pointer-events: none; 
+}
+
+/* 드래그 중 비정상 스크롤 숨기기 */
+body.dragging-no-scroll {
+  overflow: hidden !important;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+* {
+  user-select: none;
+}
+
+button {
+  background: #ffffff;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.1s ease;
+}
+
+button:hover {
+  background: rgba(20, 27, 52, 0.03);
+}
+
+button:active {
+  background: rgba(20, 27, 52, 0.05);
+}
+
+html {
+  min-width: 500px;
+}
+
+body {
+  font-family: "pretendard";
+  letter-spacing: -0.2px;
+  background-color: #fafafa;
+  padding: 0;
+  margin: 0;
+}
+
+.main {
+  display: flex;
+}
+
+.icon-fold {
+  width: 15px;
+  height: 15px;
+  color: #141b34;
+  fill: none;
+  stroke-width: 1.6;
+  stroke: currentColor;
+  transition: transform 0.3s ease;
+}
+
+.icon-item {
+  width: 16px;
+  height: 16px;
+  color: #141b34;
+  fill: none;
+  stroke-width: 1.6;
+  stroke: currentColor;
+  transition: transform 0.3s ease;
+}
+
+.icon-group {
+  width: 16px;
+  height: 16px;
+  color: #141b34;
+  fill: none;
+  stroke-width: 2;
+  stroke: currentColor;
+  transition: transform 0.3s ease;
+}
+
+/* ========== 사이드바 ========== */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  height: 100vh;
+  background: #ffffff;
+  border-right: solid 1px rgba(20, 27, 52, 0.05);
+  transition: width 0.3s ease;
+}
+
+.sidebar .top {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.group-list-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable both-edges;
+}
+
+/* 항상 존재하지만 투명하게 */
+.group-list-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.group-list-container::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+/* 사이드바 hover 시만 색상 강조 */
+.sidebar:hover .group-list-container::-webkit-scrollbar-thumb {
+  background: rgba(20, 27, 52, 0.1);
+}
+
+.sidebar:hover .group-list-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 27, 52, 0.13);
+}
+/* 사이드바 헤더 */
+
+.sidebar .top .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  -webkit-app-region: drag; /* 이 영역을 드래그 가능하게 만듦 */
+}
+
+.sidebar .top .header .left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "montserrat";
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: #141b34;
+}
+
+.sidebar .top .header .left img {
+  width: 32px;
+}
+
+.sidebar .top .header .right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar .top .header .right .sidebar-fold-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: solid 1px rgba(20, 27, 52, 0.1);
+  border-radius: 8px;
+  -webkit-app-region: no-drag;
+}
+
+/* 사이드바 메뉴 */
+
+.sidebar .top .menu {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 12px;
+}
+
+.sidebar .top .menu .wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: gap 0.2s ease;
+}
+
+.sidebar .top .menu .wrap .item {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  height: 32px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background 0.1s ease, width 0.3s ease;
+}
+
+.sidebar .top .menu .wrap .item:hover {
+  background: rgba(20, 27, 52, 0.03);
+}
+
+.sidebar .top .menu .wrap .item:active {
+  background: rgba(20, 27, 52, 0.05);
+}
+
+.sidebar .top .menu .wrap .item .left {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar .top .menu .wrap .item .left svg {
+  margin-right: 8px;
+}
+
+.sidebar .top .menu .wrap .item .left span {
+  font-family: "pretendard";
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: #141b34;
+  white-space: nowrap;
+  opacity: 1;
+  overflow: hidden; /* 너비가 줄어들 때 텍스트를 숨김 */
+  transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+/* 사이드바 그룹 메뉴 */
+
+.sidebar .top .menu .wrap .group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0px 8px 8px;
+  border-radius: 8px;
+  height: 32px;
+  box-sizing: border-box;
+  transition: background 0.1s ease, width 0.3s ease;
+}
+
+.sidebar .top .menu .wrap .group .left {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar .top .menu .wrap .group .left svg {
+  margin-right: 8px;
+}
+
+.sidebar .top .menu .wrap .group .left span {
+  font-family: "pretendard";
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: #141b34;
+  white-space: nowrap;
+  opacity: 1;
+  overflow: hidden; /* 너비가 줄어들 때 텍스트를 숨김 */
+  transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+.sidebar .top .menu .wrap .group .right {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+}
+
+.sidebar_function {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+}
+
+.sidebar_function:hover {
+  background: rgba(20, 27, 52, 0.03);
+}
+
+.sidebar_function:active {
+  background: rgba(20, 27, 52, 0.05);
+}
+
+/* 그룹 버튼 토글 */
+
+.sidebar .top .menu .wrap .group .right .group-toggle-btn svg {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+/* 토글 아이콘 회전 */
+.sidebar .top .menu .wrap.group-collapsed .group .right .group-toggle-btn svg {
+  transform: rotate(360deg);
+}
+
+.sidebar .top .menu .wrap.group-collapsed .child-wrap {
+  overflow: hidden;
+  transition: height 0.3s ease, margin-bottom 0.3s ease;
+}
+
+/* 사이드바 하위 메뉴 */
+
+.sidebar .top .menu .wrap .child-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: transparent;
+  min-height: 10px;
+  padding: 4px 0;
+  overflow: hidden; /* 이 속성은 반드시 유지해야 합니다. */
+  opacity: 1;
+  transition: background 0.1s ease, margin-top 0.15s ease-out;
+  margin-bottom: 8px;
+  box-sizing: border-box; /* 패딩이 높이 계산에 포함되도록 설정 */
+  /* ================================ */
+}
+
+.sidebar .top .menu .wrap .child {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  height: 32px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background 0.1s ease, margin-top 0.15s ease-out;
+}
+
+.sidebar .top .menu .wrap .child:hover {
+  background: rgba(20, 27, 52, 0.03);
+}
+
+.sidebar .top .menu .wrap .child:active {
+  background: rgba(20, 27, 52, 0.05);
+}
+
+.sidebar .top .menu .wrap .child .left {
+  display: flex;
+  align-items: center;
+}
+
+.sidebar .top .menu .wrap .child .left span {
+  font-family: "pretendard";
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: #141b34;
+  white-space: nowrap;
+  opacity: 1;
+  overflow: hidden; /* 너비가 줄어들 때 텍스트를 숨김 */
+  transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+.sidebar .top .menu .wrap .child .left .status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.sidebar .top .menu .wrap .child .left .status .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #141b34;
+}
+
+.sidebar .top .menu .wrap .child .left .status .dot[data-status="scheduled"] {
+  background: #1c85eb;
+}
+
+.sidebar .top .menu .wrap .child .left .status .dot[data-status="done"] {
+  background: #28a745;
+}
+
+.sidebar .top .menu .wrap .child .left .status .dot[data-status="ongoing"] {
+  background: #e81123;
+}
+
+/* 사이드바 하단 영역 */
+
+.sidebar .bottom {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  margin-top: auto;
+}
+
+.sidebar .bottom button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 40px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: solid 1px rgba(20, 27, 52, 0.4);
+  color: #141b34;
+  font-family: "pretendard";
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  transition: background 0.1s ease;
+}
+
+.sidebar .bottom button:hover {
+  background: rgba(20, 27, 52, 0.03);
+}
+
+.sidebar .bottom button:active {
+  background: rgba(20, 27, 52, 0.05);
+}
+
+.sidebar .bottom button svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  color: #141b34;
+}
+
+/* 사이드바 구분선 */
+
+.sidebar .line {
+  width: 100%;
+  height: 1px;
+  background: rgba(20, 27, 52, 0.05);
+  margin: 16px 0px;
+}
+
+/* ========== 사이드바 접기/펼치기 ========== */
+
+/* 사이드바 사이즈 조절 */
+.sidebar-folded .sidebar {
+  width: 64px;
+}
+
+/* 사이드바 헤더 왼쪽 숨김 */
+.sidebar-folded .sidebar .top .header .left {
+  display: none;
+}
+
+/* 사이드바 폴드 버튼 아이콘 */
+.sidebar-folded .sidebar .top .header .right svg {
+  transform: scaleX(-1);
+}
+
+.sidebar-folded .sidebar .top .menu {
+  padding: 0 8px;
+}
+
+.sidebar-folded .sidebar .top .menu .wrap .item {
+  justify-content: center;
+  height: 32px;
+}
+
+.sidebar-folded .sidebar .top .menu .wrap .group {
+  justify-content: center;
+  height: 32px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.sidebar-folded .sidebar .top .menu .wrap .group:hover {
+  background: rgba(20, 27, 52, 0.03);
+}
+
+.sidebar-folded .sidebar .top .menu .wrap .group:active {
+  background: rgba(20, 27, 52, 0.05);
+}
+
+.sidebar-folded .sidebar .top .menu .wrap .child {
+  justify-content: center;
+  height: 32px;
+}
+
+/* 메뉴 요소 숨기기 */
+
+.sidebar-folded .sidebar .top .menu .wrap .item .left span {
+  opacity: 0;
+  width: 0;
+}
+
+.sidebar-folded .sidebar .top .menu .wrap .item .left svg {
+  margin-right: 0;
+}
+
+.sidebar-folded .sidebar .top .menu .wrap .group .left span {
+  opacity: 0;
+  width: 0;
+}
+
+.sidebar-folded .sidebar .top .menu .wrap .group .left svg {
+  margin-right: 0;
+}
+
+.sidebar-folded .sidebar .top .menu .wrap .group .right {
+  opacity: 0;
+  width: 0;
+  pointer-events: none;
+}
+
+.sidebar-folded .sidebar .top .menu .wrap .child .left span {
+  opacity: 0;
+  width: 0;
+}
+
+.sidebar-folded .sidebar .top .menu .wrap .child .left .status {
+  margin-right: 0;
+}
+
+.sidebar-folded .sidebar .bottom button {
+  opacity: 0;
+  width: 0;
+  pointer-events: none;
+}
+
+/* 사이드바 열릴 때 딜레이 */
+
+.main.sidebar-folded .delayed-icon {
+  opacity: 0;
+  transition: opacity 0s;
+}
+
+.sidebar-folded .delayed-icon-fold {
+  animation: icon-fold 0.8s ease forwards;
+}
+
+@keyframes icon-fold {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  30% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.delayed-icon {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  transition-delay: 0.3s;
+}
+
+@media screen and (max-width: 768px) {
+}
+
+/* ========== 콘텐츠 & 드래그 영역 ========== */
+
+.content {
+  flex: 1;
+}
+
+.drag-control {
+  display: flex; /* 자식 요소를 가로로 정렬 */
+  width: 100%;
+  height: 64px; /* 일반적인 타이틀 바 높이 */
+  -webkit-app-region: drag; /* 이 영역을 드래그 가능하게 만듦 */
+}
+
+/* ========== 윈도우 컨트롤 버튼 ========== */
+
+.window-control {
+  display: flex;
+  margin-left: auto;
+  -webkit-app-region: no-drag; /* 버튼들은 드래그 영역에서 제외 */
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.control-btn img {
+  width: 12px; /* 필요에 따라 아이콘 크기 조절 */
+  height: 12px;
+}
+
+.control-btn:hover {
+  background-color: rgba(20, 27, 52, 0.05);
+}
+
+/* 닫기 버튼은 마우스 올렸을 때 빨간색으로 변경 */
+#close-btn:hover {
+  background-color: #e81123;
+}
+
+/* 선택: 닫기 버튼에 마우스를 올렸을 때 아이콘 색상을 흰색으로 변경 */
+#close-btn:hover img {
+  filter: brightness(0) invert(1);
+}
+
+/* 투두 */
+
+.todo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0px 64px;
+}
+.todo .header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.todo .header .date {
+  font-family: "pretendard";
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: #1c85eb;
+}
+
+.todo .header .title {
+  font-family: "pretendard";
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: #141b34;
+}
+
+/* 팝업 */
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95); /* 시작 시 약간 작게 */
+  filter: drop-shadow(0px 4px 20px rgba(20, 27, 52, 0.1));
+  display: none; /* 기본적으로 숨김 */
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  min-width: 360px;
+  padding: 32px;
+  gap: 24px;
+  background: rgba(255, 255, 255, 0.9);
+  border: solid 1px #FFFFFF;
+  border-radius: 16px;
+  box-sizing: border-box;
+  filter: drop-shadow(0px 0px 10px rgba(20, 27, 52, 0.03));
+}
+
+.popup.show {
+  display: flex;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1); /* 활성화 시 원래 크기로 */
+  z-index: 100;
+}
+
+.popup .top {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.popup .top svg {
+  width: 48px;
+  height: 48px;
+  stroke-width: 1;
+  color: rgba(28, 133, 235, 0.6);
+  fill: none;
+  margin-bottom: 8px;
+}
+
+.popup .top svg[data-type="delete"] {
+  width: 48px;
+  height: 48px;
+  stroke-width: 1;
+  color: rgba(232, 17, 35, 0.6);
+  fill: none;
+  margin-bottom: 8px;
+}
+
+.popup .title {
+  font-family: "pretendard";
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: #141b34;
+}
+
+.popup .top .text-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.popup .top .text-wrap .confirm-text {
+  font-family: "pretendard";
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: #141b34;
+}
+
+.popup .top .text-wrap .sub-text {
+  font-family: "pretendard";
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: rgba(20, 27, 52, 0.4);
+}
+
+.popup input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  outline: none;
+  border: none;
+  background: rgba(20, 27, 52, 0.03);
+  color: #141b34;
+  font-family: "pretendard";
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  box-sizing: border-box;
+}
+
+.popup input::placeholder {
+  color: rgba(20, 27, 52, 0.4);
+}
+
+.popup .bottom {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.add-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #1c85eb;
+  font-family: "pretendard";
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  transition: background 0.1s ease;
+  background: rgba(28, 133, 235, 0.1);
+  white-space: nowrap;
+}
+
+.add-button:hover {
+  background: rgba(28, 133, 235, 0.13);
+}
+
+.add-button:active {
+  background: rgba(28, 133, 235, 0.15);
+}
+
+.delete-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  background: rgba(232, 17, 35, 0.1);
+  color: #e81123;
+  font-family: "pretendard";
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  transition: background 0.1s ease;
+  white-space: nowrap;
+}
+
+.delete-button:hover {
+  background: rgba(232, 17, 35, 0.13);
+}
+
+.delete-button:active {
+  background: rgba(232, 17, 35, 0.15);
+}
+
+.cancel-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #141b34;
+  border: solid 1px rgba(20, 27, 52, 0.1);
+  font-family: "pretendard";
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  transition: background 0.1s ease;
+  background: transparent;
+  white-space: nowrap;
+}
+
+.cancel-button:hover {
+  background: rgba(20, 27, 52, 0.03);
+}
+
+.cancel-button:active {
+  background: rgba(20, 27, 52, 0.05);
+}
+
+/* ========== 팝업 오버레이 ========== */
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(20, 27, 52, 0.2);
+  backdrop-filter: blur(4px);
+  z-index: 99;
+  display: none; /* 기본적으로 숨김 */
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.popup-overlay.show {
+  display: block;
+  opacity: 1;
+}
 
 /* ========== [추가] 컨텍스트 메뉴 ========== */
 
 .context-menu {
-  display: none; /* 기본적으로 숨김 */
-  position: absolute; /* JS에서 좌표를 설정할 수 있도록 */
+  position: fixed; /* 문서 흐름에서 분리 -> 여백 발생 안 함 */
   z-index: 101; /* 팝업 오버레이(99), 팝업(100)보다 위에 표시 */
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
   border-radius: 8px;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 1);
   border: solid 1px rgba(20, 27, 52, 0.1);
-  padding: 8px;
+  padding: 4px;
   box-sizing: border-box;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms cubic-bezier(.2,.9,.2,1);
+}
+
+/* 표시할 때 추가되는 클래스 — JS에서 토글 */
+.context-menu.context-menu--visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
 }
 
 .context-menu.show {
@@ -727,11 +898,13 @@
 
 .context-menu button {
   width: 100%;
-  padding: 8px 12px;
+  padding: 6px 8px;
   text-align: left;
   border-radius: 6px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: #141b34;
   background: transparent;
   display: flex;
   align-items: center;
@@ -740,8 +913,8 @@
 }
 
 .context-menu button svg {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   stroke-width: 2;
   stroke: currentColor;
   fill: none;
@@ -757,4 +930,59 @@
 
 .context-menu button.delete:hover {
   background: rgba(20, 27, 52, 0.03);
+}
+
+.context-menu .context-line {
+  width: 100%;
+  height: 1px;
+  background: rgba(20, 27, 52, 0.05);
+  margin: 2px 0px;
+}
+
+/* ===================================================================
+   네이티브 드래그 앤 드롭 스타일
+   =================================================================== */
+
+/* 1. 드래그 대상 (.child) */
+.child {
+  cursor: grab;
+}
+
+/* 2. 드래그 중인 원본 아이템 (.child.dragging) */
+.child.dragging {
+  opacity: 0.4 !important;
+  background: #f0f0f0 !important;
+  cursor: grabbing !important;
+}
+
+/* 3. 드롭 위치 표시자 (파란색 선) */
+.drop-indicator {
+  height: 2px !important;
+  border-radius: 2px;
+  background: rgba(0, 122, 255, 0.2) !important; /* 파란색 */
+  margin-top: 4px;
+  margin-bottom: 4px;
+  margin-left: 8px;
+  margin-right: 8px;
+  pointer-events: none;
+  z-index: 9999;
+opacity: 1;
+  transition: height 0.1s ease-out, 
+              margin-top 0.1s ease-out, 
+              margin-bottom 0.1s ease-out,
+              opacity 0.1s ease-out;
+  overflow: hidden; /* 높이 변경 시 내용물이 보이지 않게 */
+}
+
+.drop-indicator.drop-indicator-enter {
+  height: 1px !important;
+  background: transparent;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  opacity: 0;
+}
+
+/* .child.dragging.show-tooltip 클래스가 적용되면 툴팁 표시 */
+.child.dragging.show-tooltip .drag-tooltip {
+  display: block;
 }

@@ -1,8 +1,6 @@
-// preload.js
-
+// ✅ preload.js (정상 통합 버전)
 const { contextBridge, ipcRenderer } = require("electron");
 
-// ✅ contextBridge를 통해 안전하게 API를 노출할 채널 목록
 const validSendChannels = [
   "window-minimize",
   "window-maximize",
@@ -10,24 +8,32 @@ const validSendChannels = [
 ];
 const validReceiveChannels = ["window-maximized", "window-unmaximized"];
 
-contextBridge.exposeInMainWorld("electronAPI", { // 💡 API 이름을 명확하게 변경 (예: electronAPI)
-  // Renderer -> Main (메시지 보내기)
+contextBridge.exposeInMainWorld("electronAPI", {
+  // -----------------------------
+  // 💬 창 제어 관련 (기존 기능)
+  // -----------------------------
   send: (channel, data) => {
-    // 💡 허용된 채널인지 확인하여 보안 강화
     if (validSendChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
   },
-  // Main -> Renderer (메시지 받기)
+
   on: (channel, func) => {
-    // 💡 허용된 채널인지 확인하여 보안 강화
     if (validReceiveChannels.includes(channel)) {
-      // 렌더러에서 이벤트 리스너를 제거할 수 있도록 원래 함수를 반환해주는 것이 좋습니다.
       const subscription = (event, ...args) => func(...args);
       ipcRenderer.on(channel, subscription);
       return () => {
         ipcRenderer.removeListener(channel, subscription);
       };
     }
+  },
+
+  // -----------------------------
+  // 🧭 OS 컨텍스트 메뉴 관련 (추가 기능)
+  // -----------------------------
+  showContextMenu: (payload) => ipcRenderer.send("show-context-menu", payload),
+
+  onContextAction: (callback) => {
+    ipcRenderer.on("context-action", (event, action) => callback(action));
   },
 });

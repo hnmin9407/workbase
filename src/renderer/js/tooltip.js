@@ -1,3 +1,5 @@
+// tooltip.js
+
 function initTooltip() {
   document.querySelectorAll('[data-tooltip]').forEach(el => {
     if (el.dataset.tooltipBound) return;

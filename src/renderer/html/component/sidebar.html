@@ -1,4 +1,4 @@
-  <!-- 사이드바 상단 -->
+  <!-- sidebar.html -->
 
   <div class="top">
     <div class="header">
@@ -17,7 +17,7 @@
 
     <!-- 전체 보관함 메뉴 -->
     <div class="menu">
-      <div class="wrap">
+      <div class="wrap" style="padding: 0 4px;">
         <a href="index.html">
           <div class="item" data-tooltip="전체 보관함" data-direction="right">
             <div class="left">
@@ -71,54 +71,15 @@
 
     <!-- 그룹 메뉴 -->
 
-    <div class="menu">
-      <div class="wrap">
-        <div class="group" data-tooltip="기본 그룹" data-direction="right">
-          <div class="left">
-            <svg class="icon-group delayed-icon-fold">
-              <use href="../../assets/icons/icons.svg#icon-folder-open"></use>
-            </svg>
-            <span>기본 그룹</span>
-          </div>
-          <div class="right">
-            <button class="sidebar_function delayed-icon add-project-btn">
-              <svg class="icon-item">
-                <use href="../../assets/icons/icons.svg#icon-add-project"></use>
-              </svg>
-            </button>
-            <button class="sidebar_function delayed-icon group-toggle-btn">
-              <svg class="icon-item">
-                <use href="../../assets/icons/icons.svg#icon-down"></use>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div class="child-wrap">
-          <div
-            class="child"
-            data-tooltip="기본 프로젝트"
-            data-direction="right"
-          >
-            <div class="left">
-              <div class="status delayed-icon-fold">
-                <div class="dot"></div>
-              </div>
-              <span>기본 프로젝트</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    <div class="group-list-container"></div>
 
   <!-- 사이드바 하단 -->
 
   <div class="bottom">
     <button class="add-group-button" id="add-group">
-      <svg class="icon-group">
+      <svg class="icon-group delayed-icon">
         <use href="../../assets/icons/icons.svg#icon-add-group"></use>
       </svg>
-      <span>그룹 추가</span>
+      <span class="delayed-icon">그룹 추가</span>
     </button>
   </div>
