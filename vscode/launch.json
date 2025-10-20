@@ -1,0 +1,17 @@
+// .vscode/launch.json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run NPM Start",
+      "runtimeExecutable": "npm", // npm을 실행
+      "runtimeArgs": [
+        "run", // 'run'
+        "start" // 'start' 스크립트 (또는 nodemon을 쓴다면 "watch")
+      ],
+      "console": "integratedTerminal"
+    }
+  ]
+}

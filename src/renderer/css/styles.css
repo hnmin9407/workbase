@@ -26,7 +26,7 @@ body.dragging-active .child {
 }
 
 .child .left * {
-  pointer-events: none; 
+  pointer-events: none;
 }
 
 /* 드래그 중 비정상 스크롤 숨기기 */
@@ -44,7 +44,7 @@ a {
 }
 
 button {
-  background: #ffffff;
+  background: transparent;
   border: none;
   cursor: pointer;
   outline: none;
@@ -66,7 +66,6 @@ html {
 body {
   font-family: "pretendard";
   letter-spacing: -0.2px;
-  background-color: #fafafa;
   padding: 0;
   margin: 0;
 }
@@ -76,8 +75,8 @@ body {
 }
 
 .icon-fold {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   color: #141b34;
   fill: none;
   stroke-width: 1.6;
@@ -112,9 +111,10 @@ body {
   flex-direction: column;
   width: 240px;
   height: 100vh;
-  background: #ffffff;
-  border-right: solid 1px rgba(20, 27, 52, 0.05);
+  background: #f5f5f5;
+  border-right: solid 1px #ededed;
   transition: width 0.3s ease;
+  z-index: 998;
 }
 
 .sidebar .top {
@@ -150,6 +150,7 @@ body {
 .sidebar:hover .group-list-container::-webkit-scrollbar-thumb:hover {
   background: rgba(20, 27, 52, 0.13);
 }
+
 /* 사이드바 헤더 */
 
 .sidebar .top .header {
@@ -165,7 +166,7 @@ body {
   align-items: center;
   gap: 8px;
   font-family: "montserrat";
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.2px;
   color: #141b34;
@@ -418,8 +419,9 @@ body {
   height: 40px;
   border-radius: 8px;
   cursor: pointer;
-  border: solid 1px rgba(20, 27, 52, 0.4);
-  color: #141b34;
+  background: #141b34;
+  border: solid 1px rgba(20, 27, 52, 1);
+  color: #fff;
   font-family: "pretendard";
   font-size: 14px;
   font-weight: 600;
@@ -440,7 +442,7 @@ body {
   width: 16px;
   height: 16px;
   margin-right: 8px;
-  color: #141b34;
+  color: #fff;
 }
 
 /* 사이드바 구분선 */
@@ -573,6 +575,30 @@ body {
 }
 
 @media screen and (max-width: 768px) {
+  .content .todo {
+    margin: 0;
+    padding: 0;
+  }
+
+  .content .todo .header {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .content .todo .todo-wrap {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .content .todo .header {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .content .todo .bottom {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
 }
 
 /* ========== 콘텐츠 & 드래그 영역 ========== */
@@ -628,36 +654,6 @@ body {
   filter: brightness(0) invert(1);
 }
 
-/* 투두 */
-
-.todo {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 0px 64px;
-}
-.todo .header {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.todo .header .date {
-  font-family: "pretendard";
-  font-size: 15px;
-  font-weight: 400;
-  letter-spacing: -0.2px;
-  color: #1c85eb;
-}
-
-.todo .header .title {
-  font-family: "pretendard";
-  font-size: 28px;
-  font-weight: 600;
-  letter-spacing: -0.2px;
-  color: #141b34;
-}
-
 /* 팝업 */
 
 .popup {
@@ -669,13 +665,12 @@ body {
   display: none; /* 기본적으로 숨김 */
   opacity: 0;
   transition: opacity 0.2s ease, transform 0.2s ease;
-  display: flex;
   flex-direction: column;
   min-width: 360px;
   padding: 32px;
   gap: 24px;
   background: rgba(255, 255, 255, 0.9);
-  border: solid 1px #FFFFFF;
+  border: solid 1px #ffffff;
   border-radius: 16px;
   box-sizing: border-box;
   filter: drop-shadow(0px 0px 10px rgba(20, 27, 52, 0.03));
@@ -871,7 +866,7 @@ body {
 
 .context-menu {
   position: fixed; /* 문서 흐름에서 분리 -> 여백 발생 안 함 */
-  z-index: 101; /* 팝업 오버레이(99), 팝업(100)보다 위에 표시 */
+  z-index: 999; /* 팝업 오버레이(99), 팝업(100)보다 위에 표시 */
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(10px);
   border-radius: 8px;
@@ -882,7 +877,7 @@ body {
   opacity: 0;
   transform: translateY(-6px) scale(0.98);
   pointer-events: none;
-  transition: opacity 160ms ease, transform 160ms cubic-bezier(.2,.9,.2,1);
+  transition: opacity 160ms ease, transform 160ms cubic-bezier(0.2, 0.9, 0.2, 1);
 }
 
 /* 표시할 때 추가되는 클래스 — JS에서 토글 */
@@ -966,11 +961,9 @@ body {
   margin-right: 8px;
   pointer-events: none;
   z-index: 9999;
-opacity: 1;
-  transition: height 0.1s ease-out, 
-              margin-top 0.1s ease-out, 
-              margin-bottom 0.1s ease-out,
-              opacity 0.1s ease-out;
+  opacity: 1;
+  transition: height 0.1s ease-out, margin-top 0.1s ease-out,
+    margin-bottom 0.1s ease-out, opacity 0.1s ease-out;
   overflow: hidden; /* 높이 변경 시 내용물이 보이지 않게 */
 }
 
@@ -985,4 +978,338 @@ opacity: 1;
 /* .child.dragging.show-tooltip 클래스가 적용되면 툴팁 표시 */
 .child.dragging.show-tooltip .drag-tooltip {
   display: block;
+}
+
+/* ===================================================================
+   투두
+   =================================================================== */
+
+.todo {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 64px);
+}
+.todo .header {
+  position: fixed;
+  top: 36px;
+  left: 240px;
+  width: calc(100% - 240px);
+  background: rgba(255, 255, 255, 0.8);
+  border-bottom: solid 1px #ededed;
+  backdrop-filter: blur(4px);
+  display: flex;
+  padding: 36px 64px 16px 64px;
+  flex-direction: column;
+  gap: 8px;
+  transition: width 0.3s ease, left 0.3s ease; /* <-- 'left' 트랜지션 추가 */
+  box-sizing: border-box; /* <-- 추가 (패딩 계산 포함) */
+}
+
+/* 사이드바가 접혔을 때의 .todo .header */
+.sidebar-folded .todo .header {
+  left: 64px; /* <-- 접힌 사이드바 너비 */
+  width: calc(100% - 64px); /* <-- 너비 재계산 */
+}
+
+.todo .header .date {
+  font-family: "pretendard";
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: #1c85eb;
+}
+
+.todo .header .title {
+  font-family: "pretendard";
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: #141b34;
+}
+
+.todo .todo-wrap {
+  padding: 0 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 104px;
+  padding-bottom: 140px;
+  flex: 1; /* <-- 추가: 남은 공간을 모두 차지 */
+  min-height: 0; /* <-- 추가: flex-column에서 overflow가 작동하도록 보장 */
+  overflow-y: auto;
+}
+
+.todo .todo-wrap::-webkit-scrollbar {
+  display: none; /* 스크롤바를 숨김 */
+}
+
+.todo .todo-wrap .date-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 24px;
+  border: solid 1px rgba(20, 27, 52, 0.11);
+  border-radius: 50px;
+  width: 80px;
+}
+
+.todo .todo-wrap .todo-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: 0px;
+  box-sizing: border-box;
+  background: #fafafa;
+  border-left: solid 4px rgba(20, 27, 52, 0.1);
+  transition: background 0.1s ease;
+}
+
+.todo .todo-wrap .todo-item .left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.todo .todo-wrap .todo-item .left .name-wrap {
+  display: flex;
+  gap: 12px;
+}
+
+.todo .todo-wrap .todo-item .left .checkbox {
+  width: 15px;
+  height: 15px;
+  border: solid 2px rgba(28, 133, 235, 0.2);
+  border-radius: 50%;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s ease, border-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.todo .todo-wrap .todo-item .left .checkbox:hover {
+  border: solid 2px rgb(13, 191, 33);
+}
+
+.todo .todo-wrap .todo-item .left .text {
+  font-family: "pretendard";
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: #141b34;
+}
+
+.todo .todo-wrap .todo-item .left .badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "pretendard";
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  background: rgba(20, 27, 52, 0.05);
+  width: 48px;
+  height: 20px;
+  margin-left: 4px;
+  border-radius: 50px;
+  color: rgba(20, 27, 52, 0.6);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.todo .todo-wrap .todo-item[data-type="inprogress"] {
+  border-left: solid 4px rgba(28, 133, 235, 1);
+}
+
+.todo .todo-wrap .todo-item[data-type="inprogress"] .left .badge {
+  background: rgba(28, 133, 235, 0.1);
+  color: rgba(28, 133, 235, 1);
+}
+
+.todo .todo-wrap .todo-item[data-type="done"] {
+  border-left: none;
+  padding-left: 20px;
+  background: none;
+}
+
+.todo .todo-wrap .todo-item[data-type="done"] .left .name-wrap .checkbox {
+  border: solid 2px rgb(13, 191, 33);
+  background: rgb(13, 191, 33);
+  box-shadow: inset 0px 0px 0px 3px #ffffff;
+}
+
+.todo .todo-wrap .todo-item[data-type="done"] .left .name-wrap .text {
+  text-decoration-line: line-through;
+  color: rgba(20, 27, 52, 0.4);
+}
+
+.todo .todo-wrap .todo-item[data-type="done"] .left .badge {
+  background: rgba(13, 191, 33, 0.1);
+  color: rgba(13, 191, 33, 1);
+  cursor: default;
+}
+
+.todo .todo-wrap .todo-item[data-status="expired"] {
+  border-left: solid 4px rgb(255, 37, 55);
+  background: rgba(255, 37, 55, 0.1);
+}
+
+.todo .todo-wrap .todo-item[data-status="expired"] .left .name-wrap {
+  color: rgb(255, 37, 55);
+}
+
+.todo .todo-wrap .todo-item[data-status="expired"] .left .date-wrap svg {
+  color: rgb(255, 37, 55);
+}
+
+.todo .todo-wrap .todo-item[data-status="expired"] .left .date-wrap .todo-date {
+  color: rgb(255, 37, 55);
+}
+
+.todo .todo-wrap .todo-item[data-status="expired"] .left .badge {
+  background: rgba(255, 37, 55, 0.1);
+  color: rgba(255, 37, 55, 1);
+}
+
+.todo .todo-wrap .todo-item .left .date-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 32px;
+}
+
+.todo .todo-wrap .todo-item.important .left .date-wrap {
+  margin-left: 16px;
+}
+
+.todo .todo-wrap .todo-item .left .date-wrap svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+  color: rgba(20, 27, 52, 0.4);
+  fill: none;
+}
+
+.todo .todo-wrap .todo-item .left .date-wrap .todo-date {
+  font-family: "pretendard";
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: rgba(20, 27, 52, 0.4);
+  white-space: nowrap;
+}
+
+@media screen and (max-width: 768px) {
+  .todo .todo-wrap .todo-item {
+    flex-direction: column;
+  }
+
+  .todo .todo-wrap .todo-item .left .text {
+    padding-right: 32px;
+  }
+
+  .todo .todo-wrap .todo-item .right {
+    margin-left: auto;
+  }
+}
+
+.todo .todo-wrap .todo-item .right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-left: 32px;
+}
+
+.todo .todo-wrap .todo-item .right button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+}
+
+.todo .todo-wrap .todo-item .right button:hover {
+  background: rgba(20, 27, 52, 0.05);
+}
+
+.todo .todo-wrap .todo-item .right button svg {
+  width: 16px;
+  height: 16px;
+  color: rgba(20, 27, 52, 0.4);
+  fill: none;
+  stroke-width: 2;
+  stroke: currentColor;
+  cursor: pointer;
+  transition: color 0.1s ease;
+}
+
+.todo .todo-wrap .todo-item .right button:hover svg {
+  color: rgba(20, 27, 52, 1);
+}
+
+/* ===================================================
+                      TODO BOTTOM
+=================================================== */
+
+.todo .bottom {
+  position: fixed;
+  bottom: 0;
+  left: 240px;
+  width: calc(100% - 240px);
+  background: rgba(255, 255, 255, 0.8);
+  border-top: solid 1px #ededed;
+  backdrop-filter: blur(4px);
+  display: flex;
+  padding: 16px 64px 28px 64px; /* <-- 패딩값 조절 (상/하) */
+  flex-direction: column;
+  gap: 8px;
+  transition: width 0.3s ease, left 0.3s ease; /* <-- 'left' 트랜지션 추가 */
+  box-sizing: border-box; /* <-- 추가 (패딩 계산 포함) */
+}
+
+/* 사이드바가 접혔을 때의 .todo .bottom */
+.sidebar-folded .todo .bottom {
+  left: 64px; /* <-- 접힌 사이드바 너비 */
+  width: calc(100% - 64px); /* <-- 너비 재계산 */
+}
+
+.todo .bottom .input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-radius: 8px;
+  border: solid 1px rgba(20, 27, 52, 0.1);
+  background: #fafafa;
+  transition: all 0.2s ease-in-out;
+}
+
+.todo .bottom .input-container:hover {
+  background: #ffffff;
+}
+
+.todo .bottom .input-container:focus-within {
+  background: #ffffff;
+  filter: drop-shadow(0px 4px 8px rgba(20, 27, 52, 0.05));
+}
+
+.todo .bottom .input-container .todo-input {
+  width: 100%;
+  padding: 16px 16px;
+  outline: none;
+  border: none;
+  background: transparent;
+  color: #141b34;
+  font-family: "pretendard";
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  box-sizing: border-box;
+}
+
+.todo .bottom .input-container .todo-input::placeholder {
+  color: rgba(20, 27, 52, 0.4);
 }

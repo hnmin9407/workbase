@@ -51,16 +51,353 @@
             <span class="date">2025년 10월 18일 토요일</span>
             <span class="title">전체 보관함</span>
           </div>
-          <div class="input-container">
-            <input
-              type="text"
-              class="todo-input"
-              placeholder="새 할 일 추가..."
-            />
+          <div class="todo-wrap">
+
+            <div class="date-title">오늘</div>
+
+            <div class="todo-item">
+              <div class="left">
+
+                <div class="name-wrap">
+                  <div class="checkbox" data-tooltip="완료" data-direction="left"></div>
+                  <span class="text">영단어 100개 외우기</span>
+                </div>
+
+                <div class="date-wrap">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                  <span class="todo-date">10월 13일 월요일</span>
+                  <div class="badge" data-tooltip="상태 변경" data-direction="right">예정됨</div>
+                </div>
+              </div>
+              <div class="right">
+                <button id="calendar-button" data-tooltip="일정 선택" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                </button>
+                <button id="important-button" data-tooltip="중요" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-star"></use>
+                  </svg></button>
+                <button id="delete-button" data-tooltip="삭제" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-delete"></use>
+                  </svg></button>
+              </div>
+            </div>
+
+            <div class="todo-item" data-type="inprogress">
+              <div class="left">
+
+                <div class="name-wrap">
+                  <div class="checkbox" data-tooltip="완료" data-direction="left"></div>
+                  <span class="text">영단어 100개 외우기  외우기 힘들겠지만 열심히 노력해서 최대한 외우려고 해보기</span>
+                </div>
+
+                <div class="date-wrap">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                  <span class="todo-date">10월 13일 월요일</span>
+                  <div class="badge" data-tooltip="상태 변경" data-direction="right">진행중</div>
+                </div>
+              </div>
+              <div class="right">
+                <button id="calendar-button" data-tooltip="일정 선택" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                </button>
+                <button id="important-button" data-tooltip="중요" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-star"></use>
+                  </svg></button>
+                <button id="delete-button" data-tooltip="삭제" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-delete"></use>
+                  </svg></button>
+              </div>
+            </div>
+            
+            <div class="todo-item" data-type="done">
+              <div class="left">
+
+                <div class="name-wrap">
+                  <div class="checkbox" data-tooltip="완료" data-direction="left"></div>
+                  <span class="text">영단어 100개 외우기  외우기 힘들겠지만 열심히 노력해서 최대한 외우려고 해보기</span>
+                </div>
+
+                <div class="date-wrap">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                  <span class="todo-date">10월 13일 월요일</span>
+                  <div class="badge">완료</div>
+                </div>
+              </div>
+              <div class="right">
+                <button id="calendar-button" data-tooltip="일정 선택" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                </button>
+                <button id="important-button" data-tooltip="중요" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-star"></use>
+                  </svg></button>
+                <button id="delete-button" data-tooltip="삭제" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-delete"></use>
+                  </svg></button>
+              </div>
+            </div>
+
+            <div class="todo-item" data-type="inprogress" data-status="expired">
+              <div class="left">
+
+                <div class="name-wrap">
+                  <div class="checkbox" data-tooltip="완료" data-direction="left"></div>
+                  <span class="text">영단어 100개 외우기  외우기 힘들겠지만 열심히 노력해서 최대한 외우려고 해보기</span>
+                </div>
+
+                <div class="date-wrap">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                  <span class="todo-date">10월 13일 월요일</span>
+                  <div class="badge">진행중</div>
+                </div>
+              </div>
+              <div class="right">
+                <button id="calendar-button" data-tooltip="일정 선택" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                </button>
+                <button id="important-button" data-tooltip="중요" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-star"></use>
+                  </svg></button>
+                <button id="delete-button" data-tooltip="삭제" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-delete"></use>
+                  </svg></button>
+              </div>
+            </div>
+
+            <div class="todo-item">
+              <div class="left">
+
+                <div class="name-wrap">
+                  <div class="checkbox" data-tooltip="완료" data-direction="left"></div>
+                  <span class="text">영단어 100개 외우기</span>
+                </div>
+
+                <div class="date-wrap">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                  <span class="todo-date">10월 13일 월요일</span>
+                  <div class="badge">예정됨</div>
+                </div>
+              </div>
+              <div class="right">
+                <button id="calendar-button" data-tooltip="일정 선택" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                </button>
+                <button id="important-button" data-tooltip="중요" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-star"></use>
+                  </svg></button>
+                <button id="delete-button" data-tooltip="삭제" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-delete"></use>
+                  </svg></button>
+              </div>
+            </div>
+
+            <div class="todo-item">
+              <div class="left">
+
+                <div class="name-wrap">
+                  <div class="checkbox" data-tooltip="완료" data-direction="left"></div>
+                  <span class="text">영단어 100개 외우기</span>
+                </div>
+
+                <div class="date-wrap">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                  <span class="todo-date">10월 13일 월요일</span>
+                  <div class="badge" data-tooltip="상태 변경" data-direction="right">예정됨</div>
+                </div>
+              </div>
+              <div class="right">
+                <button id="calendar-button" data-tooltip="일정 선택" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                </button>
+                <button id="important-button" data-tooltip="중요" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-star"></use>
+                  </svg></button>
+                <button id="delete-button" data-tooltip="삭제" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-delete"></use>
+                  </svg></button>
+              </div>
+            </div>
+
+            <div class="todo-item">
+              <div class="left">
+
+                <div class="name-wrap">
+                  <div class="checkbox" data-tooltip="완료" data-direction="left"></div>
+                  <span class="text">영단어 100개 외우기</span>
+                </div>
+
+                <div class="date-wrap">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                  <span class="todo-date">10월 13일 월요일</span>
+                  <div class="badge">예정됨</div>
+                </div>
+              </div>
+              <div class="right">
+                <button id="calendar-button" data-tooltip="일정 선택" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                </button>
+                <button id="important-button" data-tooltip="중요" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-star"></use>
+                  </svg></button>
+                <button id="delete-button" data-tooltip="삭제" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-delete"></use>
+                  </svg></button>
+              </div>
+            </div>
+
+            <div class="todo-item">
+              <div class="left">
+
+                <div class="name-wrap">
+                  <div class="checkbox" data-tooltip="완료" data-direction="left"></div>
+                  <span class="text">영단어 100개 외우기</span>
+                </div>
+
+                <div class="date-wrap">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                  <span class="todo-date">10월 13일 월요일</span>
+                  <div class="badge">예정됨</div>
+                </div>
+              </div>
+              <div class="right">
+                <button id="calendar-button" data-tooltip="일정 선택" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                </button>
+                <button id="important-button" data-tooltip="중요" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-star"></use>
+                  </svg></button>
+                <button id="delete-button" data-tooltip="삭제" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-delete"></use>
+                  </svg></button>
+              </div>
+            </div>
+
+            <div class="todo-item">
+              <div class="left">
+
+                <div class="name-wrap">
+                  <div class="checkbox" data-tooltip="완료" data-direction="left"></div>
+                  <span class="text">영단어 100개 외우기</span>
+                </div>
+
+                <div class="date-wrap">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                  <span class="todo-date">10월 13일 월요일</span>
+                  <div class="badge">예정됨</div>
+                </div>
+              </div>
+              <div class="right">
+                <button id="calendar-button" data-tooltip="일정 선택" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                </button>
+                <button id="important-button" data-tooltip="중요" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-star"></use>
+                  </svg></button>
+                <button id="delete-button" data-tooltip="삭제" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-delete"></use>
+                  </svg></button>
+              </div>
+            </div>
+
+            <div class="todo-item">
+              <div class="left">
+
+                <div class="name-wrap">
+                  <div class="checkbox" data-tooltip="완료" data-direction="left"></div>
+                  <span class="text">영단어 100개 외우기</span>
+                </div>
+
+                <div class="date-wrap">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                  <span class="todo-date">10월 13일 월요일</span>
+                  <div class="badge">예정됨</div>
+                </div>
+              </div>
+              <div class="right">
+                <button id="calendar-button" data-tooltip="일정 선택" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-today"></use>
+                  </svg>
+                </button>
+                <button id="important-button" data-tooltip="중요" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-star"></use>
+                  </svg></button>
+                <button id="delete-button" data-tooltip="삭제" data-direction="top">
+                  <svg>
+                    <use href="../../assets/icons/icons.svg#icon-delete"></use>
+                  </svg></button>
+              </div>
+            </div>
+
+
+          </div>
+          <div class="bottom">
+            <div class="input-container">
+              <input
+                type="text"
+                class="todo-input"
+                placeholder="할 일을 입력해 주세요"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
     <!-- 팝업 -->
     <div class="popup" id="group-add-popup">

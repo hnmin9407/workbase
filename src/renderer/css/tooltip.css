@@ -3,7 +3,7 @@
 .tooltip {
   position: fixed;
   background: #141b34;
-  color: #FFFFFF;
+  color: #ffffff;
   padding: 6px 12px;
   border-radius: 50px;
   font-size: 13px;
@@ -32,8 +32,14 @@
   transform: translate(0, 10px);
 }
 
-/* 표시될 때 */
-.main.sidebar-folded ~ .tooltip.show {
+/* 1. 사이드바 툴팁: 모바일(sidebar-folded)에서만 표시 */
+.main.sidebar-folded ~ .tooltip.show:not(.tooltip-content) {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* 2. Content 툴팁: PC + 모바일 항상 표시 */
+.tooltip.tooltip-content.show {
   opacity: 1;
   transform: translate(0, 0);
 }

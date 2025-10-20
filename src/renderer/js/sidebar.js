@@ -31,10 +31,7 @@ function moveMenuToBody(menuEl) {
 /**
  * Adjusts the height of a .child-wrap element.
  */
-function refreshWrapHeight(
-  wrap,
-  { animate = true, itemToIgnore = null } = {}
-) {
+function refreshWrapHeight(wrap, { animate = true, itemToIgnore = null } = {}) {
   if (!wrap) return;
 
   // Clear previous transitionend handler
@@ -48,7 +45,7 @@ function refreshWrapHeight(
     wrap._refreshWrap_onEnd = null;
   }
 
-const prevTransition = wrap.style.transition;
+  const prevTransition = wrap.style.transition;
   const targetTransition = "height 0.18s ease, margin-bottom 0.18s ease";
 
   wrap.style.transition = "none";
@@ -57,10 +54,7 @@ const prevTransition = wrap.style.transition;
 
   const ghostClassNames = ["dragging", "drop-indicator"];
 
-  if (
-    itemToIgnore instanceof Element &&
-    wrap.contains(itemToIgnore)
-  ) {
+  if (itemToIgnore instanceof Element && wrap.contains(itemToIgnore)) {
     try {
       fullHeight -= itemToIgnore.offsetHeight;
     } catch (err) {}
@@ -209,7 +203,6 @@ function createProjectElement(projectName) {
     projectDiv.classList.remove("show-tooltip-hover");
   });
 
-
   return projectDiv;
 }
 
@@ -304,7 +297,7 @@ function createGroupElement(groupName) {
 
   const childWrap = newMenuContainer.querySelector(".child-wrap");
   // ✅ 수정: groupHeader를 querySelector로 찾습니다.
-  const groupHeader = newMenuContainer.querySelector(".group"); 
+  const groupHeader = newMenuContainer.querySelector(".group");
 
   // .child-wrap 리스너 (기존과 동일)
   if (childWrap) {
@@ -316,7 +309,7 @@ function createGroupElement(groupName) {
 
   // .group 헤더 리스너 (이제 groupHeader 변수가 유효합니다)
   if (groupHeader) {
-      groupHeader.addEventListener("dragover", handleGroupDragOver_Cursor); 
+    groupHeader.addEventListener("dragover", handleGroupDragOver_Cursor);
   }
 
   return newMenuContainer;
@@ -339,7 +332,7 @@ function handleChildDragStart(e) {
     e.dataTransfer.setDragImage(dragState.invisibleImage, 0, 0);
   }
 
-  dragState.placeholder?.remove(); 
+  dragState.placeholder?.remove();
   dragState.placeholder = document.createElement("div");
   dragState.placeholder.className = "drop-indicator";
 
@@ -362,12 +355,12 @@ function handleChildDragEnd(e) {
 
   dragState.draggedEl?.classList.remove("dragging");
 
-  dragState.placeholder?.remove(); 
+  dragState.placeholder?.remove();
   dragState.placeholder = null;
 
   dragState.draggedEl = null;
   dragState.dragSourceWrap = null;
-  dragState.dropSucceeded = false; 
+  dragState.dropSucceeded = false;
 }
 
 /**
@@ -384,7 +377,7 @@ function handleWrapDragEnter(e) {
  * [D&D] Dragging over a .child-wrap (Blue Line Logic)
  */
 function handleWrapDragOver(e) {
-  e.preventDefault(); 
+  e.preventDefault();
   e.stopPropagation();
   e.dataTransfer.dropEffect = "move";
 
@@ -392,28 +385,29 @@ function handleWrapDragOver(e) {
   const afterElement = getDragAfterElement(container, e.clientY);
 
   // ✅ Placeholder가 아직 DOM에 없거나 위치가 바뀌어야 할 때만 처리
-  const needsInsert = !dragState.placeholder.parentNode || 
-                     (afterElement && dragState.placeholder.nextSibling !== afterElement) || 
-                     (!afterElement && container.lastChild !== dragState.placeholder);
+  const needsInsert =
+    !dragState.placeholder.parentNode ||
+    (afterElement && dragState.placeholder.nextSibling !== afterElement) ||
+    (!afterElement && container.lastChild !== dragState.placeholder);
 
   if (needsInsert) {
     // 삽입 위치 결정
     if (afterElement == null) {
-        container.appendChild(dragState.placeholder);
+      container.appendChild(dragState.placeholder);
     } else {
-        container.insertBefore(dragState.placeholder, afterElement);
+      container.insertBefore(dragState.placeholder, afterElement);
     }
 
     // ✅ 애니메이션 적용: 초기 상태 -> 최종 상태
     // 1. 초기 상태 클래스 추가 (height 0, opacity 0)
     dragState.placeholder.classList.add("drop-indicator-enter");
-    
+
     // 2. 브라우저가 초기 상태를 렌더링할 시간을 줌 (reflow 강제)
-    void dragState.placeholder.offsetHeight; 
+    void dragState.placeholder.offsetHeight;
 
     // 3. 다음 프레임에서 초기 상태 클래스 제거 -> transition 발동
     requestAnimationFrame(() => {
-        dragState.placeholder.classList.remove("drop-indicator-enter");
+      dragState.placeholder.classList.remove("drop-indicator-enter");
     });
   }
 }
@@ -423,27 +417,28 @@ function handleWrapDragOver(e) {
  */
 function handleWrapDragLeave(e) {
   e.stopPropagation();
-  
+
   const toWrap = e.currentTarget;
 
   if (e.relatedTarget && toWrap.contains(e.relatedTarget)) {
-      return; // 깜빡임 방지
+    return; // 깜빡임 방지
   }
 
   // "진짜로" 벗어났을 때 '파란색 선' 제거 애니메이션 시작
   if (dragState.placeholder && dragState.placeholder.parentNode === toWrap) {
     // ✅ 제거 전 애니메이션 적용: 최종 상태 -> 초기 상태
     dragState.placeholder.classList.add("drop-indicator-enter");
-    
+
     // ✅ 애니메이션(0.15초) 후 실제 DOM 제거
     setTimeout(() => {
-        // 타이머 실행 시점에도 여전히 제거해야 하는지 확인
-        if (dragState.placeholder && 
-            dragState.placeholder.parentNode === toWrap && 
-            dragState.placeholder.classList.contains('drop-indicator-enter')) 
-        {
-            dragState.placeholder.remove();
-        }
+      // 타이머 실행 시점에도 여전히 제거해야 하는지 확인
+      if (
+        dragState.placeholder &&
+        dragState.placeholder.parentNode === toWrap &&
+        dragState.placeholder.classList.contains("drop-indicator-enter")
+      ) {
+        dragState.placeholder.remove();
+      }
     }, 150); // CSS transition 시간과 일치
   }
 }
@@ -475,7 +470,7 @@ function handleWrapDrop(e) {
     refreshWrapHeight(toWrap, { animate: true });
   } else {
     setTimeout(() => {
-        refreshWrapHeight(toWrap, { animate: true }); 
+      refreshWrapHeight(toWrap, { animate: true });
     }, 0);
   }
 }
@@ -492,7 +487,7 @@ function getDragAfterElement(container, y) {
     (closest, child) => {
       const box = child.getBoundingClientRect();
       const offset = y - box.top - box.height / 2; // Find center
-      
+
       if (offset < 0 && offset > closest.offset) {
         return { offset: offset, element: child };
       } else {
@@ -502,7 +497,6 @@ function getDragAfterElement(container, y) {
     { offset: Number.NEGATIVE_INFINITY }
   ).element;
 }
-
 
 /**
  * Removes static groups and adds a default dynamic one.
@@ -522,7 +516,7 @@ function replaceStaticGroupsWithJS(groupListContainer, topContainer) {
   }
 
   // Create default group
-const defaultMenu = createGroupElement("기본 그룹");
+  const defaultMenu = createGroupElement("기본 그룹");
   const defaultChildWrap = defaultMenu.querySelector(".child-wrap");
   const defaultProject = createProjectElement("기본 프로젝트");
 
@@ -531,7 +525,7 @@ const defaultMenu = createGroupElement("기본 그룹");
 
   if (defaultChildWrap) {
     // ✅ 초기 상태를 auto로 설정하여 자연스러운 높이를 갖도록 함
-    defaultChildWrap.style.height = "auto"; 
+    defaultChildWrap.style.height = "auto";
     defaultChildWrap.style.transition = "none"; // 초기에는 애니메이션 없앰
     defaultChildWrap.style.marginBottom = "8px"; // 기본 마진
   }
@@ -546,7 +540,7 @@ function handleGroupDragOver_Cursor(e) {
   if (dragState.draggedEl) {
     e.preventDefault(); // Prevent the default 'not allowed' behavior
     // Signal that a 'move' operation is visually allowed here
-    e.dataTransfer.dropEffect = "move"; 
+    e.dataTransfer.dropEffect = "move";
   }
 }
 
@@ -587,7 +581,6 @@ function closePopups(popupOverlay) {
     const input = p.querySelector("input");
     if (input) input.value = "";
   });
-  activeElementState.projectElement = null;
 }
 
 /**
@@ -602,25 +595,52 @@ function closeContextMenuAll(projectContextMenu, groupContextMenu) {
     groupContextMenu.classList.remove("context-menu--visible");
     groupContextMenu.setAttribute("aria-hidden", "true");
   }
-  activeElementState.projectElement = null;
-  activeElementState.groupMenuElement = null;
+}
+
+/**
+ * Shows and positions an HTML context menu, ensuring it stays within the viewport.
+ */
+function showContextMenu(menuElement, x, y) {
+  if (!menuElement) return;
+
+  // Get menu dimensions
+  // Note: opacity 0, transform 0 is NOT display:none, so offsetWidth is available.
+  const menuWidth = menuElement.offsetWidth;
+  const menuHeight = menuElement.offsetHeight;
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+
+  // Adjust coordinates if menu would go off-screen
+  if (x + menuWidth > windowWidth) {
+    x = windowWidth - menuWidth - 5; // 5px buffer
+  }
+  if (y + menuHeight > windowHeight) {
+    y = windowHeight - menuHeight - 5; // 5px buffer
+  }
+
+  // Position the menu
+  menuElement.style.left = `${x}px`;
+  menuElement.style.top = `${y}px`;
+
+  // Show the menu by adding the CSS class
+  menuElement.classList.add("context-menu--visible");
+  menuElement.setAttribute("aria-hidden", "false");
 }
 
 /**
  * Main click handler for the sidebar.
  */
 function handleSidebarClick(event, elements) {
-  const {
-    mainContainer,
-    groupAddPopup,
-    projectAddPopup,
-    popupOverlay,
-  } = elements;
+  const { mainContainer, groupAddPopup, projectAddPopup, popupOverlay } =
+    elements;
   const target = event.target;
   const groupWrap = target.closest(".wrap");
 
   if (target.closest("#sidebar-fold-button")) {
-    handleSidebarFold(mainContainer, !mainContainer.classList.contains("sidebar-folded"));
+    handleSidebarFold(
+      mainContainer,
+      !mainContainer.classList.contains("sidebar-folded")
+    );
   } else if (target.closest("#add-group")) {
     openPopup(groupAddPopup, popupOverlay);
   } else if (target.closest(".group-toggle-btn") && groupWrap) {
@@ -647,18 +667,31 @@ function handleSidebarContextMenu(event, elements) {
     return;
   }
 
-  const { projectRenamePopup, groupRenamePopup } = elements;
+  // [수정] 필요한 메뉴 DOM 요소를 elements에서 가져옵니다.
+  const {
+    projectContextMenu,
+    groupContextMenu,
+    projectRenamePopup,
+    groupRenamePopup,
+  } = elements;
+
   const targetProject = event.target.closest(".child");
   const targetGroup = event.target.closest(".group");
   const x = event.clientX ?? event.x;
   const y = event.clientY ?? event.y;
+
+  // [수정] 새 메뉴를 띄우기 전에 기존 메뉴를 모두 닫습니다.
+  closeContextMenuAll(projectContextMenu, groupContextMenu);
 
   if (targetProject) {
     activeElementState.projectElement = targetProject;
     const span = targetProject.querySelector("span");
     const pi = projectRenamePopup?.querySelector("input");
     if (pi) pi.value = span?.textContent || "";
-    window.electronAPI?.showContextMenu({ type: "project", x, y });
+
+    // [수정] 네이티브 메뉴 호출 대신 HTML 메뉴 표시
+    // window.electronAPI?.showContextMenu({ type: "project", x, y });
+    showContextMenu(projectContextMenu, x, y); // <-- 이 코드로 변경
     return;
   }
 
@@ -667,7 +700,10 @@ function handleSidebarContextMenu(event, elements) {
     const nameSpan = targetGroup.querySelector(".group-name");
     const gi = groupRenamePopup?.querySelector("input");
     if (gi) gi.value = nameSpan?.textContent || "";
-    window.electronAPI?.showContextMenu({ type: "group", x, y });
+
+    // [수정] 네이티브 메뉴 호출 대신 HTML 메뉴 표시
+    // window.electronAPI?.showContextMenu({ type: "group", x, y });
+    showContextMenu(groupContextMenu, x, y); // <-- 이 코드로 변경
   }
 }
 
@@ -696,6 +732,9 @@ function initPopupHandlers(elements) {
   const closeAll = () => {
     closePopups(popupOverlay);
     closeContextMenuAll(elements.projectContextMenu, elements.groupContextMenu);
+
+    activeElementState.projectElement = null;
+    activeElementState.groupMenuElement = null;
   };
 
   popupOverlay?.addEventListener("click", (e) => {
@@ -734,12 +773,15 @@ function initPopupHandlers(elements) {
     if (!activeElementState.projectGroupWrap) return;
     const input = projectAddPopup.querySelector("input");
     let projectName = input.value.trim() || "기본 프로젝트";
-    const childWrap = activeElementState.projectGroupWrap.querySelector(".child-wrap");
+    const childWrap =
+      activeElementState.projectGroupWrap.querySelector(".child-wrap");
     if (!childWrap) return;
 
     childWrap.appendChild(createProjectElement(projectName)); // Binds D&D
 
-    if (activeElementState.projectGroupWrap.classList.contains("group-collapsed")) {
+    if (
+      activeElementState.projectGroupWrap.classList.contains("group-collapsed")
+    ) {
       toggleGroup(activeElementState.projectGroupWrap);
     } else {
       refreshWrapHeight(childWrap, { animate: true });
@@ -758,15 +800,18 @@ function initPopupHandlers(elements) {
     const input = projectRenamePopup.querySelector("input");
     const newName = input.value.trim();
     if (!newName) return;
-    activeElementState.projectElement.querySelector("span").textContent = newName;
+    activeElementState.projectElement.querySelector("span").textContent =
+      newName;
     activeElementState.projectElement.dataset.tooltip = newName;
     if (typeof initTooltip === "function") initTooltip();
     closeAll();
   };
   renameProjectConfirmBtn?.addEventListener("click", renameProject);
-  projectRenamePopup?.querySelector("input")?.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") renameProject();
-  });
+  projectRenamePopup
+    ?.querySelector("input")
+    ?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") renameProject();
+    });
 
   // Rename Group
   const renameGroup = () => {
@@ -776,7 +821,8 @@ function initPopupHandlers(elements) {
     }
     const input = groupRenamePopup?.querySelector("input");
     const newName = input.value.trim() || "Default Group";
-    const groupHeader = activeElementState.groupMenuElement.querySelector(".group");
+    const groupHeader =
+      activeElementState.groupMenuElement.querySelector(".group");
     if (groupHeader) {
       groupHeader.querySelector(".group-name").textContent = newName;
       groupHeader.dataset.tooltip = newName;
@@ -797,24 +843,26 @@ function initPopupHandlers(elements) {
       closeAll();
       return;
     }
-    
+
     // [Native D&D] No Sortable instance to destroy
-    
+
     // [Native D&D] Remove D&D listeners from the child-wrap
-    const childWrap = activeElementState.groupMenuElement.querySelector(".child-wrap");
+    const childWrap =
+      activeElementState.groupMenuElement.querySelector(".child-wrap");
     if (childWrap) {
-        childWrap.removeEventListener("dragenter", handleWrapDragEnter);
-        childWrap.removeEventListener("dragover", handleWrapDragOver);
-        childWrap.removeEventListener("dragleave", handleWrapDragLeave);
-        childWrap.removeEventListener("drop", handleWrapDrop);
+      childWrap.removeEventListener("dragenter", handleWrapDragEnter);
+      childWrap.removeEventListener("dragover", handleWrapDragOver);
+      childWrap.removeEventListener("dragleave", handleWrapDragLeave);
+      childWrap.removeEventListener("drop", handleWrapDrop);
     }
 
-// [추가] .group 헤더의 dragover 리스너 제거
-    const groupHeader = activeElementState.groupMenuElement.querySelector(".group");
+    // [추가] .group 헤더의 dragover 리스너 제거
+    const groupHeader =
+      activeElementState.groupMenuElement.querySelector(".group");
     if (groupHeader) {
-        groupHeader.removeEventListener("dragover", handleGroupDragOver_Cursor);
+      groupHeader.removeEventListener("dragover", handleGroupDragOver_Cursor);
     }
-    
+
     activeElementState.groupMenuElement.remove();
     closeAll();
     activeElementState.groupMenuElement = null;
@@ -827,11 +875,17 @@ function initPopupHandlers(elements) {
       return;
     }
     const childWrap = activeElementState.projectElement.parentElement;
-    
+
     // [Native D&D] Remove D&D listeners from the child
-    activeElementState.projectElement.removeEventListener("dragstart", handleChildDragStart);
-    activeElementState.projectElement.removeEventListener("dragend", handleChildDragEnd);
-    
+    activeElementState.projectElement.removeEventListener(
+      "dragstart",
+      handleChildDragStart
+    );
+    activeElementState.projectElement.removeEventListener(
+      "dragend",
+      handleChildDragEnd
+    );
+
     activeElementState.projectElement.remove();
     refreshWrapHeight(childWrap, { animate: true });
     closeAll();
@@ -867,7 +921,10 @@ function initContextMenuHandlers(elements) {
     const idx = groupMenus.indexOf(activeElementState.groupMenuElement);
     if (idx > 0) {
       const target = groupMenus[idx - 1];
-      target.parentNode.insertBefore(activeElementState.groupMenuElement, target);
+      target.parentNode.insertBefore(
+        activeElementState.groupMenuElement,
+        target
+      );
     }
     closeAllContext();
   });
@@ -879,7 +936,10 @@ function initContextMenuHandlers(elements) {
     const idx = groupMenus.indexOf(activeElementState.groupMenuElement);
     if (idx !== -1 && idx < groupMenus.length - 1) {
       const next = groupMenus[idx + 1];
-      groupListContainer.insertBefore(activeElementState.groupMenuElement, next.nextElementSibling);
+      groupListContainer.insertBefore(
+        activeElementState.groupMenuElement,
+        next.nextElementSibling
+      );
     }
     closeAllContext();
   });
@@ -964,6 +1024,9 @@ function initGlobalListeners(elements) {
     if (e.key === "Escape") {
       closeContextMenuAll(projectContextMenu, groupContextMenu);
       closePopups(popupOverlay);
+
+      activeElementState.projectElement = null;
+      activeElementState.groupMenuElement = null;
     }
   });
 
@@ -971,9 +1034,9 @@ function initGlobalListeners(elements) {
   if (window.electronAPI?.onContextAction) {
     window.electronAPI.onContextAction((action) => {
       const { groupMenuElement, projectElement } = activeElementState;
-      
+
       // [수정] 팝업을 띄우는 액션은 상태를 초기화하지 않도록 'resetState' 변수 추가
-      let resetStateAfterAction = true; 
+      let resetStateAfterAction = true;
 
       switch (action) {
         case "rename-group":
@@ -1024,7 +1087,7 @@ function initGlobalListeners(elements) {
           }
           break;
       }
-      
+
       // [수정] resetStateAfterAction이 true일 때만 상태 초기화
       if (resetStateAfterAction) {
         activeElementState.projectElement = null;
@@ -1081,14 +1144,23 @@ function initSidebar() {
 
   // --- 2. Validation ---
   const essentialElements = [
-    "mainContainer", "sidebarComponent", "popupOverlay",
-    "groupAddPopup", "projectAddPopup", "projectRenamePopup",
-    "groupDeletePopup", "projectDeletePopup", "topContainer", "groupListContainer",
+    "mainContainer",
+    "sidebarComponent",
+    "popupOverlay",
+    "groupAddPopup",
+    "projectAddPopup",
+    "projectRenamePopup",
+    "groupDeletePopup",
+    "projectDeletePopup",
+    "topContainer",
+    "groupListContainer",
   ];
 
   for (const key of essentialElements) {
     if (!elements[key]) {
-      console.error(`Essential UI element "${key}" not found. Stopping script.`);
+      console.error(
+        `Essential UI element "${key}" not found. Stopping script.`
+      );
       return;
     }
   }
@@ -1097,20 +1169,20 @@ function initSidebar() {
   elements.groupContextMenu = moveMenuToBody(elements.groupContextMenu);
   elements.projectContextMenu = moveMenuToBody(elements.projectContextMenu);
 
-// [수정] 
+  // [수정]
   // '파란색 선'을 여기서 생성하지 않고, null로 초기화합니다.
   // 드래그 시작 시 매번 새로 생성하도록 변경합니다.
   dragState.placeholder = null;
 
-  // [수정] 
+  // [수정]
   // 1x1 픽셀짜리 투명한 이미지를 미리 생성하여 DOM에 추가하고 저장합니다.
   const invisibleDragImage = document.createElement("div");
   invisibleDragImage.style.width = "1px";
   invisibleDragImage.style.height = "1px";
   invisibleDragImage.style.opacity = "0";
   invisibleDragImage.style.position = "fixed"; // DOM 흐름에 영향 X
-  invisibleDragImage.style.top = "-10px";      // 화면 밖
-  invisibleDragImage.style.left = "-10px";     // 화면 밖
+  invisibleDragImage.style.top = "-10px"; // 화면 밖
+  invisibleDragImage.style.left = "-10px"; // 화면 밖
   invisibleDragImage.style.pointerEvents = "none";
   document.body.appendChild(invisibleDragImage);
   dragState.invisibleImage = invisibleDragImage; // dragState에 저장
@@ -1135,9 +1207,7 @@ function initSidebar() {
     refreshWrapHeight(wrap, { animate: false });
   });
 
-  console.log(
-    "initSidebar initialized (Refactored, Native D&D activated)"
-  );
+  console.log("initSidebar initialized (Refactored, Native D&D activated)");
 } // End of initSidebar function
 
 // --- Run Initialization ---
