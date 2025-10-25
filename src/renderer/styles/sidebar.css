@@ -1,0 +1,75 @@
+.sidebar-container {
+    display: flex;
+    flex-direction: column;
+    width: 240px;
+    height: calc(100vh - 56px);
+    background: var(--sidebar-bg);
+    border-right: solid 1px var(--border-color);
+}
+
+.sidebar-container .top {
+    display: flex;
+    flex-direction: column;
+}
+
+.fixed-menu-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 12px 16px;
+}
+
+.sidebar-calendar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--sidebar-calendar-bg);
+    border-radius: 6px;
+    border: solid 1px var(--border-color);
+    filter: drop-shadow(0px 2px 4px var(--shadow-color));
+}
+
+.sidebar-calendar .left {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sidebar-calendar .left span {
+    font-family: var(--pre);
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+}
+
+.sidebar-calendar .left .circle {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--main-color);
+}
+
+.sidebar-calendar .right {
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    text-align: right;
+    gap: 4px;
+}
+
+.sidebar-calendar .right .date {
+    font-family: var(--pre);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    color: var(--black-100);
+}
+
+.sidebar-calendar .right .year {
+    font-family: var(--pre);
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: -0.2px;
+    color: var(--black-40);
+}

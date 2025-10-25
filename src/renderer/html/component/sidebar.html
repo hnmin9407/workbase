@@ -1,85 +1,33 @@
-  <!-- sidebar.html -->
-
-  <div class="top">
-    <div class="header">
-      <div class="left">
-        <img src="../../assets/logo.png" />
-        <span>workbase</span>
-      </div>
-      <div class="right">
-        <button id="sidebar-fold-button" class="sidebar-fold-button">
-          <svg class="icon-fold">
-            <use href="../../assets/icons/icons.svg#icon-ArrowLeftDouble"></use>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- 전체 보관함 메뉴 -->
-    <div class="menu">
-      <div class="wrap" style="padding: 0 4px;">
-        <a href="index.html">
-          <div class="item" data-tooltip="전체 보관함" data-direction="right">
-            <div class="left">
-              <svg class="icon-item delayed-icon-fold">
-                <use href="../../assets/icons/icons.svg#icon-inbox"></use>
-              </svg>
-              <span>전체 보관함</span>
+<div class="sidebar-container" id="sidebar">
+    <div class="top">
+        <div class="fixed-menu-wrap">
+            <div class="sidebar-calendar">
+                <div class="left">
+                    <span id="sidebar-calendar-weekday"></span>
+                    <div class="circle"></div>
+                </div>
+                <div class="right">
+                    <span class="date" id="sidebar-calendar-date"></span>
+                    <span class="year" id="sidebar-calendar-year"></span>
+                </div>
             </div>
-          </div>
-        </a>
-
-        <!-- 오늘 할 일 메뉴 -->
-        <a href="./html/today.html">
-          <div class="item" data-tooltip="오늘 할 일" data-direction="right">
-            <div class="left">
-              <svg class="icon-item delayed-icon-fold">
-                <use href="../../assets/icons/icons.svg#icon-today"></use>
-              </svg>
-              <span>오늘 할 일</span>
-            </div>
-          </div>
-        </a>
-
-        <!-- 중요 메뉴 -->
-
-        <div class="item" data-tooltip="중요" data-direction="right">
-          <div class="left">
-            <svg class="icon-item delayed-icon-fold">
-              <use href="../../assets/icons/icons.svg#icon-star"></use>
-            </svg>
-            <span>중요</span>
-          </div>
         </div>
-
-        <!-- 완료됨 메뉴 -->
-
-        <div class="item" data-tooltip="완료됨" data-direction="right">
-          <div class="left">
-            <svg class="icon-item delayed-icon-fold">
-              <use href="../../assets/icons/icons.svg#icon-done"></use>
-            </svg>
-            <span>완료됨</span>
-          </div>
-        </div>
-      </div>
     </div>
+</div>
 
-    <!-- 사이드바 구분선 -->
+<script>
+  const dateEl = document.getElementById("sidebar-calendar-date");
+  const yearEl = document.getElementById("sidebar-calendar-year");
 
-    <div class="line"></div>
+  if (dateEl && yearEl) {
+    const today = new Date();
+    const weekdays = ["일요일","월요일","화요일","수요일","목요일","금요일","토요일"];
+    const month = today.getMonth() + 1;
+    const date = today.getDate();
+    const day = weekdays[today.getDay()];
+    const year = today.getFullYear();
 
-    <!-- 그룹 메뉴 -->
-
-    <div class="group-list-container"></div>
-
-  <!-- 사이드바 하단 -->
-
-  <div class="bottom">
-    <button class="add-group-button" id="add-group">
-      <svg class="icon-group delayed-icon">
-        <use href="../../assets/icons/icons.svg#icon-add-group"></use>
-      </svg>
-      <span class="delayed-icon">그룹 추가</span>
-    </button>
-  </div>
+    dateEl.textContent = `${month}월 ${date}일 ${day}`;
+    yearEl.textContent = `${year}년`;
+  }
+</script>

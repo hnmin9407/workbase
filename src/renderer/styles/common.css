@@ -1,0 +1,48 @@
+:root {
+    --mont: 'Montserrat', sans-serif;
+    --pre: 'pretendard', sans-serif;
+
+    --black-100: #000000;
+    --black-90: rgba(0, 0, 0, 0.9);
+    --black-80: rgba(0, 0, 0, 0.8);
+    --black-70: rgba(0, 0, 0, 0.7);
+    --black-60: rgba(0, 0, 0, 0.6);
+    --black-50: rgba(0, 0, 0, 0.5);
+    --black-40: rgba(0, 0, 0, 0.4);
+    --black-30: rgba(0, 0, 0, 0.3);
+    --black-20: rgba(0, 0, 0, 0.2);
+    --black-10: rgba(0, 0, 0, 0.1);
+
+    --main-color: #0038FF;
+    --border-color: rgba(0, 0, 0, 0.1);
+
+    --button-bg: #FFFFFF;
+    --button-hover-color: rgba(0, 0, 0, 0.03);
+    --button-active-color: rgba(0, 0, 0, 0.05);
+
+    --sidebar-bg: #f9f9f9;
+    --sidebar-calendar-bg: #FFFFFF;
+
+    --shadow-color: rgba(0, 0, 0, 0.05);
+}
+
+html {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.main {
+    display: flex;
+}
+
+.icon {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke-width: 1.5px;
+}
