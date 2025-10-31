@@ -1,0 +1,107 @@
+  .window-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--window-control-2-bg);
+    height: 36px;
+    width: 100%;
+    padding-left: 22px;
+    box-sizing: border-box;
+    -webkit-app-region: drag;
+  }
+
+  .window-control .left {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    -webkit-app-region: no-drag;
+  }
+
+  .home-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.1s ease;
+  }
+
+  .home-button img {
+    width: 20px;
+    height: 11px;
+    filter: grayscale(1);
+    opacity: 0.4;
+    transition: opacity 0.1s ease;
+  }
+
+  .home-button:hover {
+    background: var(--button-hover-color);
+  }
+
+  .home-button:hover img {
+    opacity: 1;
+  }
+
+  .sidebar-fold-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.1s ease;
+  }
+
+  .sidebar-fold-button .icon {
+    opacity: 0.4;
+    transition: opacity 0.1s ease;
+  }
+
+  .sidebar-fold-button:hover {
+    background: var(--button-hover-color);
+  }
+
+  .sidebar-fold-button:hover .icon {
+    opacity: 1;
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    -webkit-app-region: no-drag;
+  }
+
+  .window-control-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48px;
+    height: 36px;
+    background: transparent;
+  }
+
+  .window-control-button:hover {
+    background: var(--button-hover-2-color);
+  }
+
+.window-control-button .icon {
+  color: #FFF;
+  stroke: #FFF; /* 아이콘 선 색상을 흰색으로 */
+  opacity: 0.7; /* 기본 투명도 */
+  transition: opacity 0.1s ease;
+}
+
+/* ✅ 버튼에 마우스를 올렸을 때 아이콘 스타일 */
+.window-control-button:hover .icon {
+  opacity: 1; /* 아이콘을 불투명하게 */
+}
+
+/* ❗️ (선택) 닫기 버튼은 마우스 올리면 빨간색 배경 */
+#window-close:hover {
+  background-color: #E81123; /* Windows 기본 닫기 버튼 색상 */
+}

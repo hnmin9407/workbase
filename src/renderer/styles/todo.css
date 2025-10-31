@@ -1,0 +1,21 @@
+.todo-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: margin-left 0.3s ease;
+    padding: 32px;
+}
+
+body.sidebar-collapsed .todo-container {
+    margin-left: -240px;
+}
+
+@media (max-width: 768px) {
+    .todo-container {
+        transition: margin-left 0s ease;
+    }
+
+    body.sidebar-collapsed .todo-container {
+        margin-left: 0px;
+    }
+}

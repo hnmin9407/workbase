@@ -1,0 +1,71 @@
+
+.logo-area {
+    display: flex;
+    align-items: center;
+}
+
+.logo-area img {
+    width: 20px;
+    height: 11px;
+    filter: grayscale(1) brightness(100);
+}
+
+.login-background {
+    background-image: url(https://images.unsplash.com/photo-1668681919287-7367677cdc4c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.login-body {
+    display: flex;
+    height: calc(100vh - 36px);
+    background: #f8f7f8;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 428px;
+    margin-bottom: 72px;
+    background: var(--bg-color);
+    padding: 32px;
+    box-sizing: border-box;
+}
+
+.login-container .right {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.login-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-title span {
+    font-family: var(--pre);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: var(--main-color);
+}
+
+.login-title p {
+    font-family: var(--pre);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: -0.2px;
+}

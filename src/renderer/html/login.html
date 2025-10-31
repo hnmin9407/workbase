@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WORKBASE</title>
+
+    <link rel="stylesheet" href="../styles/common.css" />
+    <link rel="stylesheet" href="../styles/login.css" />
+    <link rel="stylesheet" href="../styles/window-control-2.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+    />
+  </head>
+  <body>
+    <div class="window-control">
+      <div class="left">
+        <div class="logo-area">
+          <img src="../../../assets/image/logo.png" />
+        </div>
+      </div>
+      <div class="right">
+        <div class="window-control-button" id="window-minimize">
+          <svg class="icon" style="width: 12px">
+            <use href="#icon-minimize"></use>
+          </svg>
+        </div>
+        <div class="window-control-button" id="window-maximize">
+          <svg class="icon" style="width: 12px">
+            <use href="#icon-maximize"></use>
+          </svg>
+        </div>
+        <div class="window-control-button" id="window-close">
+          <svg class="icon"><use href="#icon-close"></use></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-background"></div>
+    <div class="login-body">
+      <div class="login-container">
+        <div <div class="login-title">
+          <span>로그인</span>
+          <p>서비스를 이용하려면 로그인이 필요합니다.</p>
+        </div>
+
+        <div class="login-input-wrap">
+          <input placeholder="이메일" />
+        </div>
+      </div>
+    </div>
+
+    <script>
+      console.log("window.appAPI 존재 여부:", window.appAPI);
+    </script>
+
+    <script>
+      // ✅ window-control.js 로드
+      const script = document.createElement("script");
+      script.src = "../js/window-control.js";
+      document.body.appendChild(script);
+
+      fetch("../../../assets/icons/icons.svg")
+        .then((res) => res.text())
+        .then((data) => {
+          document.body.insertAdjacentHTML("afterbegin", data);
+        })
+        .catch((err) => console.error("SVG 불러오기 실패:", err));
+    </script>
+
+    <script src="../js/login.js"></script>
+  </body>
+</html>

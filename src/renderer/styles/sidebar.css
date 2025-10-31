@@ -1,15 +1,24 @@
+/* sidebar.css
+
+/* 레이아웃 */
+
 .sidebar-container {
     display: flex;
     flex-direction: column;
     width: 240px;
-    height: calc(100vh - 56px);
+    height: calc(100vh - 36px);
     background: var(--sidebar-bg);
     border-right: solid 1px var(--border-color);
+    transition: transform 0.3s ease;
+    transform: translateX(0);
+    white-space: nowrap; /* 👈 내용이 줄바꿈되지 않도록 */
+    overflow: hidden;    /* 👈 내용 숨기기 */
 }
 
 .sidebar-container .top {
     display: flex;
     flex-direction: column;
+    min-width: 240px;
 }
 
 .fixed-menu-wrap {
@@ -19,57 +28,166 @@
     padding: 12px 16px;
 }
 
-.sidebar-calendar {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px;
-    background: var(--sidebar-calendar-bg);
-    border-radius: 6px;
-    border: solid 1px var(--border-color);
-    filter: drop-shadow(0px 2px 4px var(--shadow-color));
-}
-
-.sidebar-calendar .left {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.sidebar-calendar .left span {
-    font-family: var(--pre);
-    font-size: 32px;
-    font-weight: 700;
-    letter-spacing: -0.4px;
-}
-
-.sidebar-calendar .left .circle {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--main-color);
-}
-
-.sidebar-calendar .right {
+.fixed-menu {
     display: flex;
     flex-direction: column;
-    margin-left: auto;
-    text-align: right;
     gap: 4px;
 }
 
-.sidebar-calendar .right .date {
+.menu-body {
+    display: flex;
+    flex-direction: column;
+    padding-top: 4px;
+}
+
+.fixed-project-menu-wrap {
+    display: flex;
+    flex-direction: column;
+    padding: 0px 16px;
+}
+
+.project-menu-wrap {
+    display: flex;
+    flex-direction: column;
+    padding: 0px 16px;
+}
+
+.menu-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.menu-utilities {
+    display: flex;
+    gap: 4px;
+}
+
+
+/* 메뉴 아이템 */
+
+.menu-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 6px;
+    transition: all 0.1s ease;
+    cursor: pointer;
+    font-family: var(--pre);
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: -0.2px;
+    color: var(--black-80);
+}
+
+.menu-button:hover {
+    background: var(--button-hover-color);
+}
+
+.menu-button.selected {
+    background: var(--black-5);
+    filter: drop-shadow(0px 2px 4px var(--shadow-color));
+    color: var(--main-color);
+    font-weight: 400;
+}
+
+.project-title {
+    display: flex;
+    height: 34px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    border-radius: 6px;
+    color: var(--main-color);
     font-family: var(--pre);
     font-size: 13px;
     font-weight: 600;
     letter-spacing: -0.2px;
-    color: var(--black-100);
 }
 
-.sidebar-calendar .right .year {
-    font-family: var(--pre);
-    font-size: 13px;
-    font-weight: 400;
-    letter-spacing: -0.2px;
-    color: var(--black-40);
+.menu-fold-button .icon {
+    transition: transform 0.2s ease;
+}
+
+/* 메뉴 접기 기능 */
+
+.menu-wrap.transitions-enabled {
+    transition: max-height 0.2s ease, opacity 0.2s ease;
+}
+
+.menu-wrap.is-open {
+    opacity: 1;
+}
+
+.is-folded .menu-fold-button .icon {
+    transform: rotate(-180deg);
+}
+
+body.sidebar-collapsed .sidebar-container {
+    transform: translateX(-100%);
+}
+
+/* =================================
+   모바일 오버레이 스타일
+   ================================= */
+.sidebar-overlay {
+    position: fixed;
+    top: 36px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2); /* 반투명 검은색 배경 */
+    z-index: 998; /* 사이드바(999)보다 낮게 */
+    opacity: 0;
+    pointer-events: none; /* 숨겨져 있을 때 클릭 방지 */
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(4px);
+}
+
+/* 모바일 사이드바가 열렸을 때 오버레이 표시 */
+body.mobile-sidebar-open .sidebar-overlay {
+    opacity: 1;
+    pointer-events: auto; /* 클릭 가능하게 */
+}
+
+.sidebar-container.no-transition {
+    transition: none !important;
+}
+
+
+/* =================================
+   모바일 반응형 (768px 이하)
+   ================================= */
+@media (max-width: 768px) {
+
+    /* 1. 데스크탑 스타일 초기화 (중요) */
+    /* (메인 콘텐츠의 margin-left 강제 해제) */
+    .main-content {
+        margin-left: 0 !important;
+    }
+
+    /* 2. 모바일 사이드바 스타일 (Fixed 오버레이) */
+    .sidebar-container {
+        position: fixed;
+        /* 헤더(56px) 아래에 위치 */
+        top: 36px;
+        left: 0;
+        height: calc(100vh - 36px);
+        z-index: 999; /* 오버레이(998)보다 높게 */
+        
+        /* width 대신 transform으로 애니메이션 */
+        transition: transform 0.3s ease;
+        
+        /* 기본 상태 (왼쪽 밖으로 숨김) */
+        transform: translateX(-100%);
+    }
+
+    /* 3. 모바일 사이드바가 열린 상태 */
+    body.mobile-sidebar-open .sidebar-container {
+        transform: translateX(0); /* 왼쪽으로 슬라이드 인 */
+    }
 }

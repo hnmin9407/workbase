@@ -1,33 +1,70 @@
 <div class="sidebar-container" id="sidebar">
     <div class="top">
         <div class="fixed-menu-wrap">
-            <div class="sidebar-calendar">
-                <div class="left">
-                    <span id="sidebar-calendar-weekday"></span>
-                    <div class="circle"></div>
+
+            <div class="user-profile">
+            </div>
+            <!-- 고정 메뉴 -->
+            <div class="fixed-menu">
+                <div class="menu-button selected">
+                    <svg class="icon"><use href="#icon-inbox"></use></svg>
+                    <span>전체 보관함</span>
                 </div>
-                <div class="right">
-                    <span class="date" id="sidebar-calendar-date"></span>
-                    <span class="year" id="sidebar-calendar-year"></span>
+                <div class="menu-button">
+                    <svg class="icon"><use href="#icon-calendar"></use></svg>
+                    <span>오늘 할 일</span>
+                </div>
+                <div class="menu-button">
+                    <svg class="icon"><use href="#icon-star"></use></svg>
+                    <span>중요</span>
+                </div>
+                <div class="menu-button">
+                    <svg class="icon"><use href="#icon-checked-circle"></use></svg>
+                    <span>완료됨</span>
+                </div>
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="menu-body">
+            <div class="fixed-project-menu-wrap">
+                <div class="project-title">고정됨
+                    <div class="button-24 menu-fold-button">
+                    <svg class="icon"><use href="#icon-down"></use></svg>
+                    </div>
+                </div>
+                <div class="menu-wrap is-open">
+                    <div class="menu-button">
+                        <svg class="icon"><use href="#icon-hash"></use></svg>
+                        <span>고정된 프로젝트 메뉴</span>
+                    </div>
+                    <div class="menu-button">
+                        <svg class="icon"><use href="#icon-hash"></use></svg>
+                        <span>고정된 프로젝트 메뉴</span>
+                    </div>
+                    <div class="menu-button">
+                        <svg class="icon"><use href="#icon-hash"></use></svg>
+                        <span>고정된 프로젝트 메뉴</span>
+                    </div>
+                </div>
+            </div>
+            <div class="project-menu-wrap">
+                <div class="project-title">프로젝트
+                    <div class="menu-utilities">
+                        <div class="button-24">
+                        <svg class="icon"><use href="#icon-add"></use></svg>
+                        </div>
+                        <div class="button-24 menu-fold-button">
+                        <svg class="icon"><use href="#icon-down"></use></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-wrap is-open">
+                    <div class="menu-button">
+                        <svg class="icon"><use href="#icon-hash"></use></svg>
+                        <span>프로젝트 메뉴</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-  const dateEl = document.getElementById("sidebar-calendar-date");
-  const yearEl = document.getElementById("sidebar-calendar-year");
-
-  if (dateEl && yearEl) {
-    const today = new Date();
-    const weekdays = ["일요일","월요일","화요일","수요일","목요일","금요일","토요일"];
-    const month = today.getMonth() + 1;
-    const date = today.getDate();
-    const day = weekdays[today.getDay()];
-    const year = today.getFullYear();
-
-    dateEl.textContent = `${month}월 ${date}일 ${day}`;
-    yearEl.textContent = `${year}년`;
-  }
-</script>

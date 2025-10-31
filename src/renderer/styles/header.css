@@ -26,7 +26,7 @@
 .logo span {
     font-family: var(--mont);
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--main-color);
     letter-spacing: -0.2px;
 
@@ -57,7 +57,7 @@
     align-items: center;
     margin-left: auto;
     gap: 16px;
-    padding: 9px 16px;
+    padding: 9px 12px 9px 16px;
     border-radius: 6px;
     border: solid 1px var(--border-color);
     transition: background 0.1s ease;

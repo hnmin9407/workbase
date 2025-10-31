@@ -1,0 +1,89 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>WORKBASE</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="../styles/common.css" />
+    <link rel="stylesheet" href="../styles/sidebar.css" />
+    <link rel="stylesheet" href="../styles/todo.css" />
+    <link rel="stylesheet" href="../styles/tooltip.css" />
+    <link rel="stylesheet" href="../styles/window-control.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
+    />
+  </head>
+
+  <body>
+    <div id="window-control"></div>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <div class="main">
+      <div id="sidebar"></div>
+      <div id="todo-today"></div>
+    </div>
+
+    <script src="../js/sidebar.js"></script>
+    <script src="../js/tooltip.js"></script>
+
+    <script>
+      // ✅ window-control.html 불러오기 + 로드 완료 후 window-control.js 실행
+fetch("../html/component/window-control.html")
+  .then((res) => res.text())
+  .then((data) => {
+    const container = document.getElementById("window-control");
+    container.innerHTML = data;
+
+    const waitForWindowControl = setInterval(() => {
+      const minimizeBtn = document.getElementById("window-minimize");
+      const sidebarBtn = document.getElementById("sidebar-fold-button");
+
+      if (minimizeBtn && sidebarBtn) {
+        clearInterval(waitForWindowControl);
+        console.log("✅ window-control DOM 준비 완료");
+
+        // ✅ window-control.js 로드
+        const script = document.createElement("script");
+        script.src = "../js/window-control.js";
+        document.body.appendChild(script);
+
+        // ✅ 툴팁, 사이드바 재초기화
+        initTooltip();
+        initializeSidebarApp();
+      }
+    }, 100);
+  })
+  .catch((err) => console.error("window-control 불러오기 실패:", err));
+
+      fetch("../html/component/sidebar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar").innerHTML = data;
+        })
+        .catch((error) => console.error("Sidebar 불러오기 실패:", error));
+
+      fetch("../html/component/todo-today.html")
+        .then((res) => res.text())
+        .then((data) => {
+          document.getElementById("todo-today").innerHTML = data;
+        })
+        .catch((err) => console.error("todo-today 불러오기 실패:", err));
+
+      fetch("../../../assets/icons/icons.svg")
+        .then((res) => res.text())
+        .then((data) => document.body.insertAdjacentHTML("afterbegin", data))
+        .catch((err) => console.error("SVG 불러오기 실패:", err));
+    </script>
+  </body>
+</html>

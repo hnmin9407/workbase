@@ -6,7 +6,7 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "start": "electron .",
+    "start": "chcp 65001 && electron .",
     "dist": "electron-builder"
   },
   "devDependencies": {
@@ -50,6 +50,14 @@
     "@hugeicons/core-free-icons": "^1.1.0",
     "electron-log": "^5.4.3",
     "electron-updater": "^6.6.2",
+    "firebase": "^12.4.0",
     "sortablejs": "^1.15.6"
+  },
+  "electronWebpack": {
+    "main": {
+      "externals": [
+        "firebase"
+      ]
+    }
   }
 }
