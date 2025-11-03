@@ -2,6 +2,10 @@
     --mont: 'Montserrat', sans-serif;
     --pre: 'pretendard', sans-serif;
     
+    /* color */
+
+    --body-bg: #F8F8F7;
+
     --main-color: #000;
     --main-color-3: rgba(0, 0, 0, 0.03);
     --main-color-5: rgba(0, 0, 0, 0.05);
@@ -29,24 +33,53 @@
     --bg-color-80: rgba(255, 255, 255, 0.8);
     --bg-color-90: rgba(255, 255, 255, 0.9);
 
-    --window-control-bg: #F8F8F7;
-    --window-control-2-bg: transparent;
-
-    --tooltip-text: #FFFFFF;
-
-    --border-color: rgba(0, 0, 0, 0.05);
-
-    --button-bg: #FFFFFF;
-    --button-hover-color: rgba(0, 0, 0, 0.03);
-    --button-hover-2-color: rgba(255, 255, 255, 0.1);
-    --button-active-color: rgba(0, 0, 0, 0.05);
-
-    --sidebar-bg: #F8F8F7;
-    --sidebar-calendar-bg: rgba(255, 255, 255, 0.2);
-
     --shadow-color: rgba(0, 0, 0, 0.05);
-    --inner-shadow-color: #FFFFFF;
+
+    --logo-brightness: 0;
+
 }
+
+:root[data-theme="dark"] {
+    --body-bg: #121212;
+
+    --bg-color: #171717;
+    --bg-color-3: rgba(27, 27, 31, 0.03);
+    --bg-color-5: rgba(27, 27, 31, 0.05);
+    --bg-color-10: rgba(27, 27, 31, 0.1);
+    --bg-color-20: rgba(27, 27, 31, 0.2);
+    --bg-color-30: rgba(27, 27, 31, 0.3);
+    --bg-color-40: rgba(27, 27, 31, 0.4);
+    --bg-color-50: rgba(27, 27, 31, 0.5);
+    --bg-color-60: rgba(27, 27, 31, 0.6);
+    --bg-color-70: rgba(27, 27, 31, 0.7);
+    --bg-color-80: rgba(27, 27, 31, 0.8);
+    --bg-color-90: rgba(27, 27, 31, 0.9);
+
+    --main-color: #e4e4e7;
+    --main-color-3: rgba(228, 228, 231, 0.03);
+    --main-color-5: rgba(228, 228, 231, 0.05);
+    --main-color-10: rgba(228, 228, 231, 0.1);
+    --main-color-20: rgba(228, 228, 231, 0.2);
+    --main-color-30: rgba(228, 228, 231, 0.3);
+    --main-color-40: rgba(228, 228, 231, 0.4);
+    --main-color-50: rgba(228, 228, 231, 0.5);
+    --main-color-60: rgba(228, 228, 231, 0.6);
+    --main-color-70: rgba(228, 228, 231, 0.7);
+    --main-color-80: rgba(228, 228, 231, 0.8);
+    --main-color-90: rgba(228, 228, 231, 0.9);
+    --main-color-95: rgba(228, 228, 231, 0.95);
+
+    --shadow-color: rgba(0, 0, 0, 0.4);
+
+    --logo-brightness: 50;
+
+
+
+
+    
+
+}
+
 
 html {
     padding: 0;
@@ -64,6 +97,7 @@ body {
 
 .main {
     display: flex;
+    background: var(--bg-color);
 }
 
 .icon {
@@ -79,6 +113,10 @@ body {
     background: var(--border-color);
 }
 
+button {
+    border: none;
+}
+
 .button-24 {
     display: flex;
     justify-content: center;
@@ -88,16 +126,127 @@ body {
     border-radius: 6px;
     background: transparent;
     transition: background 0.1s ease, color 0.1s ease;
-    color: var(--black-40);
+    color: var(--main-color-40);
     cursor: pointer;
     box-sizing: border-box;
 }
 
 .button-24:hover {
-    background: var(--button-hover-color);
-    color: var(--black-100);
+    background: var(--main-color-3);
+    color: var(--main-color);
 }
 
 .button-24:active {
-    background: var(--button-active-color);
+    background: var(--main-color-5);
+}
+
+
+h1 {
+    font-family: var(--mont);
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    margin: 0;
+    color: var(--main-color);
+}
+
+h2 {
+    font-family: var(--pre);
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.2px;
+    margin: 0;
+    color: var(--main-color);
+}
+
+h3 {
+    font-family: var(--pre);
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: -0.2px;
+    margin: 0;
+    color: var(--main-color);
+}
+
+.alert-popup {
+  position: fixed;
+  bottom: 32px; /* 윈도우 컨트롤(36px) + 여백(20px) */
+  right: 32px;
+  z-index: 9999;
+  background-color: var(--bg-color-40);
+  backdrop-filter: blur(20px); /* 배경 블러 */
+  border-radius: 12px;
+  box-shadow: 0 5px 10px var(--shadow-color);
+  border: 1px solid var(--main-color-5);
+  padding: 16px;
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translateY(20px); /* 오른쪽 바깥에서 시작 */
+  pointer-events: none; /* 숨겨져 있을 때 클릭 방지 */
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.alert-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    
+}
+
+.alert-popup .left {
+    display: flex;
+}
+
+.alert-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    background: #ffaa00;
+}
+
+.alert-popup .left svg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    fill: none;
+    color: var(--bg-color);
+}
+
+.alert-popup .right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+}
+
+/* 알림창이 활성화(show) 되었을 때 */
+.alert-popup.show {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+    cursor: pointer;
+}
+
+.alert-title {
+    font-family: var(--pre);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--main-color);
+  margin-bottom: 4px;
+  text-align: left;
+}
+
+.alert-message {
+    font-family: var(--pre);
+  font-size: 14px;
+  font-weight: 400;
+    color: var(--main-color-80);
+  letter-spacing: -0.2px;
+  line-height: 1.4;
 }

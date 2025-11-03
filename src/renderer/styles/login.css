@@ -1,71 +1,249 @@
-
-.logo-area {
-    display: flex;
-    align-items: center;
-}
-
-.logo-area img {
-    width: 20px;
-    height: 11px;
-    filter: grayscale(1) brightness(100);
-}
-
-.login-background {
-    background-image: url(https://images.unsplash.com/photo-1668681919287-7367677cdc4c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-}
-
 .login-body {
     display: flex;
-    height: calc(100vh - 36px);
-    background: #f8f7f8;
-    margin: 0 auto;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    background: var(--body-bg);
+    height: calc(100vh - 36px);;
+    width: 100vw;
+    padding-bottom: 16px;
     box-sizing: border-box;
+    overflow: hidden;
+    padding-left: 16px;
+    padding-right: 16px;
 }
-
 
 .login-container {
     display: flex;
-    flex-direction: column;
-    min-width: 428px;
-    margin-bottom: 72px;
+    
     background: var(--bg-color);
-    padding: 32px;
+    width: 100%;
+    height: 100%;
+    max-width: 1200px;
+    max-height: 800px;
+    margin: auto;
+    border-radius: 16px;
+    filter: drop-shadow(0px 4px 16px var(--shadow-color));
+    overflow: hidden;
+    padding: 16px;
     box-sizing: border-box;
 }
 
+.login-container .left {
+    flex: 1;
+    background-image: url('https://i.pinimg.com/736x/30/e7/76/30e7768dfb36bc148c44597b5c8d7852.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+}
+
 .login-container .right {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    flex: 1;
+    box-sizing: border-box;
+}
+
+.login-wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding-left: 96px;
+    padding-right: 80px;
+    gap: 32px;
+    box-sizing: border-box;
+    position: relative;
 }
 
 .login-title {
     display: flex;
     flex-direction: column;
+    gap: 8px;
 }
 
-.login-title span {
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.login-form .input-field-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    height: 60px;
+    border: solid 1px var(--main-color-10);
+    box-sizing: border-box;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+}
+
+.login-form .login-input-id,
+.login-form .login-input-pw {
+    max-width: 100%;
+    width: 100%;
+    height: 36px;
+    outline: none;
+    border: none;
+    padding: 0px 16px;
+    background: none;
+    box-sizing: border-box;
     font-family: var(--pre);
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: -0.4px;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: -0.2px;
     color: var(--main-color);
 }
 
-.login-title p {
+.login-form .placeholder-id,
+.login-form .placeholder-pw {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 8px;
     font-family: var(--pre);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 400;
     letter-spacing: -0.2px;
+    color: var(--main-color-40);
+    background: none;
+    transition: all 0.2s ease;
+    padding: 0 8px;
+    pointer-events: none;
+    border-radius: 50px;
+}
+
+.login-form .input-field-wrapper:focus-within {
+  border: solid 1px var(--main-color);
+}
+
+.login-form .login-input-id:focus + .placeholder-id,
+.login-form .login-input-id:not(:placeholder-shown) + .placeholder-id,
+.login-form .login-input-pw:focus + .placeholder-pw,
+.login-form .login-input-pw:not(:placeholder-shown) + .placeholder-pw {
+    top: 18px;
+    transform: translateY(-50%);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--main-color);
+    left: 8px;
+}
+
+.pw-toggle-icon {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  color: var(--main-color-40);
+  transition: color 0.1s ease;
+}
+
+.pw-toggle-icon:hover {
+    color: var(--main-color);
+}
+
+.autologin-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--pre);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: var(--main-color-60);
+}
+
+.autologin-button span {
+    transition: all 0.1s ease;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--main-color-20);
+  background-color: transparent;
+  transition: all 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox svg {
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  color: var(--bg-color);
+}
+
+.checkbox.active {
+  background-color: var(--main-color);
+  border-color: var(--main-color);
+}
+
+.checkbox.active ~ span {
+  color: var(--main-color);
+}
+
+/* 'active' 상태일 때 SVG 아이콘 보이기 */
+.checkbox.active svg {
+  opacity: 1;
+}
+
+.login-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 48px;
+    border-radius: 8px;
+    background: var(--main-color);
+    color: var(--bg-color);
+    font-family: var(--pre);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    transition: background 0.1s ease;
+    margin-top: 16px;
+}
+
+.login-button:hover {
+    background: var(--main-color-90);
+}
+
+.login-button:active {
+    background: var(--main-color-80);
+}
+
+.login-form .login-input-id:-webkit-autofill,
+.login-form .login-input-pw:-webkit-autofill {
+    /* 1. (핵심) box-shadow 트릭:
+      input의 원래 배경색(var(--bg-color))으로 
+      아주 큰 내부 그림자를 그려서 자동완성 색상을 덮어버립니다.
+    */
+    box-shadow: 0 0 0 1000px var(--bg-color) inset !important;
+    border-radius: 8px;
+
+    /* 2. (선택) 자동완성 시 글자색 강제 지정
+      브라우저가 글자색을 강제로 검은색 등으로 바꿀 때 사용합니다.
+      (기존 글자색 변수가 있다면 var(--text-color) 등으로 변경)
+    */
+    -webkit-text-fill-color: var(--main-color);
+
+    /*
+      3. (선택) 트랜지션 지연
+      스타일이 적용되는 것을 아주 길게 지연시켜 
+      깜빡임 없이 box-shadow가 유지되도록 합니다.
+    */
+    transition: background-color 5000s ease-in-out 0s;
 }

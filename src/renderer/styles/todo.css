@@ -1,9 +1,11 @@
 .todo-container {
     display: flex;
     flex-direction: column;
+    height: calc(100vh - 36px);
     gap: 16px;
     transition: margin-left 0.3s ease;
     padding: 32px;
+    box-sizing: border-box;
 }
 
 body.sidebar-collapsed .todo-container {
@@ -13,6 +15,7 @@ body.sidebar-collapsed .todo-container {
 @media (max-width: 768px) {
     .todo-container {
         transition: margin-left 0s ease;
+        
     }
 
     body.sidebar-collapsed .todo-container {

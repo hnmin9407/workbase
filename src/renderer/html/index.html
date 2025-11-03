@@ -4,6 +4,21 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8" />
+
+    <script>
+        (function() {
+          // localStorage에서 저장된 테마를 확인
+          const savedTheme = localStorage.getItem('theme');
+          if (savedTheme === 'dark') {
+            // <html> 태그에 data-theme="dark" 속성 추가
+            document.documentElement.dataset.theme = 'dark';
+          } else {
+            // 기본값은 'light'
+            document.documentElement.dataset.theme = 'light';
+          }
+        })();
+    </script>
+    
     <title>WORKBASE</title>
     <!-- CSS -->
     <link rel="stylesheet" href="../styles/common.css" />

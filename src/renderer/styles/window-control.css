@@ -2,10 +2,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--window-control-bg);
+    background: var(--body-bg);
     height: 36px;
     width: 100%;
-    border-bottom: solid 1px var(--border-color);
+    border-bottom: solid 1px var(--main-color-5);
     padding-left: 16px;
     box-sizing: border-box;
     -webkit-app-region: drag;
@@ -33,13 +33,13 @@
   .home-button img {
     width: 20px;
     height: 11px;
-    filter: grayscale(1);
+    filter: grayscale(1) brightness(var(--logo-brightness));
     opacity: 0.4;
     transition: opacity 0.1s ease;
   }
 
   .home-button:hover {
-    background: var(--button-hover-color);
+    background: var(--main-color-5);
   }
 
   .home-button:hover img {
@@ -61,10 +61,11 @@
   .sidebar-fold-button .icon {
     opacity: 0.4;
     transition: opacity 0.1s ease;
+    color: var(--main-color);
   }
 
   .sidebar-fold-button:hover {
-    background: var(--button-hover-color);
+    background: var(--main-color-5);
   }
 
   .sidebar-fold-button:hover .icon {
@@ -84,49 +85,35 @@
     width: 48px;
     height: 36px;
     background: transparent;
+    color: var(--main-color);
   }
 
   .window-control-button:hover {
-    background: var(--button-hover-color);
+    background: var(--main-color-5);
   }
 
-  .minimize-icon {
-    width: 10px;
-    height: 1.5px; /* ✅ 두께 1.5px */
-    background: #000;
-    border-radius: 1px;
-  }
-
-  .maximize-icon {
-    width: 10px;
-    height: 10px;
-    border: 1.5px solid #000; /* ✅ 테두리 1.5px */
-    border-radius: 2px;
-    box-sizing: border-box;
+    .mode-toggle-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
     background: transparent;
+    cursor: pointer;
+    transition: background 0.1s ease;
   }
 
-  .close-icon {
-    position: relative;
-    width: 12px;
-    height: 12px;
-    transform: scale(0.98);
-    transform-origin: center;
+  .mode-toggle-button .icon {
+    opacity: 0.4;
+    transition: opacity 0.1s ease;
+    color: var(--main-color);
   }
-  .close-icon::before,
-  .close-icon::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 1.5px; /* ✅ 두께 1.5px */
-    height: 12px;
-    background: #000;
-    transform-origin: center;
+
+  .mode-toggle-button:hover {
+    background: var(--main-color-5);
   }
-  .close-icon::before {
-    transform: translate(-50%, -50%) rotate(45deg);
-  }
-  .close-icon::after {
-    transform: translate(-50%, -50%) rotate(-45deg);
+
+  .mode-toggle-button:hover .icon {
+    opacity: 1;
   }
