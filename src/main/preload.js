@@ -1,4 +1,4 @@
-// ✅ preload.js (통합버전)
+// ✅ preload.js (수정된 통합버전)
 console.log("✅ preload.js 실행됨. 경로:", __filename);
 
 const { contextBridge, ipcRenderer } = require("electron");
@@ -12,6 +12,9 @@ const {
   browserSessionPersistence,
   browserLocalPersistence,
   onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signOut,
 } = require("firebase/auth");
 const { getFirestore } = require("firebase/firestore");
 
@@ -58,17 +61,47 @@ contextBridge.exposeInMainWorld("appAPI", {
       );
       const user = userCredential.user;
       const safeUser = {
+        // 👈 "안전한" 일반 객체로 반환
         uid: user.uid,
         email: user.email,
         displayName: user.displayName || "",
-        emailVerified: user.emailVerified,
-        isAnonymous: user.isAnonymous,
-        tenantId: user.tenantId || null,
       };
       return { ok: true, user: safeUser };
     } catch (error) {
-      console.error("❌ 이메일 로그인 실패:", error);
-      return { ok: false, error: error.message };
+      console.error("❌ 이메일 로그인 실패:", error.code, error.message);
+      // [수정] error.message 대신 errorCode: error.code를 반환
+      return { ok: false, errorCode: error.code, error: error.message };
+    }
+  },
+
+  // ✅ [수정] 이메일 회원가입
+  signUpWithEmail: async (email, password, username) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      await updateProfile(userCredential.user, {
+        displayName: username,
+      });
+      console.log("Preload: 회원가입 성공", userCredential.user.uid);
+
+      await signOut(auth);
+      console.log("Preload: 회원가입 후 자동 로그아웃 처리됨");
+
+      // [수정] ❗ 복잡한 user 객체 대신 "안전한" 일반 객체로 반환
+      const user = userCredential.user;
+      const safeUser = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || "",
+      };
+      return { ok: true, user: safeUser }; // 👈 수정된 부분
+    } catch (error) {
+      console.error("Preload: 회원가입 실패", error.code, error.message);
+      // [수정] error.message 대신 errorCode: error.code를 반환
+      return { ok: false, errorCode: error.code, error: error.message };
     }
   },
 
@@ -78,8 +111,28 @@ contextBridge.exposeInMainWorld("appAPI", {
       await setAuthPersistence(rememberMe);
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      return { ok: true, user: result.user };
+      // 구글 로그인은 user 객체를 그대로 반환해도 문제가 없는 경우가 많지만,
+      // 일관성을 위해 safeUser로 반환하는 것이 더 안전합니다.
+      const user = result.user;
+      const safeUser = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || "",
+      };
+      return { ok: true, user: safeUser };
     } catch (error) {
+      return { ok: false, error: error.message };
+    }
+  },
+
+  // ✅ 로그아웃
+  signOut: async () => {
+    try {
+      await signOut(auth);
+      console.log("Preload: 로그아웃 성공");
+      return { ok: true };
+    } catch (error) {
+      console.error("Preload: 로그아웃 실패", error.code, error.message);
       return { ok: false, error: error.message };
     }
   },
@@ -92,8 +145,6 @@ contextBridge.exposeInMainWorld("appAPI", {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName || "",
-          emailVerified: user.emailVerified,
-          isAnonymous: user.isAnonymous,
         };
         callback(safeUser);
       } else {
@@ -102,7 +153,7 @@ contextBridge.exposeInMainWorld("appAPI", {
     });
   },
 
-  // ✅ 🔽 추가: Electron 윈도우 제어 기능
+  // ✅ Electron 윈도우 제어 기능
   windowControl: {
     send: (action) => ipcRenderer.send("window-control", action),
     onStateChange: (callback) =>

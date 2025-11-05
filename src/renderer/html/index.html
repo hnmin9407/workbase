@@ -6,19 +6,19 @@
     <meta charset="utf-8" />
 
     <script>
-        (function() {
-          // localStorage에서 저장된 테마를 확인
-          const savedTheme = localStorage.getItem('theme');
-          if (savedTheme === 'dark') {
-            // <html> 태그에 data-theme="dark" 속성 추가
-            document.documentElement.dataset.theme = 'dark';
-          } else {
-            // 기본값은 'light'
-            document.documentElement.dataset.theme = 'light';
-          }
-        })();
+      (function () {
+        // localStorage에서 저장된 테마를 확인
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "dark") {
+          // <html> 태그에 data-theme="dark" 속성 추가
+          document.documentElement.dataset.theme = "dark";
+        } else {
+          // 기본값은 'light'
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
     </script>
-    
+
     <title>WORKBASE</title>
     <!-- CSS -->
     <link rel="stylesheet" href="../styles/common.css" />
@@ -26,6 +26,7 @@
     <link rel="stylesheet" href="../styles/todo.css" />
     <link rel="stylesheet" href="../styles/tooltip.css" />
     <link rel="stylesheet" href="../styles/window-control.css" />
+    <link rel="stylesheet" href="../styles/context-menu.css" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -49,56 +50,126 @@
       <div id="todo-today"></div>
     </div>
 
+    <div class="context-menu" id="user-context-menu">
+      <div class="context-body">
+        <button class="context-item">
+          <svg class="icon">
+            <use href="#icon-user"></use>
+          </svg>
+          <span>내 정보</span>
+        </button>
+        <button class="context-item" id="logout-button">
+          <svg class="icon">
+            <use href="#icon-logout"></use>
+          </svg>
+          <span>로그아웃</span>
+        </button>
+      </div>
+    </div>
+
     <script src="../js/sidebar.js"></script>
     <script src="../js/tooltip.js"></script>
+    <script src="../js/context-menu.js"></script>
 
-    <script>
-      // ✅ window-control.html 불러오기 + 로드 완료 후 window-control.js 실행
-fetch("../html/component/window-control.html")
-  .then((res) => res.text())
-  .then((data) => {
-    const container = document.getElementById("window-control");
-    container.innerHTML = data;
+<script>
+  // 1. 각 컴포넌트 로드를 Promise로 정의
+  const loadWindowControl = fetch("../html/component/window-control.html")
+    .then((res) => res.text())
+    .then((data) => {
+      document.getElementById("window-control").innerHTML = data;
+    });
 
-    const waitForWindowControl = setInterval(() => {
-      const minimizeBtn = document.getElementById("window-minimize");
-      const sidebarBtn = document.getElementById("sidebar-fold-button");
+  const loadSidebar = fetch("../html/component/sidebar.html")
+    .then((response) => response.text())
+    .then((data) => {
+      document.getElementById("sidebar").innerHTML = data;
+    });
 
-      if (minimizeBtn && sidebarBtn) {
-        clearInterval(waitForWindowControl);
-        console.log("✅ window-control DOM 준비 완료");
+  const loadTodoToday = fetch("../html/component/todo-today.html")
+    .then((res) => res.text())
+    .then((data) => {
+      document.getElementById("todo-today").innerHTML = data;
+    });
 
-        // ✅ window-control.js 로드
-        const script = document.createElement("script");
-        script.src = "../js/window-control.js";
-        document.body.appendChild(script);
+  const loadIcons = fetch("../../../assets/icons/icons.svg")
+    .then((res) => res.text())
+    .then((data) => document.body.insertAdjacentHTML("afterbegin", data));
 
-        // ✅ 툴팁, 사이드바 재초기화
-        initTooltip();
-        initializeSidebarApp();
+  // 2. 모든 Promise가 완료되기를 기다림
+  Promise.all([loadWindowControl, loadSidebar, loadTodoToday, loadIcons])
+    .then(() => {
+      console.log("✅ All components and icons loaded.");
+
+      // 3. 모든 HTML이 로드된 후, 필요한 스크립트와 앱을 초기화
+      // ✅ window-control.js 로드
+      const script = document.createElement("script");
+      script.src = "../js/window-control.js";
+      document.body.appendChild(script);
+
+      // ✅ 사이드바의 프로필 버튼에 data- 속성 동적 추가
+      const sidebarContainer = document.getElementById("sidebar");
+      let userProfileButton = null;
+
+      if (sidebarContainer) {
+         userProfileButton = sidebarContainer.querySelector(
+           ".user-profile" // .more 대신 div 전체
+         );
       }
-    }, 100);
-  })
-  .catch((err) => console.error("window-control 불러오기 실패:", err));
+      
+      if (userProfileButton) {
+        userProfileButton.dataset.contextMenuTarget = "user-context-menu";
+        console.log("✅ User profile (div) context menu trigger set.");
+      } else {
+        console.warn("⚠️ Could not find .user-profile div");
+      }
+      
+// --- [신규 추가] 로그아웃 버튼 이벤트 리스너 ---
+      const logoutButton = document.getElementById("logout-button");
+      if (logoutButton) {
+        logoutButton.addEventListener('click', async () => {
+          console.log("로그아웃 버튼 클릭됨");
+          try {
+            if (window.appAPI && window.appAPI.signOut) {
+              // 1. Electron/App 환경
+              const result = await window.appAPI.signOut();
+              if (result.ok) {
+                console.log('로그아웃 성공. 로그인 페이지로 이동합니다.');
+                // [수정] URL 파라미터 추가
+                window.location.href = './login.html?status=loggedout';
+              } else {
+                console.error('로그아웃 실패:', result.error);
+                alert('로그아웃에 실패했습니다: ' + result.error);
+              }
+            } else {
+              // 2. Web-test 환경
+              console.warn('WEB 테스트: appAPI 없음. 가상 로그아웃합니다.');
+              // [수정] URL 파라미터 추가
+              window.location.href = './login.html?status=loggedout';
+            }
+          } catch (e) {
+            console.error('로그아웃 중 오류 발생:', e);
+            alert('로그아웃 중 오류가 발생했습니다: ' + e.message);
+          }
+        });
+      } else {
+        console.warn("⚠️ 로그아웃 버튼(#logout-button)을 찾을 수 없습니다.");
+      }
+      // --- [신규 추가 끝] ---
 
-      fetch("../html/component/sidebar.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("sidebar").innerHTML = data;
-        })
-        .catch((error) => console.error("Sidebar 불러오기 실패:", error));
+      // ✅ 툴팁, 사이드바, 컨텍스트 메뉴 초기화
+      initTooltip();
+      
+      if (typeof initContextMenus === 'function') {
+        initContextMenus(); // 👈 컨텍스트 메뉴 초기화 (가장 먼저)
+      } else {
+        console.error("⚠️ initContextMenus is not defined.");
+      }
 
-      fetch("../html/component/todo-today.html")
-        .then((res) => res.text())
-        .then((data) => {
-          document.getElementById("todo-today").innerHTML = data;
-        })
-        .catch((err) => console.error("todo-today 불러오기 실패:", err));
-
-      fetch("../../../assets/icons/icons.svg")
-        .then((res) => res.text())
-        .then((data) => document.body.insertAdjacentHTML("afterbegin", data))
-        .catch((err) => console.error("SVG 불러오기 실패:", err));
-    </script>
+      initializeSidebarApp(); // 👈 사이드바 앱 초기화
+    })
+    .catch((err) => {
+      console.error("Component loading failed:", err);
+    });
+</script>
   </body>
 </html>

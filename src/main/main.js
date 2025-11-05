@@ -18,7 +18,7 @@ function createWindow() {
     height: 800,
     frame: false,
     minWidth: 500,
-    minHeight: 500,
+    minHeight: 728,
     webPreferences: {
       partition: "persist:main",
       preload: preloadPath,

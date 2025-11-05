@@ -1,11 +1,16 @@
 .tooltip {
   position: fixed;
   background: var(--main-color-80);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--bg-color);
   padding: 4px 9px;
-  border-radius: 50px;
+  border-radius: 6px;
   font-size: 12px;
   font-weight: 500;
+  line-height: 16px;
+  letter-spacing: -0.2px;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;

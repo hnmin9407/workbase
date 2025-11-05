@@ -9,6 +9,7 @@
     --main-color: #000;
     --main-color-3: rgba(0, 0, 0, 0.03);
     --main-color-5: rgba(0, 0, 0, 0.05);
+    --main-color-8: rgba(0, 0, 0, 0.08);
     --main-color-10: rgba(0, 0, 0, 0.1);
     --main-color-20: rgba(0, 0, 0, 0.2);
     --main-color-30: rgba(0, 0, 0, 0.3);
@@ -23,6 +24,7 @@
     --bg-color: #FFF;
     --bg-color-3: rgba(255, 255, 255, 0.03);
     --bg-color-5: rgba(255, 255, 255, 0.05);
+    --bg-color-8: rgba(255, 255, 255, 0.08);
     --bg-color-10: rgba(255, 255, 255, 0.1);
     --bg-color-20: rgba(255, 255, 255, 0.2);
     --bg-color-30: rgba(255, 255, 255, 0.3);
@@ -36,6 +38,8 @@
     --shadow-color: rgba(0, 0, 0, 0.05);
 
     --logo-brightness: 0;
+    --logo-darkmode: grayscale(1) brightness(0);
+    --logo-darkmode-text: #000000;
 
 }
 
@@ -69,9 +73,11 @@
     --main-color-90: rgba(228, 228, 231, 0.9);
     --main-color-95: rgba(228, 228, 231, 0.95);
 
-    --shadow-color: rgba(0, 0, 0, 0.4);
+    --shadow-color: rgba(0, 0, 0, 0.1);
 
     --logo-brightness: 50;
+    --logo-darkmode: grayscale(1) brightness(100);
+    --logo-darkmode-text: #FFFFFF;
 
 
 
@@ -93,6 +99,7 @@ body {
     -moz-user-select: none;    /* Firefox */
     -ms-user-select: none;     /* IE 10+ */
     user-select: none;         /* Standard */
+    overflow-y: hidden;
 }
 
 .main {
@@ -125,19 +132,20 @@ button {
     height: 24px;
     border-radius: 6px;
     background: transparent;
-    transition: background 0.1s ease, color 0.1s ease;
+    transition: all 0.1s ease;
     color: var(--main-color-40);
     cursor: pointer;
     box-sizing: border-box;
 }
 
 .button-24:hover {
-    background: var(--main-color-3);
+    background: var(--main-color-5);
     color: var(--main-color);
 }
 
 .button-24:active {
-    background: var(--main-color-5);
+    background: var(--main-color-10);
+    scale: 0.90;
 }
 
 
@@ -178,7 +186,7 @@ h3 {
   border-radius: 12px;
   box-shadow: 0 5px 10px var(--shadow-color);
   border: 1px solid var(--main-color-5);
-  padding: 16px;
+  padding: 16px 32px 16px 16px;
   box-sizing: border-box;
   opacity: 0;
   transform: translateY(20px); /* 오른쪽 바깥에서 시작 */
@@ -205,6 +213,16 @@ h3 {
     height: 42px;
     border-radius: 8px;
     background: #ffaa00;
+}
+
+.alert-icon-check {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    background: #008cff;
 }
 
 .alert-popup .left svg {

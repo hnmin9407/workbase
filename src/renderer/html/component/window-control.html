@@ -1,6 +1,6 @@
 <div class="window-control">
   <div class="left">
-    <div class="home-button" data-tooltip="홈" data-direction="bottom">
+    <div class="home-button">
       <img src="../../../assets/image/logo.png" />
     </div>
     <div
@@ -13,23 +13,27 @@
     </div>
   </div>
   <div class="right">
-    <div class="mode-toggle-button" id="mode-toggle-button">
-      <svg class="icon" style="width: 12px;"">
-        <use href="#icon-dark-mode"></use>
-      </svg>
+    <div class="window-control-function">
+      <div class="mode-toggle-button" id="mode-toggle-button" data-tooltip="테마 전환" data-direction="bottom">
+        <svg class="icon" style="width: 16px">
+          <use href="#icon-dark-mode"></use>
+        </svg>
+      </div>
     </div>
-    <div class="window-control-button" id="window-minimize">
-      <svg class="icon" style="width: 12px">
-        <use href="#icon-minimize"></use>
-      </svg>
-    </div>
-    <div class="window-control-button" id="window-maximize">
-      <svg class="icon" style="width: 12px">
-        <use href="#icon-maximize"></use>
-      </svg>
-    </div>
-    <div class="window-control-button" id="window-close">
-      <svg class="icon"><use href="#icon-close"></use></svg>
+    <div class="window-control-wrap">
+      <div class="window-control-button" id="window-minimize">
+        <svg class="icon" style="width: 12px">
+          <use href="#icon-minimize"></use>
+        </svg>
+      </div>
+      <div class="window-control-button" id="window-maximize">
+        <svg class="icon" style="width: 12px">
+          <use href="#icon-maximize"></use>
+        </svg>
+      </div>
+      <div class="window-control-button" id="window-close">
+        <svg class="icon"><use href="#icon-close"></use></svg>
+      </div>
     </div>
   </div>
 </div>

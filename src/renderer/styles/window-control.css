@@ -26,24 +26,15 @@
     height: 32px;
     border-radius: 6px;
     background: transparent;
-    cursor: pointer;
-    transition: background 0.1s ease;
+    transition: all 0.1s ease;
   }
 
   .home-button img {
     width: 20px;
     height: 11px;
     filter: grayscale(1) brightness(var(--logo-brightness));
-    opacity: 0.4;
-    transition: opacity 0.1s ease;
-  }
-
-  .home-button:hover {
-    background: var(--main-color-5);
-  }
-
-  .home-button:hover img {
     opacity: 1;
+    transition: opacity 0.1s ease;
   }
 
   .sidebar-fold-button {
@@ -55,7 +46,7 @@
     border-radius: 6px;
     background: transparent;
     cursor: pointer;
-    transition: background 0.1s ease;
+    transition: all 0.1s ease;
   }
 
   .sidebar-fold-button .icon {
@@ -68,6 +59,11 @@
     background: var(--main-color-5);
   }
 
+  .sidebar-fold-button:active {
+    background: var(--main-color-10);
+    scale: 0.95;
+  }
+
   .sidebar-fold-button:hover .icon {
     opacity: 1;
   }
@@ -78,6 +74,15 @@
     -webkit-app-region: no-drag;
   }
 
+  .window-control-function {
+    display: flex;
+    margin-right: 0px;
+  }
+
+  .window-control-wrap {
+    display: flex;
+  }
+
   .window-control-button {
     display: flex;
     justify-content: center;
@@ -86,10 +91,15 @@
     height: 36px;
     background: transparent;
     color: var(--main-color);
+    transition: 0.1s ease;
   }
 
   .window-control-button:hover {
     background: var(--main-color-5);
+  }
+
+  .window-control-button:active {
+    background: var(--main-color-10);
   }
 
     .mode-toggle-button {
@@ -101,7 +111,7 @@
     border-radius: 6px;
     background: transparent;
     cursor: pointer;
-    transition: background 0.1s ease;
+    transition: all 0.1s ease;
   }
 
   .mode-toggle-button .icon {
@@ -112,6 +122,11 @@
 
   .mode-toggle-button:hover {
     background: var(--main-color-5);
+  }
+
+  .mode-toggle-button:active {
+    background: var(--main-color-10);
+    scale: 0.95;
   }
 
   .mode-toggle-button:hover .icon {

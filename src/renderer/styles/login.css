@@ -13,7 +13,7 @@
 
 .login-container {
     display: flex;
-    
+    position: relative;
     background: var(--bg-color);
     width: 100%;
     height: 100%;
@@ -23,36 +23,183 @@
     border-radius: 16px;
     filter: drop-shadow(0px 4px 16px var(--shadow-color));
     overflow: hidden;
-    padding: 16px;
     box-sizing: border-box;
 }
 
 .login-container .left {
-    flex: 1;
-    background-image: url('https://i.pinimg.com/736x/30/e7/76/30e7768dfb36bc148c44597b5c8d7852.jpg');
-    background-size: cover;
-    background-position: center;
-    border-radius: 8px;
+  flex: 1;
+  border-radius: 8px 0px 0px 8px;
+  position: relative; 
+  overflow: hidden; 
+}
+
+.login-container .left video {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  filter: grayscale(1);
+  top: 0;
+  left: 0;
+}
+
+.video-overlay-text {
+}
+
+.video-overlay-text .logo {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.3s ease, left 0.3s ease;
+}
+
+.video-overlay-text .logo img {
+  height: 12px;
+  filter: grayscale(1) brightness(100)
+}
+
+.video-overlay-text .logo h2 {
+  font-family: var(--mont);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: #FFFFFF;
+}
+
+/* 2. h1 태그 스타일 (세로 중앙) */
+.video-overlay-text h1 {
+  position: absolute;
+  top: 45%;
+  z-index: 1;
+  width: 100%;
+  padding: 0 32px;
+  box-sizing: border-box;
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.4;
+  color: #FFFFFF;
+  white-space: nowrap;
 }
 
 .login-container .right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
+  display: flex;
+  width: 468px;
+  flex-shrink: 0;
+  flex-direction: column;
+  box-sizing: border-box;
+  background: var(--bg-color);
+  position: relative;
+  overflow: hidden; /* 👈 [추가] 이 줄을 추가하세요 */
 }
 
+.login-container .right .logo {
+  position: absolute;
+  top: 32px;
+  left: 24px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease, left 0.3s ease;
+}
+
+.login-container .right .logo img {
+  height: 12px;
+  filter: var(--logo-darkmode);
+}
+
+.login-container .right .logo h2 {
+  font-family: var(--mont);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--logo-darkmode-text);
+}
+
+@media (max-width: 700px) {
+
+    .video-overlay-text .logo {
+      opacity: 0;
+      left: 40px;
+  }
+
+  .login-container .right .logo {
+  opacity: 1;
+  left: 32px;
+  }
+}
+
+.login-wrap,
+.join-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  width: 468px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px;
+  gap: 32px;
+  box-sizing: border-box;
+}
+
+/* 기본 상태 (로그인 폼) */
 .login-wrap {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    padding-left: 96px;
-    padding-right: 80px;
-    gap: 32px;
-    box-sizing: border-box;
-    position: relative;
+  opacity: 1;
+  transform: scale(1);
+  z-index: -2;
+  pointer-events: auto; /* 클릭 가능 */
+}
+.join-wrap {
+  opacity: 0;
+  transform: scale(0.95); /* 살짝 작아짐 */
+  z-index: 1;
+  pointer-events: none; /* 클릭 방지 */
+  display: flex !important; /* display: none 제거 */
+}
+
+/* 회원가입 상태 (.right.show-join) */
+.login-container .right.show-join .login-wrap {
+  opacity: 0;
+  transform: scale(0.95);
+  z-index: -1;
+  pointer-events: none;
+}
+.login-container .right.show-join .join-wrap {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+  pointer-events: auto;
+}
+
+/* [추가] 5. 기본 상태 설정 */
+.login-wrap {
+  transform: translateX(0); /* 로그인 폼은 제자리에 */
+  z-index: 2; /* 위에 표시 */
+}
+.join-wrap {
+  transform: translateX(100%); /* 회원가입 폼은 오른쪽 밖으로 */
+  z-index: 1; /* 뒤에 숨김 */
+  display: flex !important; /* display: none 제거 */
+}
+
+/* [추가] 6. .right 컨테이너에 .show-join 클래스가 붙었을 때 */
+.login-container .right.show-join .login-wrap {
+  transform: translateX(-100%); /* 로그인 폼은 왼쪽 밖으로 */
+  z-index: 1;
+}
+.login-container .right.show-join .join-wrap {
+  transform: translateX(0); /* 회원가입 폼은 제자리로 */
+  z-index: 2;
 }
 
 .login-title {
@@ -223,6 +370,31 @@
 
 .login-button:active {
     background: var(--main-color-80);
+}
+
+.cancel-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 48px;
+    border-radius: 8px;
+    background: var(--main-color-3);
+    color: var(--main-color);
+    font-family: var(--pre);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    transition: background 0.1s ease;
+}
+
+.cancel-button:hover {
+    background: var(--main-color-5);
+}
+
+.cancel-button:active {
+    background: var(--main-color-10);
 }
 
 .login-form .login-input-id:-webkit-autofill,
