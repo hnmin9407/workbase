@@ -83,36 +83,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   // ---
 
-  // --- [신규] Firebase 오류 코드 -> 한글 번역기 ---
-  function getKoreanErrorMessage(errorCode) {
-    switch (errorCode) {
-      // --- 로그인 실패 ---
-      case "auth/user-not-found":
-      case "auth/wrong-password":
-      case "auth/invalid-credential":
-        return "아이디 또는 비밀번호를 확인해 주세요.";
-      
-      // --- 회원가입 실패 ---
-      case "auth/email-already-in-use":
-        return "이미 사용 중인 이메일입니다.";
-      case "auth/weak-password":
-        return "비밀번호는 6자리 이상이어야 합니다.";
-      case "auth/invalid-email":
-        return "올바른 이메일 형식이 아닙니다.";
-        
-      // --- 공통 오류 ---
-      case "auth/network-request-failed":
-        return "네트워크 연결을 확인해 주세요.";
-      case "auth/too-many-requests":
-        return "잠시 후 다시 시도해 주세요.";
-        
-      // --- 기타 ---
-      default:
-        return "알 수 없는 오류가 발생했습니다.";
-    }
-  }
-  // ---
-
   // --- 페이지 로드 시 상태 확인 ---
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get("status") === "loggedout") {
@@ -142,26 +112,38 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   // ---
 
-  // --- (3) 자동 로그인 기능 (Electron 전용) ---
-  try {
-    if (window.appAPI && window.appAPI.onAuthStateChange) {
-      window.appAPI.onAuthStateChange((user) => {
-        const isJustSignedUp = urlParams.get('status') === 'signedup';
-        const isJustLoggedOut = urlParams.get('status') === 'loggedout';
-        if (user && !isJustSignedUp && !isJustLoggedOut && !isSigningUp) { 
+  // --- (3) [수정] 자동 로그인 기능 (비동기 1회성 확인) ---
+  (async () => {
+    try {
+      if (window.appAPI && window.appAPI.getCurrentUser) {
+        // 1. preload.js의 새 함수를 호출하고 응답을 기다림
+        const user = await window.appAPI.getCurrentUser();
+
+        // 2. URL 파라미터 확인 (로그아웃/회원가입 직후인지)
+        const isJustSignedUp = urlParams.get("status") === "signedup";
+        const isJustLoggedOut = urlParams.get("status") === "loggedout";
+
+        // 3. user가 존재하고, 방금 로그아웃/회원가입 한 것이 아니면 자동 로그인
+        if (user && !isJustSignedUp && !isJustLoggedOut) {
           console.log("자동 로그인:", user.uid);
           redirectToIndex();
         } else {
-          console.log("로그아웃 상태이거나 회원가입 진행 중. 로그인 페이지 표시.");
+          // 4. user가 없거나, 로그아웃/회원가입 직후면 로그인 페이지 표시
+          console.log("로그인 페이지 표시 (자동 로그인 없음)");
+          // (만약 로딩 스피너가 있다면 여기서 숨김)
+          // document.getElementById('loading-spinner').style.display = 'none';
         }
-      });
-    } else {
-      console.info("appAPI가 없습니다. (웹 테스트 환경)");
+      } else {
+        console.warn(
+          "appAPI.getCurrentUser가 없습니다. (웹 테스트 환경이거나 preload.js 오류)"
+        );
+      }
+    } catch (e) {
+      console.error("자동 로그인 확인 중 오류:", e);
+      // (오류 발생 시에도 로그인 폼은 보여야 함)
     }
-  } catch (e) {
-    console.error("appAPI.onAuthStateChange 호출 실패:", e);
-  }
-  // ---
+  })(); // 👈 즉시 실행 함수
+  // --- [수정 끝] ---
 
   // --- (4) '로그인 상태 유지' 체크박스 UI 토글 ---
   if (autoLoginButton) {
@@ -177,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
     passwordInput.disabled = true;
     if (emailLoginButton) emailLoginButton.disabled = true;
     if (emailLoginButton)
-      emailLoginButton.querySelector("span").textContent = "로그인"; // [수정]
+      emailLoginButton.querySelector("span").textContent = "로그인 중..."; // '로그인.' -> '로그인 중...'
 
     const email = emailInput.value;
     const password = passwordInput.value;
@@ -194,6 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     try {
       if (window.appAPI && window.appAPI.signInWithEmail) {
+        // --- 1. Electron 환경 ---
         const result = await window.appAPI.signInWithEmail(
           email,
           password,
@@ -208,13 +191,12 @@ document.addEventListener("DOMContentLoaded", () => {
           if (emailLoginButton) emailLoginButton.disabled = false;
           if (emailLoginButton)
             emailLoginButton.querySelector("span").textContent = "로그인";
-          
-          // [수정] 한글 오류 메시지 사용
-          const message = getKoreanErrorMessage(result.errorCode);
+          const message = getKoreanErrorMessage(result.errorCode); // 한글 오류
           showAlert(message);
           console.error("이메일 로그인 실패:", result.errorCode, result.error);
         }
       } else {
+        // --- 2. Web 환경 (API 없음) ---
         console.error("appAPI.signInWithEmail not found.");
         emailInput.disabled = false;
         passwordInput.disabled = false;
@@ -229,7 +211,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (emailLoginButton) emailLoginButton.disabled = false;
       if (emailLoginButton)
         emailLoginButton.querySelector("span").textContent = "로그인";
-      showAlert("아이디 또는 비밀번호를 확인해 주세요.");
+      const message = getKoreanErrorMessage(e.code); // 한글 오류
+      showAlert(message);
       console.error("appAPI.signInWithEmail 호출 실패:", e);
     }
   };
@@ -243,14 +226,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- (6) 이메일/비밀번호 "회원가입" 처리 ---
   const handleEmailSignUp = async () => {
-    isSigningUp = true; 
+    isSigningUp = true; // 👈 자동 로그인 방지 플래그 설정
     joinEmailInput.disabled = true;
     joinPasswordInput.disabled = true;
     joinPasswordConfirmInput.disabled = true;
     joinUsernameInput.disabled = true;
     if (joinButton) joinButton.disabled = true;
     if (joinButton)
-      joinButton.querySelector("span").textContent = "회원가입"; //
+      joinButton.querySelector("span").textContent = "회원가입 중..."; // '로그인.' -> '로그인 중...'
 
     const email = joinEmailInput.value;
     const password = joinPasswordInput.value;
@@ -266,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
       joinUsernameInput.disabled = false;
       if (joinButton) joinButton.disabled = false;
       if (joinButton) joinButton.querySelector("span").textContent = "회원가입";
-      isSigningUp = false;
+      isSigningUp = false; // 👈 플래그 해제
       return;
     }
 
@@ -279,20 +262,23 @@ document.addEventListener("DOMContentLoaded", () => {
       joinUsernameInput.disabled = false;
       if (joinButton) joinButton.disabled = false;
       if (joinButton) joinButton.querySelector("span").textContent = "회원가입";
-      isSigningUp = false;
+      isSigningUp = false; // 👈 플래그 해제
       return;
     }
 
     try {
       if (window.appAPI && window.appAPI.signUpWithEmail) {
+        // --- 1. Electron 환경 (preload.js의 API 호출) ---
         const result = await window.appAPI.signUpWithEmail(
           email,
           password,
           username
         );
+
         if (result.ok) {
           console.log("회원가입 성공:", result.user.uid);
-          window.location.href = './login.html?status=signedup';
+          window.location.href = "./login.html?status=signedup";
+          // (페이지가 리로드되므로 isSigningUp 플래그 해제 불필요)
         } else {
           // (Electron API 실패 시 활성화 로직)
           joinEmailInput.disabled = false;
@@ -302,14 +288,13 @@ document.addEventListener("DOMContentLoaded", () => {
           if (joinButton) joinButton.disabled = false;
           if (joinButton)
             joinButton.querySelector("span").textContent = "회원가입";
-          
-          // [수정] 한글 오류 메시지 사용
-          const message = getKoreanErrorMessage(result.errorCode);
+          const message = getKoreanErrorMessage(result.errorCode); // 한글 오류
           showAlert(message);
           console.error("회원가입 실패:", result.errorCode, result.error);
-          isSigningUp = false;
+          isSigningUp = false; // 👈 플래그 해제
         }
       } else {
+        // --- 2. Web 환경 (API 없음) ---
         console.error("appAPI.signUpWithEmail not found.");
         joinEmailInput.disabled = false;
         joinPasswordInput.disabled = false;
@@ -319,7 +304,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (joinButton)
           joinButton.querySelector("span").textContent = "회원가입";
         showAlert("appAPI가 없습니다. Electron 환경에서 실행해주세요.");
-        isSigningUp = false;
+        isSigningUp = false; // 👈 플래그 해제
       }
     } catch (e) {
       // (전체 오류 발생 시 활성화 로직)
@@ -329,9 +314,10 @@ document.addEventListener("DOMContentLoaded", () => {
       joinUsernameInput.disabled = false;
       if (joinButton) joinButton.disabled = false;
       if (joinButton) joinButton.querySelector("span").textContent = "회원가입";
-      showAlert("회원가입 중 오류가 발생했습니다: " + e.message);
+      const message = getKoreanErrorMessage(e.code); // 한글 오류
+      showAlert(message);
       console.error("appAPI.signUpWithEmail 호출 실패:", e);
-      isSigningUp = false;
+      isSigningUp = false; // 👈 플래그 해제
     }
   };
   if (joinForm) {
@@ -346,15 +332,16 @@ document.addEventListener("DOMContentLoaded", () => {
   if (googleLoginButton) {
     googleLoginButton.addEventListener("click", async () => {
       if (window.appAPI && window.appAPI.signInWithGoogle) {
-        const rememberMe = checkbox ? checkbox.classList.contains("active") : false;
+        const rememberMe = checkbox
+          ? checkbox.classList.contains("active")
+          : false;
         try {
           const result = await window.appAPI.signInWithGoogle(rememberMe);
           if (result.ok) {
             console.log("구글 로그인 성공:", result.user.uid);
             redirectToIndex();
           } else {
-            // [수정] 한글 오류 메시지 사용 (구글 팝업 오류 등)
-            const message = getKoreanErrorMessage(result.errorCode);
+            const message = getKoreanErrorMessage(result.errorCode); // 한글 오류
             showAlert(message);
             console.error("구글 로그인 실패:", result.errorCode, result.error);
           }
@@ -397,5 +384,35 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   });
+
+  // --- (9) [신규] Firebase 오류 코드 -> 한글 번역기 ---
+  function getKoreanErrorMessage(errorCode) {
+    switch (errorCode) {
+      // --- 로그인 실패 ---
+      case "auth/user-not-found":
+      case "auth/wrong-password":
+      case "auth/invalid-credential":
+        return "아이디 또는 비밀번호를 확인해 주세요.";
+
+      // --- 회원가입 실패 ---
+      case "auth/email-already-in-use":
+        return "이미 사용 중인 이메일입니다.";
+      case "auth/weak-password":
+        return "비밀번호는 6자리 이상이어야 합니다.";
+      case "auth/invalid-email":
+        return "올바른 이메일 형식이 아닙니다.";
+
+      // --- 공통 오류 ---
+      case "auth/network-request-failed":
+        return "네트워크 연결을 확인해 주세요.";
+      case "auth/too-many-requests":
+        return "잠시 후 다시 시도해 주세요.";
+
+      // --- 기타 ---
+      default:
+        console.warn("알 수 없는 오류 코드:", errorCode);
+        return "알 수 없는 오류가 발생했습니다.";
+    }
+  }
   // ---
 }); // DOMContentLoaded 끝

@@ -71,105 +71,107 @@
     <script src="../js/tooltip.js"></script>
     <script src="../js/context-menu.js"></script>
 
-<script>
-  // 1. 각 컴포넌트 로드를 Promise로 정의
-  const loadWindowControl = fetch("../html/component/window-control.html")
-    .then((res) => res.text())
-    .then((data) => {
-      document.getElementById("window-control").innerHTML = data;
-    });
-
-  const loadSidebar = fetch("../html/component/sidebar.html")
-    .then((response) => response.text())
-    .then((data) => {
-      document.getElementById("sidebar").innerHTML = data;
-    });
-
-  const loadTodoToday = fetch("../html/component/todo-today.html")
-    .then((res) => res.text())
-    .then((data) => {
-      document.getElementById("todo-today").innerHTML = data;
-    });
-
-  const loadIcons = fetch("../../../assets/icons/icons.svg")
-    .then((res) => res.text())
-    .then((data) => document.body.insertAdjacentHTML("afterbegin", data));
-
-  // 2. 모든 Promise가 완료되기를 기다림
-  Promise.all([loadWindowControl, loadSidebar, loadTodoToday, loadIcons])
-    .then(() => {
-      console.log("✅ All components and icons loaded.");
-
-      // 3. 모든 HTML이 로드된 후, 필요한 스크립트와 앱을 초기화
-      // ✅ window-control.js 로드
-      const script = document.createElement("script");
-      script.src = "../js/window-control.js";
-      document.body.appendChild(script);
-
-      // ✅ 사이드바의 프로필 버튼에 data- 속성 동적 추가
-      const sidebarContainer = document.getElementById("sidebar");
-      let userProfileButton = null;
-
-      if (sidebarContainer) {
-         userProfileButton = sidebarContainer.querySelector(
-           ".user-profile" // .more 대신 div 전체
-         );
-      }
-      
-      if (userProfileButton) {
-        userProfileButton.dataset.contextMenuTarget = "user-context-menu";
-        console.log("✅ User profile (div) context menu trigger set.");
-      } else {
-        console.warn("⚠️ Could not find .user-profile div");
-      }
-      
-// --- [신규 추가] 로그아웃 버튼 이벤트 리스너 ---
-      const logoutButton = document.getElementById("logout-button");
-      if (logoutButton) {
-        logoutButton.addEventListener('click', async () => {
-          console.log("로그아웃 버튼 클릭됨");
-          try {
-            if (window.appAPI && window.appAPI.signOut) {
-              // 1. Electron/App 환경
-              const result = await window.appAPI.signOut();
-              if (result.ok) {
-                console.log('로그아웃 성공. 로그인 페이지로 이동합니다.');
-                // [수정] URL 파라미터 추가
-                window.location.href = './login.html?status=loggedout';
-              } else {
-                console.error('로그아웃 실패:', result.error);
-                alert('로그아웃에 실패했습니다: ' + result.error);
-              }
-            } else {
-              // 2. Web-test 환경
-              console.warn('WEB 테스트: appAPI 없음. 가상 로그아웃합니다.');
-              // [수정] URL 파라미터 추가
-              window.location.href = './login.html?status=loggedout';
-            }
-          } catch (e) {
-            console.error('로그아웃 중 오류 발생:', e);
-            alert('로그아웃 중 오류가 발생했습니다: ' + e.message);
-          }
+    <script>
+      // 1. 각 컴포넌트 로드를 Promise로 정의
+      const loadWindowControl = fetch("../html/component/window-control.html")
+        .then((res) => res.text())
+        .then((data) => {
+          document.getElementById("window-control").innerHTML = data;
         });
-      } else {
-        console.warn("⚠️ 로그아웃 버튼(#logout-button)을 찾을 수 없습니다.");
-      }
-      // --- [신규 추가 끝] ---
 
-      // ✅ 툴팁, 사이드바, 컨텍스트 메뉴 초기화
-      initTooltip();
-      
-      if (typeof initContextMenus === 'function') {
-        initContextMenus(); // 👈 컨텍스트 메뉴 초기화 (가장 먼저)
-      } else {
-        console.error("⚠️ initContextMenus is not defined.");
-      }
+      const loadSidebar = fetch("../html/component/sidebar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar").innerHTML = data;
+        });
 
-      initializeSidebarApp(); // 👈 사이드바 앱 초기화
-    })
-    .catch((err) => {
-      console.error("Component loading failed:", err);
-    });
-</script>
+      const loadTodoToday = fetch("../html/component/todo-today.html")
+        .then((res) => res.text())
+        .then((data) => {
+          document.getElementById("todo-today").innerHTML = data;
+        });
+
+      const loadIcons = fetch("../../../assets/icons/icons.svg")
+        .then((res) => res.text())
+        .then((data) => document.body.insertAdjacentHTML("afterbegin", data));
+
+      // 2. 모든 Promise가 완료되기를 기다림
+      Promise.all([loadWindowControl, loadSidebar, loadTodoToday, loadIcons])
+        .then(() => {
+          console.log("✅ All components and icons loaded.");
+
+          // 3. 모든 HTML이 로드된 후, 필요한 스크립트와 앱을 초기화
+          // ✅ window-control.js 로드
+          const script = document.createElement("script");
+          script.src = "../js/window-control.js";
+          document.body.appendChild(script);
+
+          // ✅ 사이드바의 프로필 버튼에 data- 속성 동적 추가
+          const sidebarContainer = document.getElementById("sidebar");
+          let userProfileButton = null;
+
+          if (sidebarContainer) {
+            userProfileButton = sidebarContainer.querySelector(
+              ".user-profile" // .more 대신 div 전체
+            );
+          }
+
+          if (userProfileButton) {
+            userProfileButton.dataset.contextMenuTarget = "user-context-menu";
+            console.log("✅ User profile (div) context menu trigger set.");
+          } else {
+            console.warn("⚠️ Could not find .user-profile div");
+          }
+
+          // --- [신규 추가] 로그아웃 버튼 이벤트 리스너 ---
+          const logoutButton = document.getElementById("logout-button");
+          if (logoutButton) {
+            logoutButton.addEventListener("click", async () => {
+              console.log("로그아웃 버튼 클릭됨");
+              try {
+                if (window.appAPI && window.appAPI.signOut) {
+                  // 1. Electron/App 환경
+                  const result = await window.appAPI.signOut();
+                  if (result.ok) {
+                    console.log("로그아웃 성공. 로그인 페이지로 이동합니다.");
+                    // [수정] URL 파라미터 추가
+                    window.location.href = "./login.html?status=loggedout";
+                  } else {
+                    console.error("로그아웃 실패:", result.error);
+                    alert("로그아웃에 실패했습니다: " + result.error);
+                  }
+                } else {
+                  // 2. Web-test 환경
+                  console.warn("WEB 테스트: appAPI 없음. 가상 로그아웃합니다.");
+                  // [수정] URL 파라미터 추가
+                  window.location.href = "./login.html?status=loggedout";
+                }
+              } catch (e) {
+                console.error("로그아웃 중 오류 발생:", e);
+                alert("로그아웃 중 오류가 발생했습니다: " + e.message);
+              }
+            });
+          } else {
+            console.warn(
+              "⚠️ 로그아웃 버튼(#logout-button)을 찾을 수 없습니다."
+            );
+          }
+          // --- [신규 추가 끝] ---
+
+          // ✅ 툴팁, 사이드바, 컨텍스트 메뉴 초기화
+          initTooltip();
+
+          if (typeof initContextMenus === "function") {
+            initContextMenus(); // 👈 컨텍스트 메뉴 초기화 (가장 먼저)
+          } else {
+            console.error("⚠️ initContextMenus is not defined.");
+          }
+
+          initializeSidebarApp(); // 👈 사이드바 앱 초기화
+        })
+        .catch((err) => {
+          console.error("Component loading failed:", err);
+        });
+    </script>
   </body>
 </html>

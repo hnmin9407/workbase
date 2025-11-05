@@ -1,179 +1,170 @@
 :root {
-    --mont: 'Montserrat', sans-serif;
-    --pre: 'pretendard', sans-serif;
-    
-    /* color */
+  --mont: "Montserrat", sans-serif;
+  --pre: "pretendard", sans-serif;
 
-    --body-bg: #F8F8F7;
+  /* color */
 
-    --main-color: #000;
-    --main-color-3: rgba(0, 0, 0, 0.03);
-    --main-color-5: rgba(0, 0, 0, 0.05);
-    --main-color-8: rgba(0, 0, 0, 0.08);
-    --main-color-10: rgba(0, 0, 0, 0.1);
-    --main-color-20: rgba(0, 0, 0, 0.2);
-    --main-color-30: rgba(0, 0, 0, 0.3);
-    --main-color-40: rgba(0, 0, 0, 0.4);
-    --main-color-50: rgba(0, 0, 0, 0.5);
-    --main-color-60: rgba(0, 0, 0, 0.6);
-    --main-color-70: rgba(0, 0, 0, 0.7);
-    --main-color-80: rgba(0, 0, 0, 0.8);
-    --main-color-90: rgba(0, 0, 0, 0.9);
-    --main-color-95: rgba(0, 0, 0, 0.95);
-    
-    --bg-color: #FFF;
-    --bg-color-3: rgba(255, 255, 255, 0.03);
-    --bg-color-5: rgba(255, 255, 255, 0.05);
-    --bg-color-8: rgba(255, 255, 255, 0.08);
-    --bg-color-10: rgba(255, 255, 255, 0.1);
-    --bg-color-20: rgba(255, 255, 255, 0.2);
-    --bg-color-30: rgba(255, 255, 255, 0.3);
-    --bg-color-40: rgba(255, 255, 255, 0.4);
-    --bg-color-50: rgba(255, 255, 255, 0.5);
-    --bg-color-60: rgba(255, 255, 255, 0.6);
-    --bg-color-70: rgba(255, 255, 255, 0.7);
-    --bg-color-80: rgba(255, 255, 255, 0.8);
-    --bg-color-90: rgba(255, 255, 255, 0.9);
+  --body-bg: #f8f8f7;
 
-    --shadow-color: rgba(0, 0, 0, 0.05);
+  --main-color: #000;
+  --main-color-3: rgba(0, 0, 0, 0.03);
+  --main-color-5: rgba(0, 0, 0, 0.05);
+  --main-color-8: rgba(0, 0, 0, 0.08);
+  --main-color-10: rgba(0, 0, 0, 0.1);
+  --main-color-20: rgba(0, 0, 0, 0.2);
+  --main-color-30: rgba(0, 0, 0, 0.3);
+  --main-color-40: rgba(0, 0, 0, 0.4);
+  --main-color-50: rgba(0, 0, 0, 0.5);
+  --main-color-60: rgba(0, 0, 0, 0.6);
+  --main-color-70: rgba(0, 0, 0, 0.7);
+  --main-color-80: rgba(0, 0, 0, 0.8);
+  --main-color-90: rgba(0, 0, 0, 0.9);
+  --main-color-95: rgba(0, 0, 0, 0.95);
 
-    --logo-brightness: 0;
-    --logo-darkmode: grayscale(1) brightness(0);
-    --logo-darkmode-text: #000000;
+  --bg-color: #fff;
+  --bg-color-3: rgba(255, 255, 255, 0.03);
+  --bg-color-5: rgba(255, 255, 255, 0.05);
+  --bg-color-8: rgba(255, 255, 255, 0.08);
+  --bg-color-10: rgba(255, 255, 255, 0.1);
+  --bg-color-20: rgba(255, 255, 255, 0.2);
+  --bg-color-30: rgba(255, 255, 255, 0.3);
+  --bg-color-40: rgba(255, 255, 255, 0.4);
+  --bg-color-50: rgba(255, 255, 255, 0.5);
+  --bg-color-60: rgba(255, 255, 255, 0.6);
+  --bg-color-70: rgba(255, 255, 255, 0.7);
+  --bg-color-80: rgba(255, 255, 255, 0.8);
+  --bg-color-90: rgba(255, 255, 255, 0.9);
 
+  --shadow-color: rgba(0, 0, 0, 0.05);
+
+  --logo-brightness: 0;
+  --logo-darkmode: grayscale(1) brightness(0);
+  --logo-darkmode-text: #000000;
 }
 
 :root[data-theme="dark"] {
-    --body-bg: #121212;
+  --body-bg: #121212;
 
-    --bg-color: #171717;
-    --bg-color-3: rgba(27, 27, 31, 0.03);
-    --bg-color-5: rgba(27, 27, 31, 0.05);
-    --bg-color-10: rgba(27, 27, 31, 0.1);
-    --bg-color-20: rgba(27, 27, 31, 0.2);
-    --bg-color-30: rgba(27, 27, 31, 0.3);
-    --bg-color-40: rgba(27, 27, 31, 0.4);
-    --bg-color-50: rgba(27, 27, 31, 0.5);
-    --bg-color-60: rgba(27, 27, 31, 0.6);
-    --bg-color-70: rgba(27, 27, 31, 0.7);
-    --bg-color-80: rgba(27, 27, 31, 0.8);
-    --bg-color-90: rgba(27, 27, 31, 0.9);
+  --bg-color: #171717;
+  --bg-color-3: rgba(27, 27, 31, 0.03);
+  --bg-color-5: rgba(27, 27, 31, 0.05);
+  --bg-color-10: rgba(27, 27, 31, 0.1);
+  --bg-color-20: rgba(27, 27, 31, 0.2);
+  --bg-color-30: rgba(27, 27, 31, 0.3);
+  --bg-color-40: rgba(27, 27, 31, 0.4);
+  --bg-color-50: rgba(27, 27, 31, 0.5);
+  --bg-color-60: rgba(27, 27, 31, 0.6);
+  --bg-color-70: rgba(27, 27, 31, 0.7);
+  --bg-color-80: rgba(27, 27, 31, 0.8);
+  --bg-color-90: rgba(27, 27, 31, 0.9);
 
-    --main-color: #e4e4e7;
-    --main-color-3: rgba(228, 228, 231, 0.03);
-    --main-color-5: rgba(228, 228, 231, 0.05);
-    --main-color-10: rgba(228, 228, 231, 0.1);
-    --main-color-20: rgba(228, 228, 231, 0.2);
-    --main-color-30: rgba(228, 228, 231, 0.3);
-    --main-color-40: rgba(228, 228, 231, 0.4);
-    --main-color-50: rgba(228, 228, 231, 0.5);
-    --main-color-60: rgba(228, 228, 231, 0.6);
-    --main-color-70: rgba(228, 228, 231, 0.7);
-    --main-color-80: rgba(228, 228, 231, 0.8);
-    --main-color-90: rgba(228, 228, 231, 0.9);
-    --main-color-95: rgba(228, 228, 231, 0.95);
+  --main-color: #e4e4e7;
+  --main-color-3: rgba(228, 228, 231, 0.03);
+  --main-color-5: rgba(228, 228, 231, 0.05);
+  --main-color-10: rgba(228, 228, 231, 0.1);
+  --main-color-20: rgba(228, 228, 231, 0.2);
+  --main-color-30: rgba(228, 228, 231, 0.3);
+  --main-color-40: rgba(228, 228, 231, 0.4);
+  --main-color-50: rgba(228, 228, 231, 0.5);
+  --main-color-60: rgba(228, 228, 231, 0.6);
+  --main-color-70: rgba(228, 228, 231, 0.7);
+  --main-color-80: rgba(228, 228, 231, 0.8);
+  --main-color-90: rgba(228, 228, 231, 0.9);
+  --main-color-95: rgba(228, 228, 231, 0.95);
 
-    --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-color: rgba(0, 0, 0, 0.1);
 
-    --logo-brightness: 50;
-    --logo-darkmode: grayscale(1) brightness(100);
-    --logo-darkmode-text: #FFFFFF;
-
-
-
-
-    
-
+  --logo-brightness: 50;
+  --logo-darkmode: grayscale(1) brightness(100);
+  --logo-darkmode-text: #ffffff;
 }
 
-
 html {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
 body {
-    padding: 0;
-    margin: 0;
-    -webkit-user-select: none; /* Safari, Chrome */
-    -moz-user-select: none;    /* Firefox */
-    -ms-user-select: none;     /* IE 10+ */
-    user-select: none;         /* Standard */
-    overflow-y: hidden;
+  padding: 0;
+  margin: 0;
+  -webkit-user-select: none; /* Safari, Chrome */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none; /* Standard */
+  overflow-y: hidden;
 }
 
 .main {
-    display: flex;
-    background: var(--bg-color);
+  display: flex;
+  background: var(--bg-color);
 }
 
 .icon {
-    width: 16px;
-    height: 16px;
-    fill: none;
-    stroke-width: 1.5px;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke-width: 1.5px;
 }
 
 .line {
-    width: 100%;
-    height: 1px;
-    background: var(--border-color);
+  width: 100%;
+  height: 1px;
+  background: var(--border-color);
 }
 
 button {
-    border: none;
+  border: none;
 }
 
 .button-24 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
-    background: transparent;
-    transition: all 0.1s ease;
-    color: var(--main-color-40);
-    cursor: pointer;
-    box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: transparent;
+  transition: all 0.1s ease;
+  color: var(--main-color-40);
+  cursor: pointer;
+  box-sizing: border-box;
 }
 
 .button-24:hover {
-    background: var(--main-color-5);
-    color: var(--main-color);
+  background: var(--main-color-5);
+  color: var(--main-color);
 }
 
 .button-24:active {
-    background: var(--main-color-10);
-    scale: 0.90;
+  background: var(--main-color-10);
+  scale: 0.9;
 }
 
-
 h1 {
-    font-family: var(--mont);
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -0.6px;
-    margin: 0;
-    color: var(--main-color);
+  font-family: var(--mont);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  margin: 0;
+  color: var(--main-color);
 }
 
 h2 {
-    font-family: var(--pre);
-    font-size: 22px;
-    font-weight: 400;
-    letter-spacing: -0.2px;
-    margin: 0;
-    color: var(--main-color);
+  font-family: var(--pre);
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  margin: 0;
+  color: var(--main-color);
 }
 
 h3 {
-    font-family: var(--pre);
-    font-size: 15px;
-    font-weight: 400;
-    letter-spacing: -0.2px;
-    margin: 0;
-    color: var(--main-color);
+  font-family: var(--pre);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  margin: 0;
+  color: var(--main-color);
 }
 
 .alert-popup {
@@ -195,51 +186,49 @@ h3 {
 }
 
 .alert-content {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .alert-popup .left {
-    display: flex;
+  display: flex;
 }
 
 .alert-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 8px;
-    background: #ffaa00;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: #ffaa00;
 }
 
 .alert-icon-check {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 8px;
-    background: #008cff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: #008cff;
 }
 
 .alert-popup .left svg {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 32px;
-    height: 32px;
-    fill: none;
-    color: var(--bg-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  fill: none;
+  color: var(--bg-color);
 }
 
 .alert-popup .right {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 /* 알림창이 활성화(show) 되었을 때 */
@@ -247,11 +236,11 @@ h3 {
   opacity: 1;
   transform: translateX(0);
   pointer-events: auto;
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .alert-title {
-    font-family: var(--pre);
+  font-family: var(--pre);
   font-size: 15px;
   font-weight: 600;
   letter-spacing: -0.2px;
@@ -261,10 +250,10 @@ h3 {
 }
 
 .alert-message {
-    font-family: var(--pre);
+  font-family: var(--pre);
   font-size: 14px;
   font-weight: 400;
-    color: var(--main-color-80);
+  color: var(--main-color-80);
   letter-spacing: -0.2px;
   line-height: 1.4;
 }

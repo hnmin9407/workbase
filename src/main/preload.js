@@ -10,7 +10,7 @@ const {
   signInWithEmailAndPassword,
   setPersistence,
   browserSessionPersistence,
-  browserLocalPersistence,
+  browserLocalPersistence, // 👈 (필수)
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   updateProfile,
@@ -38,12 +38,24 @@ const db = getFirestore(app);
 console.log("🔥 Firebase 초기화 완료 (preload.js)");
 
 // --- 로그인 상태 유지 헬퍼 함수 ---
+// [수정] 헬퍼 함수를 먼저 선언
 const setAuthPersistence = (rememberMe) => {
   const persistence = rememberMe
     ? browserLocalPersistence
     : browserSessionPersistence;
   return setPersistence(auth, persistence);
 };
+
+// --- 앱 로드 시 즉시 'local'로 영구 저장 설정 ---
+// [수정] 중복 선언이 아닌, 즉시 실행 코드로 변경
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("🔥 Firebase 영구 저장소(local) 설정 완료.");
+  })
+  .catch((error) => {
+    console.error("❌ Firebase 영구 저장소 설정 실패:", error);
+  });
+// --- [수정 끝] ---
 
 // --- contextBridge API 노출 ---
 contextBridge.exposeInMainWorld("appAPI", {
@@ -53,6 +65,7 @@ contextBridge.exposeInMainWorld("appAPI", {
   // ✅ 이메일 로그인
   signInWithEmail: async (email, password, rememberMe) => {
     try {
+      // 헬퍼 함수를 호출하여 'local' 또는 'session'으로 설정
       await setAuthPersistence(rememberMe);
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -61,7 +74,6 @@ contextBridge.exposeInMainWorld("appAPI", {
       );
       const user = userCredential.user;
       const safeUser = {
-        // 👈 "안전한" 일반 객체로 반환
         uid: user.uid,
         email: user.email,
         displayName: user.displayName || "",
@@ -69,12 +81,11 @@ contextBridge.exposeInMainWorld("appAPI", {
       return { ok: true, user: safeUser };
     } catch (error) {
       console.error("❌ 이메일 로그인 실패:", error.code, error.message);
-      // [수정] error.message 대신 errorCode: error.code를 반환
       return { ok: false, errorCode: error.code, error: error.message };
     }
   },
 
-  // ✅ [수정] 이메일 회원가입
+  // ✅ 이메일 회원가입
   signUpWithEmail: async (email, password, username) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -90,17 +101,15 @@ contextBridge.exposeInMainWorld("appAPI", {
       await signOut(auth);
       console.log("Preload: 회원가입 후 자동 로그아웃 처리됨");
 
-      // [수정] ❗ 복잡한 user 객체 대신 "안전한" 일반 객체로 반환
       const user = userCredential.user;
       const safeUser = {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName || "",
       };
-      return { ok: true, user: safeUser }; // 👈 수정된 부분
+      return { ok: true, user: safeUser };
     } catch (error) {
       console.error("Preload: 회원가입 실패", error.code, error.message);
-      // [수정] error.message 대신 errorCode: error.code를 반환
       return { ok: false, errorCode: error.code, error: error.message };
     }
   },
@@ -111,8 +120,6 @@ contextBridge.exposeInMainWorld("appAPI", {
       await setAuthPersistence(rememberMe);
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      // 구글 로그인은 user 객체를 그대로 반환해도 문제가 없는 경우가 많지만,
-      // 일관성을 위해 safeUser로 반환하는 것이 더 안전합니다.
       const user = result.user;
       const safeUser = {
         uid: user.uid,
@@ -121,7 +128,8 @@ contextBridge.exposeInMainWorld("appAPI", {
       };
       return { ok: true, user: safeUser };
     } catch (error) {
-      return { ok: false, error: error.message };
+      console.error("❌ 구글 로그인 실패:", error.code, error.message);
+      return { ok: false, errorCode: error.code, error: error.message };
     }
   },
 
@@ -133,11 +141,36 @@ contextBridge.exposeInMainWorld("appAPI", {
       return { ok: true };
     } catch (error) {
       console.error("Preload: 로그아웃 실패", error.code, error.message);
-      return { ok: false, error: error.message };
+      return { ok: false, errorCode: error.code, error: error.message };
     }
   },
 
-  // ✅ 로그인 상태 감시
+  // ✅ 자동 로그인을 위한 1회성 검사
+  getCurrentUser: () => {
+    return new Promise((resolve, reject) => {
+      const unsubscribe = onAuthStateChanged(
+        auth,
+        (user) => {
+          unsubscribe();
+          if (user) {
+            const safeUser = {
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName || "",
+            };
+            resolve(safeUser);
+          } else {
+            resolve(null);
+          }
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  },
+
+  // ✅ 로그인 상태 감시 (index.html에서 사용)
   onAuthStateChange: (callback) => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
