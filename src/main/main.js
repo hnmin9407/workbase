@@ -53,6 +53,16 @@ ipcMain.handle("read-file", (event, relativePath) => {
   }
 });
 
+// --- [신규 추가] 로그인 성공 IPC 리스너 ---
+ipcMain.on("login-success", () => {
+  console.log("✅ 로그인 성공 확인! index.html 로드.");
+  const indexPath = path.resolve(__dirname, "../renderer/html/index.html");
+  if (mainWindow) {
+    mainWindow.loadFile(indexPath);
+  }
+});
+// ---
+
 app.whenReady().then(() => {
   console.log("✅ Electron App 준비 완료");
   createWindow();

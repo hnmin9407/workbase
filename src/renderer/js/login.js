@@ -118,13 +118,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (window.appAPI && window.appAPI.getCurrentUser) {
         // 1. preload.js의 새 함수를 호출하고 응답을 기다림
         const user = await window.appAPI.getCurrentUser();
-
+        
         // 2. URL 파라미터 확인 (로그아웃/회원가입 직후인지)
-        const isJustSignedUp = urlParams.get("status") === "signedup";
-        const isJustLoggedOut = urlParams.get("status") === "loggedout";
+        const isJustSignedUp = urlParams.get('status') === 'signedup';
+        const isJustLoggedOut = urlParams.get('status') === 'loggedout';
 
         // 3. user가 존재하고, 방금 로그아웃/회원가입 한 것이 아니면 자동 로그인
-        if (user && !isJustSignedUp && !isJustLoggedOut) {
+        if (user && !isJustSignedUp && !isJustLoggedOut) { 
           console.log("자동 로그인:", user.uid);
           redirectToIndex();
         } else {
@@ -134,9 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // document.getElementById('loading-spinner').style.display = 'none';
         }
       } else {
-        console.warn(
-          "appAPI.getCurrentUser가 없습니다. (웹 테스트 환경이거나 preload.js 오류)"
-        );
+        console.warn("appAPI.getCurrentUser가 없습니다. (웹 테스트 환경이거나 preload.js 오류)");
       }
     } catch (e) {
       console.error("자동 로그인 확인 중 오류:", e);
@@ -277,8 +275,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (result.ok) {
           console.log("회원가입 성공:", result.user.uid);
-          window.location.href = "./login.html?status=signedup";
+          window.location.href = './login.html?status=signedup';
           // (페이지가 리로드되므로 isSigningUp 플래그 해제 불필요)
+
         } else {
           // (Electron API 실패 시 활성화 로직)
           joinEmailInput.disabled = false;
@@ -332,9 +331,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (googleLoginButton) {
     googleLoginButton.addEventListener("click", async () => {
       if (window.appAPI && window.appAPI.signInWithGoogle) {
-        const rememberMe = checkbox
-          ? checkbox.classList.contains("active")
-          : false;
+        const rememberMe = checkbox ? checkbox.classList.contains("active") : false;
         try {
           const result = await window.appAPI.signInWithGoogle(rememberMe);
           if (result.ok) {
@@ -384,7 +381,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   });
-
+  
   // --- (9) [신규] Firebase 오류 코드 -> 한글 번역기 ---
   function getKoreanErrorMessage(errorCode) {
     switch (errorCode) {
@@ -393,7 +390,7 @@ document.addEventListener("DOMContentLoaded", () => {
       case "auth/wrong-password":
       case "auth/invalid-credential":
         return "아이디 또는 비밀번호를 확인해 주세요.";
-
+      
       // --- 회원가입 실패 ---
       case "auth/email-already-in-use":
         return "이미 사용 중인 이메일입니다.";
@@ -401,13 +398,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return "비밀번호는 6자리 이상이어야 합니다.";
       case "auth/invalid-email":
         return "올바른 이메일 형식이 아닙니다.";
-
+        
       // --- 공통 오류 ---
       case "auth/network-request-failed":
         return "네트워크 연결을 확인해 주세요.";
       case "auth/too-many-requests":
         return "잠시 후 다시 시도해 주세요.";
-
+        
       // --- 기타 ---
       default:
         console.warn("알 수 없는 오류 코드:", errorCode);
