@@ -1,6 +1,29 @@
 // --- 페이지 이동 헬퍼 함수 ---
 function redirectToIndex() {
-  window.location.href = "./index.html";
+  // Electron 환경에서는 IPC를 통해 페이지 이동
+  if (window.appAPI && window.appAPI.navigateToPage) {
+    console.log("🔄 Electron: IPC를 통해 index 페이지로 이동");
+    window.appAPI.navigateToPage("index");
+  } else {
+    // 웹 환경에서는 일반적인 방법 사용
+    console.log("🔄 Web: window.location으로 페이지 이동");
+    window.location.href = "./index.html";
+  }
+}
+
+// --- 로그인 페이지로 이동 헬퍼 함수 ---
+function redirectToLogin(status = null) {
+  // Electron 환경에서는 IPC를 통해 페이지 이동
+  if (window.appAPI && window.appAPI.navigateToPage) {
+    console.log("🔄 Electron: IPC를 통해 login 페이지로 이동");
+    const queryParams = status ? { status } : {};
+    window.appAPI.navigateToPage("login", queryParams);
+  } else {
+    // 웹 환경에서는 일반적인 방법 사용
+    console.log("🔄 Web: window.location으로 페이지 이동");
+    const queryString = status ? `?status=${status}` : "";
+    window.location.href = `./login.html${queryString}`;
+  }
 }
 
 // --- UI 요소에 이벤트 리스너 연결 ---
@@ -112,36 +135,142 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   // ---
 
-  // --- (3) [수정] 자동 로그인 기능 (비동기 1회성 확인) ---
+  // --- (3) [개선] 자동 로그인 기능 (렌더러 Firebase 사용) ---
+  // 페이지를 먼저 보여주고 백그라운드에서 자동 로그인 확인
   (async () => {
+    // 페이지가 먼저 로드되도록 약간의 지연
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
     try {
-      if (window.appAPI && window.appAPI.getCurrentUser) {
-        // 1. preload.js의 새 함수를 호출하고 응답을 기다림
-        const user = await window.appAPI.getCurrentUser();
-        
-        // 2. URL 파라미터 확인 (로그아웃/회원가입 직후인지)
-        const isJustSignedUp = urlParams.get('status') === 'signedup';
-        const isJustLoggedOut = urlParams.get('status') === 'loggedout';
+      console.log("🚀 자동 로그인 확인 시작 (렌더러 Firebase 사용)...");
+      
+      // Firebase Auth가 준비될 때까지 대기
+      let retryCount = 0;
+      const maxRetries = 20; // 2초 (100ms * 20)
+      
+      while (!window.firebaseAuth && retryCount < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        retryCount++;
+      }
 
-        // 3. user가 존재하고, 방금 로그아웃/회원가입 한 것이 아니면 자동 로그인
-        if (user && !isJustSignedUp && !isJustLoggedOut) { 
-          console.log("자동 로그인:", user.uid);
-          redirectToIndex();
-        } else {
-          // 4. user가 없거나, 로그아웃/회원가입 직후면 로그인 페이지 표시
-          console.log("로그인 페이지 표시 (자동 로그인 없음)");
-          // (만약 로딩 스피너가 있다면 여기서 숨김)
-          // document.getElementById('loading-spinner').style.display = 'none';
+      if (!window.firebaseAuth) {
+        console.warn("⚠️ window.firebaseAuth를 찾을 수 없습니다.");
+        return;
+      }
+
+      console.log("🔍 Firebase 인증 상태 확인 중 (렌더러)...");
+      
+      // 렌더러 프로세스의 Firebase Auth 사용 (IndexedDB 접근 가능)
+      const auth = window.firebaseAuth;
+      
+      // onAuthStateChanged를 사용하여 인증 상태 확인
+      const user = await new Promise((resolve) => {
+        let isResolved = false;
+        let unsubscribe = null;
+        let timeout = null;
+        let checkInterval = null;
+        
+        // 즉시 현재 사용자 확인
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+          isResolved = true;
+          console.log("✅ 자동 로그인: 즉시 사용자 발견:", currentUser.uid);
+          resolve({
+            uid: currentUser.uid,
+            email: currentUser.email,
+            displayName: currentUser.displayName || "",
+          });
+          return;
         }
+        
+        // 주기적으로 auth.currentUser 확인 (IndexedDB 복원 대기)
+        checkInterval = setInterval(() => {
+          if (isResolved) {
+            clearInterval(checkInterval);
+            return;
+          }
+          
+          const user = auth.currentUser;
+          if (user) {
+            isResolved = true;
+            if (timeout) clearTimeout(timeout);
+            if (unsubscribe) unsubscribe();
+            if (checkInterval) clearInterval(checkInterval);
+            
+            console.log("✅ 자동 로그인: 주기적 확인으로 사용자 발견:", user.uid);
+            resolve({
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName || "",
+            });
+          }
+        }, 100); // 100ms마다 확인
+        
+        // onAuthStateChanged로 인증 상태 확인
+        unsubscribe = auth.onAuthStateChanged((user) => {
+          if (isResolved) return;
+          
+          if (user) {
+            isResolved = true;
+            if (timeout) clearTimeout(timeout);
+            if (unsubscribe) unsubscribe();
+            if (checkInterval) clearInterval(checkInterval);
+            
+            console.log("✅ 자동 로그인: onAuthStateChanged로 사용자 발견:", user.uid);
+            resolve({
+              uid: user.uid,
+              email: user.email,
+              displayName: user.displayName || "",
+            });
+          }
+        });
+        
+        // 타임아웃 (5초) - IndexedDB 복원 대기
+        timeout = setTimeout(() => {
+          if (isResolved) return;
+          isResolved = true;
+          
+          if (unsubscribe) unsubscribe();
+          if (checkInterval) clearInterval(checkInterval);
+          
+          // 최종 확인
+          const finalUser = auth.currentUser;
+          if (finalUser) {
+            console.log("✅ 자동 로그인: 타임아웃 후 사용자 발견:", finalUser.uid);
+            resolve({
+              uid: finalUser.uid,
+              email: finalUser.email,
+              displayName: finalUser.displayName || "",
+            });
+          } else {
+            console.log("ℹ️ 자동 로그인: 사용자 없음 (타임아웃)");
+            resolve(null);
+          }
+        }, 5000);
+      });
+      
+      // URL 파라미터 확인 (로그아웃/회원가입 직후인지)
+      const isJustSignedUp = urlParams.get('status') === 'signedup';
+      const isJustLoggedOut = urlParams.get('status') === 'loggedout';
+
+      // user가 존재하고, 방금 로그아웃/회원가입 한 것이 아니면 자동 로그인
+      if (user && !isJustSignedUp && !isJustLoggedOut) { 
+        console.log("✅ 자동 로그인 성공 (렌더러):", user.uid, user.email);
+        redirectToIndex();
       } else {
-        console.warn("appAPI.getCurrentUser가 없습니다. (웹 테스트 환경이거나 preload.js 오류)");
+        if (!user) {
+          console.log("ℹ️ 로그인된 사용자 없음. 로그인 페이지 표시");
+        } else if (isJustSignedUp) {
+          console.log("ℹ️ 회원가입 직후. 로그인 페이지 표시");
+        } else if (isJustLoggedOut) {
+          console.log("ℹ️ 로그아웃 직후. 로그인 페이지 표시");
+        }
       }
     } catch (e) {
-      console.error("자동 로그인 확인 중 오류:", e);
-      // (오류 발생 시에도 로그인 폼은 보여야 함)
+      console.error("❌ 자동 로그인 확인 중 예상치 못한 오류:", e);
     }
-  })(); // 👈 즉시 실행 함수
-  // --- [수정 끝] ---
+  })();
+  // --- [개선 끝] ---
 
   // --- (4) '로그인 상태 유지' 체크박스 UI 토글 ---
   if (autoLoginButton) {
@@ -173,15 +302,31 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     try {
-      if (window.appAPI && window.appAPI.signInWithEmail) {
-        // --- 1. Electron 환경 ---
+      // 렌더러 프로세스의 Firebase Auth 사용 (IndexedDB 접근 가능)
+      if (window.firebaseAuth) {
+        const auth = window.firebaseAuth;
+        
+        // Local persistence 설정
+        await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        
+        // 로그인 수행
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+        
+        console.log("✅ 이메일 로그인 성공 (렌더러):", user.uid, user.email);
+        console.log("✅ 인증 상태가 IndexedDB에 저장됨 (자동 로그인 가능)");
+        
+        redirectToIndex();
+      } else if (window.appAPI && window.appAPI.signInWithEmail) {
+        // 백업: preload.js의 appAPI 사용
+        console.log("⚠️ 렌더러 Firebase 없음, preload.js API 사용");
         const result = await window.appAPI.signInWithEmail(
           email,
           password,
           rememberMe
         );
         if (result.ok) {
-          console.log("이메일 로그인 성공:", result.user.uid);
+          console.log("✅ 이메일 로그인 성공:", result.user.uid, result.user.email);
           redirectToIndex();
         } else {
           emailInput.disabled = false;
@@ -189,19 +334,18 @@ document.addEventListener("DOMContentLoaded", () => {
           if (emailLoginButton) emailLoginButton.disabled = false;
           if (emailLoginButton)
             emailLoginButton.querySelector("span").textContent = "로그인";
-          const message = getKoreanErrorMessage(result.errorCode); // 한글 오류
+          const message = getKoreanErrorMessage(result.errorCode);
           showAlert(message);
           console.error("이메일 로그인 실패:", result.errorCode, result.error);
         }
       } else {
-        // --- 2. Web 환경 (API 없음) ---
-        console.error("appAPI.signInWithEmail not found.");
+        console.error("Firebase Auth를 사용할 수 없습니다.");
         emailInput.disabled = false;
         passwordInput.disabled = false;
         if (emailLoginButton) emailLoginButton.disabled = false;
         if (emailLoginButton)
           emailLoginButton.querySelector("span").textContent = "로그인";
-        showAlert("appAPI가 없습니다. Electron 환경에서 실행해주세요.");
+        showAlert("Firebase Auth를 사용할 수 없습니다.");
       }
     } catch (e) {
       emailInput.disabled = false;
@@ -209,9 +353,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (emailLoginButton) emailLoginButton.disabled = false;
       if (emailLoginButton)
         emailLoginButton.querySelector("span").textContent = "로그인";
-      const message = getKoreanErrorMessage(e.code); // 한글 오류
+      const message = getKoreanErrorMessage(e.code);
       showAlert(message);
-      console.error("appAPI.signInWithEmail 호출 실패:", e);
+      console.error("로그인 실패:", e);
     }
   };
   if (loginForm) {
@@ -265,8 +409,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      if (window.appAPI && window.appAPI.signUpWithEmail) {
-        // --- 1. Electron 환경 (preload.js의 API 호출) ---
+      // 렌더러 프로세스의 Firebase Auth 사용
+      if (window.firebaseAuth) {
+        const auth = window.firebaseAuth;
+        
+        // 회원가입 수행
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        await userCredential.user.updateProfile({ displayName: username });
+        
+        console.log("✅ 회원가입 성공 (렌더러):", userCredential.user.uid);
+        
+        // 회원가입 후 자동 로그아웃
+        await auth.signOut();
+        console.log("✅ 회원가입 후 자동 로그아웃 처리됨");
+        
+        redirectToLogin('signedup');
+      } else if (window.appAPI && window.appAPI.signUpWithEmail) {
+        // 백업: preload.js의 appAPI 사용
         const result = await window.appAPI.signUpWithEmail(
           email,
           password,
@@ -275,11 +434,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (result.ok) {
           console.log("회원가입 성공:", result.user.uid);
-          window.location.href = './login.html?status=signedup';
-          // (페이지가 리로드되므로 isSigningUp 플래그 해제 불필요)
-
+          redirectToLogin('signedup');
         } else {
-          // (Electron API 실패 시 활성화 로직)
           joinEmailInput.disabled = false;
           joinPasswordInput.disabled = false;
           joinPasswordConfirmInput.disabled = false;
@@ -287,14 +443,13 @@ document.addEventListener("DOMContentLoaded", () => {
           if (joinButton) joinButton.disabled = false;
           if (joinButton)
             joinButton.querySelector("span").textContent = "회원가입";
-          const message = getKoreanErrorMessage(result.errorCode); // 한글 오류
+          const message = getKoreanErrorMessage(result.errorCode);
           showAlert(message);
           console.error("회원가입 실패:", result.errorCode, result.error);
-          isSigningUp = false; // 👈 플래그 해제
+          isSigningUp = false;
         }
       } else {
-        // --- 2. Web 환경 (API 없음) ---
-        console.error("appAPI.signUpWithEmail not found.");
+        console.error("Firebase Auth를 사용할 수 없습니다.");
         joinEmailInput.disabled = false;
         joinPasswordInput.disabled = false;
         joinPasswordConfirmInput.disabled = false;
@@ -302,21 +457,21 @@ document.addEventListener("DOMContentLoaded", () => {
         if (joinButton) joinButton.disabled = false;
         if (joinButton)
           joinButton.querySelector("span").textContent = "회원가입";
-        showAlert("appAPI가 없습니다. Electron 환경에서 실행해주세요.");
-        isSigningUp = false; // 👈 플래그 해제
+        showAlert("Firebase Auth를 사용할 수 없습니다.");
+        isSigningUp = false;
       }
     } catch (e) {
-      // (전체 오류 발생 시 활성화 로직)
       joinEmailInput.disabled = false;
       joinPasswordInput.disabled = false;
       joinPasswordConfirmInput.disabled = false;
       joinUsernameInput.disabled = false;
       if (joinButton) joinButton.disabled = false;
-      if (joinButton) joinButton.querySelector("span").textContent = "회원가입";
-      const message = getKoreanErrorMessage(e.code); // 한글 오류
+      if (joinButton)
+        joinButton.querySelector("span").textContent = "회원가입";
+      const message = getKoreanErrorMessage(e.code);
       showAlert(message);
-      console.error("appAPI.signUpWithEmail 호출 실패:", e);
-      isSigningUp = false; // 👈 플래그 해제
+      console.error("회원가입 실패:", e);
+      isSigningUp = false;
     }
   };
   if (joinForm) {
@@ -330,25 +485,43 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- (7) 구글 로그인 버튼 클릭 ---
   if (googleLoginButton) {
     googleLoginButton.addEventListener("click", async () => {
-      if (window.appAPI && window.appAPI.signInWithGoogle) {
-        const rememberMe = checkbox ? checkbox.classList.contains("active") : false;
-        try {
+      try {
+        // 렌더러 프로세스의 Firebase Auth 사용
+        if (window.firebaseAuth) {
+          const auth = window.firebaseAuth;
+          const provider = new firebase.auth.GoogleAuthProvider();
+          
+          // Local persistence 설정
+          await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+          
+          // 구글 로그인 수행
+          const result = await auth.signInWithPopup(provider);
+          const user = result.user;
+          
+          console.log("✅ 구글 로그인 성공 (렌더러):", user.uid, user.email);
+          console.log("✅ 인증 상태가 IndexedDB에 저장됨 (자동 로그인 가능)");
+          
+          redirectToIndex();
+        } else if (window.appAPI && window.appAPI.signInWithGoogle) {
+          // 백업: preload.js의 appAPI 사용
+          const rememberMe = checkbox ? checkbox.classList.contains("active") : false;
           const result = await window.appAPI.signInWithGoogle(rememberMe);
           if (result.ok) {
             console.log("구글 로그인 성공:", result.user.uid);
             redirectToIndex();
           } else {
-            const message = getKoreanErrorMessage(result.errorCode); // 한글 오류
+            const message = getKoreanErrorMessage(result.errorCode);
             showAlert(message);
             console.error("구글 로그인 실패:", result.errorCode, result.error);
           }
-        } catch (e) {
-          showAlert("구글 로그인 오류: " + e.message);
-          console.error("appAPI.signInWithGoogle 호출 실패:", e);
+        } else {
+          console.error("Firebase Auth를 사용할 수 없습니다.");
+          showAlert("Firebase Auth를 사용할 수 없습니다.");
         }
-      } else {
-        console.error("appAPI.signInWithGoogle not found.");
-        showAlert("appAPI가 없습니다. Electron 환경에서 실행해주세요.");
+      } catch (e) {
+        const message = getKoreanErrorMessage(e.code) || ("구글 로그인 오류: " + e.message);
+        showAlert(message);
+        console.error("구글 로그인 실패:", e);
       }
     });
   } else {

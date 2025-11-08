@@ -39,6 +39,37 @@
       crossorigin
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
     />
+    
+    <!-- Firebase SDK를 CDN에서 로드 (렌더러 프로세스에서 IndexedDB 접근 가능) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script>
+      // Firebase 초기화 (렌더러 프로세스에서 실행되어 IndexedDB 접근 가능)
+      const firebaseConfig = {
+        apiKey: "AIzaSyCwkXiJRp1DHoiv1IWnR42Y9xI5IE0_2uE",
+        authDomain: "workbear-aaecb.firebaseapp.com",
+        databaseURL: "https://workbear-aaecb-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "workbear-aaecb",
+        storageBucket: "workbear-aaecb.appspot.com",
+        messagingSenderId: "744723448261",
+        appId: "1:744723448261:web:897a77a06e481f3c750bac",
+      };
+      
+      // Firebase 초기화
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      
+      // Local persistence 설정
+      auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
+        console.log("✅ Firebase Auth (렌더러) persistence가 local로 설정되었습니다.");
+      }).catch((error) => {
+        console.error("❌ Firebase Auth persistence 설정 실패:", error);
+      });
+      
+      // 전역으로 노출
+      window.firebaseAuth = auth;
+      console.log("🔥 Firebase가 렌더러 프로세스에서 초기화되었습니다.");
+    </script>
   </head>
 
   <body>
@@ -134,7 +165,7 @@
                 </div>
               </div>
               <div class="autologin-button">
-                <div class="checkbox">
+                <div class="checkbox active">
                   <svg class="icon" style="width: 12px">
                     <use href="#icon-check"></use>
                   </svg>

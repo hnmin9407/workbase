@@ -27,6 +27,8 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
+      // IndexedDB 및 localStorage 접근 권한 명시적 허용
+      webSecurity: true,
     },
   });
 
@@ -53,13 +55,45 @@ ipcMain.handle("read-file", (event, relativePath) => {
   }
 });
 
-// --- [신규 추가] 로그인 성공 IPC 리스너 ---
-ipcMain.on("login-success", () => {
-  console.log("✅ 로그인 성공 확인! index.html 로드.");
-  const indexPath = path.resolve(__dirname, "../renderer/html/index.html");
-  if (mainWindow) {
-    mainWindow.loadFile(indexPath);
+// --- 페이지 네비게이션 IPC 핸들러 ---
+ipcMain.on("navigate-to-page", (event, page, queryParams = {}) => {
+  console.log("🔄 페이지 이동 요청:", page, queryParams);
+  if (!mainWindow) {
+    console.warn("⚠️ mainWindow가 없습니다.");
+    return;
   }
+
+  let pagePath;
+  switch (page) {
+    case "index":
+      pagePath = path.resolve(__dirname, "../renderer/html/index.html");
+      break;
+    case "login":
+      pagePath = path.resolve(__dirname, "../renderer/html/login.html");
+      break;
+    default:
+      console.error("❌ 알 수 없는 페이지:", page);
+      return;
+  }
+
+  // 쿼리 파라미터가 있으면 URL에 추가
+  let url = `file://${pagePath}`;
+  const queryString = Object.keys(queryParams)
+    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`)
+    .join("&");
+  
+  if (queryString) {
+    url += `?${queryString}`;
+  }
+
+  console.log("📄 페이지 로드:", url);
+  mainWindow.loadURL(url).catch((err) => {
+    console.error("❌ 페이지 로드 실패:", err);
+    // loadURL이 실패하면 loadFile로 대체
+    mainWindow.loadFile(pagePath).catch((err2) => {
+      console.error("❌ loadFile도 실패:", err2);
+    });
+  });
 });
 // ---
 
