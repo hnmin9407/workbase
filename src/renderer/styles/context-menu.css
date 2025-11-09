@@ -18,10 +18,10 @@
 }
 
 .context-menu.show {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    visibility: visible;
-    pointer-events: auto;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .context-body {
@@ -44,6 +44,12 @@
 
 .context-item:hover {
   background: var(--main-color-3);
+}
+
+.context-item:disabled {
+  opacity: 0.4;
+  cursor: default;
+  background: transparent !important; /* hover 효과 덮어쓰기 */
 }
 
 .context-item svg {

@@ -29,13 +29,8 @@ function redirectToLogin(status = null) {
 // --- UI 요소에 이벤트 리스너 연결 ---
 document.addEventListener("DOMContentLoaded", () => {
   // --- (A) 공통 요소 선택 ---
-  const errorPopup = document.getElementById("alert-popup");
-  const errorMessage = document.getElementById("alert-message");
-  const checkPopup = document.getElementById("check-popup");
-  const checkMessage = document.getElementById("check-message");
-  let errorTimer = null;
-  let checkTimer = null;
   let isSigningUp = false;
+  const openingScreen = document.querySelector(".opening");
 
   // --- (B) 폼 화면(Wrapper) 선택 ---
   const loginWrap = document.querySelector(".login-wrap");
@@ -66,45 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- (E) 폼 전환 버튼 선택 ---
   const gotoJoinButton = document.getElementById("goto-join-button");
-
-  // --- (1) 알림창 표시 함수 (타입 분기) ---
-  function showAlert(message, type = "error") {
-    let container, messageEl, timer;
-    if (type === "check") {
-      container = checkPopup;
-      messageEl = checkMessage;
-      if (checkTimer) clearTimeout(checkTimer);
-    } else {
-      container = errorPopup;
-      messageEl = errorMessage;
-      if (errorTimer) clearTimeout(errorTimer);
-    }
-    if (!container || !messageEl) return;
-    messageEl.textContent = message;
-    container.classList.add("show");
-    const newTimer = setTimeout(() => {
-      container.classList.remove("show");
-      if (type === "check") checkTimer = null;
-      else errorTimer = null;
-    }, 2000);
-    if (type === "check") checkTimer = newTimer;
-    else errorTimer = newTimer;
-  }
-  if (errorPopup) {
-    errorPopup.addEventListener("click", () => {
-      if (errorTimer) clearTimeout(errorTimer);
-      errorPopup.classList.remove("show");
-      errorTimer = null;
-    });
-  }
-  if (checkPopup) {
-    checkPopup.addEventListener("click", () => {
-      if (checkTimer) clearTimeout(checkTimer);
-      checkPopup.classList.remove("show");
-      checkTimer = null;
-    });
-  }
-  // ---
 
   // --- 페이지 로드 시 상태 확인 ---
   const urlParams = new URLSearchParams(window.location.search);
@@ -139,17 +95,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // 페이지를 먼저 보여주고 백그라운드에서 자동 로그인 확인
   (async () => {
     // 페이지가 먼저 로드되도록 약간의 지연
-    await new Promise(resolve => setTimeout(resolve, 100));
-    
+    let isAutoLoginSuccessful = false;
+
     try {
       console.log("🚀 자동 로그인 확인 시작 (렌더러 Firebase 사용)...");
-      
+
       // Firebase Auth가 준비될 때까지 대기
       let retryCount = 0;
       const maxRetries = 20; // 2초 (100ms * 20)
-      
+
       while (!window.firebaseAuth && retryCount < maxRetries) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         retryCount++;
       }
 
@@ -159,17 +115,17 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       console.log("🔍 Firebase 인증 상태 확인 중 (렌더러)...");
-      
+
       // 렌더러 프로세스의 Firebase Auth 사용 (IndexedDB 접근 가능)
       const auth = window.firebaseAuth;
-      
+
       // onAuthStateChanged를 사용하여 인증 상태 확인
       const user = await new Promise((resolve) => {
         let isResolved = false;
         let unsubscribe = null;
         let timeout = null;
         let checkInterval = null;
-        
+
         // 즉시 현재 사용자 확인
         const currentUser = auth.currentUser;
         if (currentUser) {
@@ -182,22 +138,25 @@ document.addEventListener("DOMContentLoaded", () => {
           });
           return;
         }
-        
+
         // 주기적으로 auth.currentUser 확인 (IndexedDB 복원 대기)
         checkInterval = setInterval(() => {
           if (isResolved) {
             clearInterval(checkInterval);
             return;
           }
-          
+
           const user = auth.currentUser;
           if (user) {
             isResolved = true;
             if (timeout) clearTimeout(timeout);
             if (unsubscribe) unsubscribe();
             if (checkInterval) clearInterval(checkInterval);
-            
-            console.log("✅ 자동 로그인: 주기적 확인으로 사용자 발견:", user.uid);
+
+            console.log(
+              "✅ 자동 로그인: 주기적 확인으로 사용자 발견:",
+              user.uid
+            );
             resolve({
               uid: user.uid,
               email: user.email,
@@ -205,38 +164,56 @@ document.addEventListener("DOMContentLoaded", () => {
             });
           }
         }, 100); // 100ms마다 확인
-        
+
         // onAuthStateChanged로 인증 상태 확인
         unsubscribe = auth.onAuthStateChanged((user) => {
           if (isResolved) return;
-          
+
           if (user) {
             isResolved = true;
             if (timeout) clearTimeout(timeout);
             if (unsubscribe) unsubscribe();
             if (checkInterval) clearInterval(checkInterval);
-            
-            console.log("✅ 자동 로그인: onAuthStateChanged로 사용자 발견:", user.uid);
+
+            console.log(
+              "✅ 자동 로그인: onAuthStateChanged로 사용자 발견:",
+              user.uid
+            );
             resolve({
               uid: user.uid,
               email: user.email,
               displayName: user.displayName || "",
             });
+          } else {
+            // [수정] onAuthStateChanged가 null 사용자로 호출되면, 자동 로그인할 사용자가 없는 것이 확실함.
+            // 즉시 resolve하여 불필요한 타임아웃 대기를 제거합니다.
+            isResolved = true;
+            if (timeout) clearTimeout(timeout);
+            if (unsubscribe) unsubscribe();
+            if (checkInterval) clearInterval(checkInterval);
+
+            console.log(
+              "ℹ️ 자동 로그인: onAuthStateChanged로 사용자 없음 확인."
+            );
+            resolve(null);
           }
         });
-        
+
         // 타임아웃 (5초) - IndexedDB 복원 대기
         timeout = setTimeout(() => {
           if (isResolved) return;
           isResolved = true;
-          
+
           if (unsubscribe) unsubscribe();
           if (checkInterval) clearInterval(checkInterval);
-          
+
           // 최종 확인
           const finalUser = auth.currentUser;
           if (finalUser) {
-            console.log("✅ 자동 로그인: 타임아웃 후 사용자 발견:", finalUser.uid);
+            console.log(
+              "✅ 자동 로그인: 타임아웃 후 사용자 발견:",
+              finalUser.uid
+            );
             resolve({
               uid: finalUser.uid,
               email: finalUser.email,
@@ -248,15 +225,17 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }, 5000);
       });
-      
+
       // URL 파라미터 확인 (로그아웃/회원가입 직후인지)
-      const isJustSignedUp = urlParams.get('status') === 'signedup';
-      const isJustLoggedOut = urlParams.get('status') === 'loggedout';
+      const isJustSignedUp = urlParams.get("status") === "signedup";
+      const isJustLoggedOut = urlParams.get("status") === "loggedout";
 
       // user가 존재하고, 방금 로그아웃/회원가입 한 것이 아니면 자동 로그인
-      if (user && !isJustSignedUp && !isJustLoggedOut) { 
+      if (user && !isJustSignedUp && !isJustLoggedOut) {
         console.log("✅ 자동 로그인 성공 (렌더러):", user.uid, user.email);
+        isAutoLoginSuccessful = true;
         redirectToIndex();
+        return; // try 블록을 빠져나가지만, finally는 실행됩니다.
       } else {
         if (!user) {
           console.log("ℹ️ 로그인된 사용자 없음. 로그인 페이지 표시");
@@ -268,6 +247,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (e) {
       console.error("❌ 자동 로그인 확인 중 예상치 못한 오류:", e);
+    } finally {
+      // [수정] 자동 로그인이 실패했을 경우에만 opening 애니메이션을 실행합니다.
+      if (!isAutoLoginSuccessful && openingScreen) {
+        openingScreen.classList.add("hide");
+        setTimeout(() => {
+          // 애니메이션 시간(0.5s) 후에 display: none 처리
+          if (openingScreen) openingScreen.style.display = "none";
+        }, 500);
+      }
     }
   })();
   // --- [개선 끝] ---
@@ -305,17 +293,27 @@ document.addEventListener("DOMContentLoaded", () => {
       // 렌더러 프로세스의 Firebase Auth 사용 (IndexedDB 접근 가능)
       if (window.firebaseAuth) {
         const auth = window.firebaseAuth;
-        
-        // Local persistence 설정
-        await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-        
+        const rememberMe = checkbox
+          ? checkbox.classList.contains("active")
+          : false;
+        const persistence = rememberMe
+          ? firebase.auth.Auth.Persistence.LOCAL
+          : firebase.auth.Auth.Persistence.SESSION;
+
+        // [수정] '로그인 상태 유지'에 따라 persistence 설정
+        await auth.setPersistence(persistence);
+        console.log(`✅ Auth persistence를 ${persistence}로 설정했습니다.`);
+
         // 로그인 수행
-        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const userCredential = await auth.signInWithEmailAndPassword(
+          email,
+          password
+        );
         const user = userCredential.user;
-        
+
         console.log("✅ 이메일 로그인 성공 (렌더러):", user.uid, user.email);
         console.log("✅ 인증 상태가 IndexedDB에 저장됨 (자동 로그인 가능)");
-        
+
         redirectToIndex();
       } else if (window.appAPI && window.appAPI.signInWithEmail) {
         // 백업: preload.js의 appAPI 사용
@@ -326,7 +324,11 @@ document.addEventListener("DOMContentLoaded", () => {
           rememberMe
         );
         if (result.ok) {
-          console.log("✅ 이메일 로그인 성공:", result.user.uid, result.user.email);
+          console.log(
+            "✅ 이메일 로그인 성공:",
+            result.user.uid,
+            result.user.email
+          );
           redirectToIndex();
         } else {
           emailInput.disabled = false;
@@ -412,18 +414,21 @@ document.addEventListener("DOMContentLoaded", () => {
       // 렌더러 프로세스의 Firebase Auth 사용
       if (window.firebaseAuth) {
         const auth = window.firebaseAuth;
-        
+
         // 회원가입 수행
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const userCredential = await auth.createUserWithEmailAndPassword(
+          email,
+          password
+        );
         await userCredential.user.updateProfile({ displayName: username });
-        
+
         console.log("✅ 회원가입 성공 (렌더러):", userCredential.user.uid);
-        
+
         // 회원가입 후 자동 로그아웃
         await auth.signOut();
         console.log("✅ 회원가입 후 자동 로그아웃 처리됨");
-        
-        redirectToLogin('signedup');
+
+        redirectToLogin("signedup");
       } else if (window.appAPI && window.appAPI.signUpWithEmail) {
         // 백업: preload.js의 appAPI 사용
         const result = await window.appAPI.signUpWithEmail(
@@ -434,7 +439,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (result.ok) {
           console.log("회원가입 성공:", result.user.uid);
-          redirectToLogin('signedup');
+          redirectToLogin("signedup");
         } else {
           joinEmailInput.disabled = false;
           joinPasswordInput.disabled = false;
@@ -466,8 +471,7 @@ document.addEventListener("DOMContentLoaded", () => {
       joinPasswordConfirmInput.disabled = false;
       joinUsernameInput.disabled = false;
       if (joinButton) joinButton.disabled = false;
-      if (joinButton)
-        joinButton.querySelector("span").textContent = "회원가입";
+      if (joinButton) joinButton.querySelector("span").textContent = "회원가입";
       const message = getKoreanErrorMessage(e.code);
       showAlert(message);
       console.error("회원가입 실패:", e);
@@ -489,22 +493,31 @@ document.addEventListener("DOMContentLoaded", () => {
         // 렌더러 프로세스의 Firebase Auth 사용
         if (window.firebaseAuth) {
           const auth = window.firebaseAuth;
+          const rememberMe = checkbox
+            ? checkbox.classList.contains("active")
+            : false;
+          const persistence = rememberMe
+            ? firebase.auth.Auth.Persistence.LOCAL
+            : firebase.auth.Auth.Persistence.SESSION;
           const provider = new firebase.auth.GoogleAuthProvider();
-          
-          // Local persistence 설정
-          await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-          
+
+          // [수정] '로그인 상태 유지'에 따라 persistence 설정
+          await auth.setPersistence(persistence);
+          console.log(`✅ Auth persistence를 ${persistence}로 설정했습니다.`);
+
           // 구글 로그인 수행
           const result = await auth.signInWithPopup(provider);
           const user = result.user;
-          
+
           console.log("✅ 구글 로그인 성공 (렌더러):", user.uid, user.email);
           console.log("✅ 인증 상태가 IndexedDB에 저장됨 (자동 로그인 가능)");
-          
+
           redirectToIndex();
         } else if (window.appAPI && window.appAPI.signInWithGoogle) {
           // 백업: preload.js의 appAPI 사용
-          const rememberMe = checkbox ? checkbox.classList.contains("active") : false;
+          const rememberMe = checkbox
+            ? checkbox.classList.contains("active")
+            : false;
           const result = await window.appAPI.signInWithGoogle(rememberMe);
           if (result.ok) {
             console.log("구글 로그인 성공:", result.user.uid);
@@ -519,7 +532,8 @@ document.addEventListener("DOMContentLoaded", () => {
           showAlert("Firebase Auth를 사용할 수 없습니다.");
         }
       } catch (e) {
-        const message = getKoreanErrorMessage(e.code) || ("구글 로그인 오류: " + e.message);
+        const message =
+          getKoreanErrorMessage(e.code) || "구글 로그인 오류: " + e.message;
         showAlert(message);
         console.error("구글 로그인 실패:", e);
       }
@@ -554,7 +568,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   });
-  
+
   // --- (9) [신규] Firebase 오류 코드 -> 한글 번역기 ---
   function getKoreanErrorMessage(errorCode) {
     switch (errorCode) {
@@ -563,7 +577,7 @@ document.addEventListener("DOMContentLoaded", () => {
       case "auth/wrong-password":
       case "auth/invalid-credential":
         return "아이디 또는 비밀번호를 확인해 주세요.";
-      
+
       // --- 회원가입 실패 ---
       case "auth/email-already-in-use":
         return "이미 사용 중인 이메일입니다.";
@@ -571,13 +585,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return "비밀번호는 6자리 이상이어야 합니다.";
       case "auth/invalid-email":
         return "올바른 이메일 형식이 아닙니다.";
-        
+
       // --- 공통 오류 ---
       case "auth/network-request-failed":
         return "네트워크 연결을 확인해 주세요.";
       case "auth/too-many-requests":
         return "잠시 후 다시 시도해 주세요.";
-        
+
       // --- 기타 ---
       default:
         console.warn("알 수 없는 오류 코드:", errorCode);

@@ -19,6 +19,13 @@
       })();
     </script>
 
+    <!-- [추가] FOUC(화면 깜빡임) 방지: 테마 스크립트 직후에 배경색을 강제합니다. -->
+    <style>
+      html[data-theme="dark"] {
+        background: #121212;
+      }
+    </style>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WORKBASE</title>
 
@@ -26,6 +33,7 @@
     <link rel="stylesheet" href="../styles/login.css" />
     <link rel="stylesheet" href="../styles/window-control.css" />
     <link rel="stylesheet" href="../styles/tooltip.css" />
+    <link rel="stylesheet" href="../styles/opening.css" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -39,33 +47,27 @@
       crossorigin
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
     />
-    
-    <!-- Firebase SDK를 CDN에서 로드 (렌더러 프로세스에서 IndexedDB 접근 가능) -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <!-- Firebase SDK를 CDN에서 로드 (package.json 버전과 일치 권장) -->
+    <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-auth-compat.js"></script>
     <script>
       // Firebase 초기화 (렌더러 프로세스에서 실행되어 IndexedDB 접근 가능)
       const firebaseConfig = {
-        apiKey: "AIzaSyCwkXiJRp1DHoiv1IWnR42Y9xI5IE0_2uE",
+        apiKey: "AIzaSyCwkXiJRp1DHoiv1IWnR42Y9xI5IE0_2uE", // 보안을 위해 메인 프로세스에서 관리하는 것을 권장합니다.
         authDomain: "workbear-aaecb.firebaseapp.com",
-        databaseURL: "https://workbear-aaecb-default-rtdb.asia-southeast1.firebasedatabase.app",
+        databaseURL:
+          "https://workbear-aaecb-default-rtdb.asia-southeast1.firebasedatabase.app",
         projectId: "workbear-aaecb",
         storageBucket: "workbear-aaecb.appspot.com",
         messagingSenderId: "744723448261",
         appId: "1:744723448261:web:897a77a06e481f3c750bac",
       };
-      
+
       // Firebase 초기화
       firebase.initializeApp(firebaseConfig);
       const auth = firebase.auth();
-      
-      // Local persistence 설정
-      auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
-        console.log("✅ Firebase Auth (렌더러) persistence가 local로 설정되었습니다.");
-      }).catch((error) => {
-        console.error("❌ Firebase Auth persistence 설정 실패:", error);
-      });
-      
+
       // 전역으로 노출
       window.firebaseAuth = auth;
       console.log("🔥 Firebase가 렌더러 프로세스에서 초기화되었습니다.");
@@ -101,6 +103,10 @@
           <svg class="icon"><use href="#icon-close"></use></svg>
         </div>
       </div>
+    </div>
+
+    <div class="opening">
+      <img src="../../../assets/image/logo.png" />
     </div>
 
     <div class="login-body">
@@ -255,7 +261,9 @@
                   id="join-username"
                   placeholder=" "
                 />
-                <label for="join-username" class="placeholder-id">이름(닉네임)</label>
+                <label for="join-username" class="placeholder-id"
+                  >이름(닉네임)</label
+                >
               </div>
 
               <button type="submit" class="login-button" id="join-button">
@@ -274,13 +282,12 @@
       </div>
     </div>
 
+    <!-- [추가] 알림 팝업 -->
     <div id="alert-popup" class="alert-popup">
       <div class="alert-content">
         <div class="left">
-          <div class="alert-icon">
-            <svg>
-              <use href="#icon-caution"></use>
-            </svg>
+          <div class="alert-icon-wrapper" id="alert-icon-wrapper">
+            <svg class="icon"><use id="alert-icon-use" href=""></use></svg>
           </div>
         </div>
         <div class="right">
@@ -290,24 +297,9 @@
       </div>
     </div>
 
-    <div id="check-popup" class="alert-popup">
-      <div class="alert-content">
-        <div class="left">
-          <div class="alert-icon-check">
-            <svg>
-              <use href="#icon-check"></use>
-            </svg>
-          </div>
-        </div>
-        <div class="right">
-          <div class="alert-title">알림</div>
-          <div id="check-message" class="alert-message"></div>
-        </div>
-      </div>
-    </div>
-
     <script src="../js/login.js"></script>
     <script src="../js/tooltip.js"></script>
+    <script src="../js/alert-popup.js"></script>
 
     <script>
       // ✅ window-control.js 로드
@@ -323,6 +315,7 @@
         .catch((err) => console.error("SVG 불러오기 실패:", err));
 
       initTooltip();
+      initAlertPopups();
     </script>
   </body>
 </html>

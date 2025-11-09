@@ -171,18 +171,19 @@ h3 {
   position: fixed;
   bottom: 32px; /* 윈도우 컨트롤(36px) + 여백(20px) */
   right: 32px;
-  z-index: 9999;
-  background-color: var(--bg-color-40);
-  backdrop-filter: blur(20px); /* 배경 블러 */
+  z-index: 10001; /* [수정] 팝업 오버레이(10000)보다 높게 설정 */
+  background-color: var(
+    --bg-color-80
+  ); /* [수정] 투명도 조절 및 backdrop-filter 제거 */
   border-radius: 12px;
   box-shadow: 0 5px 10px var(--shadow-color);
   border: 1px solid var(--main-color-5);
   padding: 16px 32px 16px 16px;
   box-sizing: border-box;
   opacity: 0;
-  transform: translateY(20px); /* 오른쪽 바깥에서 시작 */
+  transform: translateY(100%); /* [수정] 화면 아래에서 시작 */
   pointer-events: none; /* 숨겨져 있을 때 클릭 방지 */
-  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .alert-content {
@@ -195,24 +196,24 @@ h3 {
   display: flex;
 }
 
-.alert-icon {
+.alert-icon-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 42px;
   height: 42px;
   border-radius: 8px;
-  background: #ffaa00;
+  transition: background-color 0.2s ease;
 }
 
-.alert-icon-check {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 8px;
+.alert-icon-wrapper.error {
+  background: #ffaa00;
+}
+.alert-icon-wrapper.check {
   background: #008cff;
+}
+
+.alert-popup .left .icon {
 }
 
 .alert-popup .left svg {
@@ -234,7 +235,7 @@ h3 {
 /* 알림창이 활성화(show) 되었을 때 */
 .alert-popup.show {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateY(0); /* [수정] 제자리로 이동 */
   pointer-events: auto;
   cursor: pointer;
 }
@@ -256,4 +257,142 @@ h3 {
   color: var(--main-color-80);
   letter-spacing: -0.2px;
   line-height: 1.4;
+}
+
+.cancel-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 32px;
+  border-radius: 8px;
+  border: solid 1px var(--main-color-10);
+  background: var(--bg-color);
+  color: var(--main-color);
+  font-family: var(--pre);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.cancel-button:hover {
+  background: var(--main-color-5);
+}
+
+.cancel-button:active {
+  background: var(--main-color-10);
+}
+
+.confirm-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 32px;
+  border-radius: 8px;
+  background: var(--main-color);
+  color: var(--bg-color);
+  font-family: var(--pre);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.confirm-button:hover {
+  background: var(--main-color-90);
+}
+
+.confirm-button:active {
+  background: var(--main-color-80);
+}
+
+/* =================================
+   [신규] 팝업 스타일
+   ================================= */
+
+.popup-overlay {
+  position: fixed;
+  top: 36px; /* window-control 높이만큼 내림 */
+  left: 0;
+  width: 100%;
+  height: calc(100% - 36px); /* window-control 높이만큼 줄임 */
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s ease;
+}
+
+.popup-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.popup {
+  background: var(--bg-color);
+  padding: 24px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.popup span {
+  font-family: var(--pre);
+  color: var(--main-color);
+  letter-spacing: -0.2px;
+}
+
+.popup .h1 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.popup .h2 {
+  font-size: 13px;
+  font-weight: 400;
+  opacity: 0.4;
+}
+
+.popup-input-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.popup-input {
+  max-width: 100%;
+  width: 100%;
+  height: 42px;
+  outline: none;
+  border: solid 1px var(--main-color-10);
+  border-radius: 6px;
+  padding: 0px 16px;
+  background: var(--bg-color);
+  box-sizing: border-box;
+  font-family: var(--pre);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: var(--main-color);
+  transition: all 0.1s ease;
+}
+
+.popup-input:focus {
+  border: solid 1px var(--main-color);
+}
+
+.button-wrap {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
 }

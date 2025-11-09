@@ -1,0 +1,50 @@
+.opening {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 36px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--body-bg);
+  z-index: 998; /* 사이드바(999)보다 낮게 */
+  opacity: 1;
+  pointer-events: auto; /* 로딩 중 클릭 방지 */
+}
+
+.opening.hide {
+  animation: opening-hide 0.7s ease forwards;
+  pointer-events: none; /* 숨겨진 후 클릭 방지 */
+}
+
+.opening.hide img {
+  animation: opening-img-hide 0.7s ease forwards;
+}
+
+.opening img {
+  margin-bottom: 36px;
+  width: 128px;
+  filter: var(--logo-darkmode);
+}
+
+/* [수정] 로고 이미지를 블러 처리하며 사라지게 하는 애니메이션 */
+@keyframes opening-img-hide {
+  0% {
+    filter: blur(0px) var(--logo-darkmode);
+  }
+
+  100% {
+    filter: blur(100px) var(--logo-darkmode);
+  }
+}
+
+/* [수정] opening div 전체를 투명하게 만드는 애니메이션 */
+@keyframes opening-hide {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

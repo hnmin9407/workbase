@@ -2,8 +2,8 @@
  * 페이지에 열려있는 모든 컨텍스트 메뉴를 닫습니다.
  */
 function hideAllContextMenus() {
-  document.querySelectorAll('.context-menu.show').forEach((menu) => {
-    menu.classList.remove('show');
+  document.querySelectorAll(".context-menu.show").forEach((menu) => {
+    menu.classList.remove("show");
   });
 }
 
@@ -56,45 +56,65 @@ function positionContextMenu(event, menu) {
 function initContextMenus() {
   console.log("Initializing context menus...");
 
-  // 1. 화면의 아무 곳이나 클릭하면 모든 메뉴를 닫습니다.
-  document.addEventListener('click', (e) => {
-    const trigger = e.target.closest('[data-context-menu-target]');
-    const menu = e.target.closest('.context-menu');
-    
-    if (!trigger && !menu) {
-      hideAllContextMenus();
-    }
-  });
+  // [수정] 이벤트 위임: document 전체에 이벤트 리스너를 설정합니다.
+  document.addEventListener("click", (e) => {
+    const trigger = e.target.closest("[data-context-menu-target]");
+    const clickedInsideMenu = e.target.closest(".context-menu");
 
-  // 2. 모든 트리거 요소를 찾습니다.
-  const triggers = document.querySelectorAll('[data-context-menu-target]');
-  console.log(`Found ${triggers.length} context menu triggers.`);
-
-  triggers.forEach(trigger => {
-    const menuId = trigger.dataset.contextMenuTarget;
-    const menu = document.getElementById(menuId);
-
-    if (!menu) {
-      console.warn(`Context menu target '${menuId}' not found for trigger:`, trigger);
+    // [수정] 메뉴 내부의 빈 공간을 클릭한 경우는 무시합니다.
+    if (clickedInsideMenu && e.target === clickedInsideMenu) {
       return;
     }
 
-    // 3. 각 트리거에 클릭 이벤트 리스너를 추가합니다.
-    trigger.addEventListener('click', (e) => {
-      e.stopPropagation(); // document 클릭 이벤트로 전파되는 것을 막음
+    // 어떤 좌클릭이든 항상 모든 컨텍스트 메뉴를 먼저 닫습니다.
+    hideAllContextMenus();
 
-      const isAlreadyOpen = menu.classList.contains('show');
-
-      // 다른 메뉴들을 모두 닫습니다.
+    // 만약 클릭된 요소가 트리거이고, 프로젝트 메뉴가 아니라면 새 메뉴를 엽니다.
+    if (trigger && trigger.dataset.contextMenuTarget !== "project-edit") {
+      const menuId = trigger.dataset.contextMenuTarget;
+      const menu = document.getElementById(menuId);
+      if (menu) openMenu(e, menu);
+    } else if (!trigger && !clickedInsideMenu) {
+      // 메뉴 외부를 클릭했을 때도 메뉴를 닫습니다 (위에서 이미 처리됨).
       hideAllContextMenus();
-
-      if (!isAlreadyOpen) {
-        // 이 메뉴를 엽니다.
-        menu.classList.add('show');
-        // 'show'가 된 후에 위치를 계산해야 정확한 크기를 알 수 있습니다.
-        // [수정] 👈 trigger 대신 이벤트 객체 e를 전달
-        positionContextMenu(e, menu);
-      }
-    });
+    }
   });
+
+  document.addEventListener("contextmenu", (e) => {
+    const trigger = e.target.closest("[data-context-menu-target]");
+
+    // 트리거 위에서 우클릭했을 때만 메뉴를 엽니다.
+    if (trigger) {
+      e.preventDefault();
+      e.stopPropagation();
+      const menuId = trigger.dataset.contextMenuTarget;
+      const menu = document.getElementById(menuId);
+      if (menu) {
+        openMenu(e, menu);
+      }
+    }
+  });
+
+  /**
+   * [추가] 메뉴를 열고 위치를 지정하는 헬퍼 함수
+   * @param {MouseEvent} event
+   * @param {HTMLElement} menu
+   */
+  function openMenu(event, menu) {
+    const isAlreadyOpen = menu.classList.contains("show");
+
+    // 다른 메뉴들을 모두 닫습니다.
+    hideAllContextMenus();
+
+    // 이미 열려있던 메뉴의 트리거를 다시 클릭한 게 아니라면 메뉴를 엽니다.
+    if (!isAlreadyOpen) {
+      menu.classList.add("show");
+      // [수정] 브라우저가 .show 스타일을 렌더링하고 메뉴 크기를 계산할 시간을 줍니다.
+      // requestAnimationFrame을 사용하여 다음 프레임에 위치를 계산합니다.
+      requestAnimationFrame(() => {
+        positionContextMenu(event, menu);
+      });
+    }
+  }
+  console.log("✅ Context menu system initialized with event delegation.");
 }

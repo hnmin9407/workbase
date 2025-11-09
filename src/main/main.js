@@ -79,9 +79,12 @@ ipcMain.on("navigate-to-page", (event, page, queryParams = {}) => {
   // 쿼리 파라미터가 있으면 URL에 추가
   let url = `file://${pagePath}`;
   const queryString = Object.keys(queryParams)
-    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`)
+    .map(
+      (key) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`
+    )
     .join("&");
-  
+
   if (queryString) {
     url += `?${queryString}`;
   }

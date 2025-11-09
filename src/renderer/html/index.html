@@ -19,6 +19,13 @@
       })();
     </script>
 
+    <!-- [수정] FOUC(화면 깜빡임) 방지: 테마 스크립트 직후에 배경색을 강제합니다. -->
+    <style>
+      html[data-theme="dark"] {
+        background: #121212;
+      }
+    </style>
+
     <title>WORKBASE</title>
     <!-- CSS -->
     <link rel="stylesheet" href="../styles/common.css" />
@@ -27,6 +34,7 @@
     <link rel="stylesheet" href="../styles/tooltip.css" />
     <link rel="stylesheet" href="../styles/window-control.css" />
     <link rel="stylesheet" href="../styles/context-menu.css" />
+    <link rel="stylesheet" href="../styles/opening.css" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -40,33 +48,28 @@
       crossorigin
       href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
     />
-    
-    <!-- Firebase SDK를 CDN에서 로드 (렌더러 프로세스에서 IndexedDB 접근 가능) -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+    <!-- Firebase SDK를 CDN에서 로드 (package.json 버전과 일치 권장) -->
+    <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.4.0/firebase-database-compat.js"></script>
     <script>
       // Firebase 초기화 (렌더러 프로세스에서 실행되어 IndexedDB 접근 가능)
       const firebaseConfig = {
-        apiKey: "AIzaSyCwkXiJRp1DHoiv1IWnR42Y9xI5IE0_2uE",
+        apiKey: "AIzaSyCwkXiJRp1DHoiv1IWnR42Y9xI5IE0_2uE", // 보안을 위해 메인 프로세스에서 관리하는 것을 권장합니다.
         authDomain: "workbear-aaecb.firebaseapp.com",
-        databaseURL: "https://workbear-aaecb-default-rtdb.asia-southeast1.firebasedatabase.app",
+        databaseURL:
+          "https://workbear-aaecb-default-rtdb.asia-southeast1.firebasedatabase.app",
         projectId: "workbear-aaecb",
         storageBucket: "workbear-aaecb.appspot.com",
         messagingSenderId: "744723448261",
         appId: "1:744723448261:web:897a77a06e481f3c750bac",
       };
-      
+
       // Firebase 초기화
       firebase.initializeApp(firebaseConfig);
       const auth = firebase.auth();
-      
-      // Local persistence 설정
-      auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
-        console.log("✅ Firebase Auth (렌더러) persistence가 local로 설정되었습니다.");
-      }).catch((error) => {
-        console.error("❌ Firebase Auth persistence 설정 실패:", error);
-      });
-      
+
       // 전역으로 노출
       window.firebaseAuth = auth;
       console.log("🔥 Firebase가 렌더러 프로세스에서 초기화되었습니다.");
@@ -74,6 +77,48 @@
   </head>
 
   <body>
+    <!--
+    <div class="opening">
+      <img src="../../../assets/image/logo.png" />
+    </div>
+  -->
+
+    <!-- [추가] 프로젝트 추가 팝업 -->
+    <div class="popup-overlay" id="add-project-overlay">
+      <div class="popup" id="add-project-popup">
+        <span class="h1">프로젝트 생성</span>
+        <div class="popup-input-wrap">
+          <span class="h2">프로젝트 이름</span>
+          <input class="popup-input" id="project-name-input" />
+        </div>
+        <div class="button-wrap">
+          <button class="cancel-button" id="cancel-project-button">취소</button>
+          <button class="confirm-button" id="confirm-project-button">
+            추가
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- [추가] 프로젝트 수정 팝업 -->
+    <div class="popup-overlay" id="edit-project-overlay">
+      <div class="popup" id="edit-project-popup">
+        <span class="h1">프로젝트 수정</span>
+        <div class="popup-input-wrap">
+          <span class="h2">프로젝트 이름</span>
+          <input class="popup-input" id="edit-project-name-input" />
+        </div>
+        <div class="button-wrap">
+          <button class="cancel-button" id="cancel-edit-project-button">
+            취소
+          </button>
+          <button class="confirm-button" id="confirm-edit-project-button">
+            수정
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div id="window-control"></div>
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
     <div class="main">
@@ -98,9 +143,56 @@
       </div>
     </div>
 
-    <script src="../js/sidebar.js"></script>
-    <script src="../js/tooltip.js"></script>
-    <script src="../js/context-menu.js"></script>
+    <div class="context-menu" id="project-edit">
+      <div class="context-body">
+        <button class="context-item" id="pin-project-button">
+          <svg class="icon">
+            <use href="#icon-star"></use>
+          </svg>
+          <span>고정</span>
+        </button>
+        <button class="context-item" id="edit-project-button">
+          <svg class="icon">
+            <use href="#icon-user"></use>
+          </svg>
+          <span>수정</span>
+        </button>
+        <button class="context-item" id="delete-project-button">
+          <svg class="icon">
+            <use href="#icon-logout"></use>
+          </svg>
+          <span>삭제</span>
+        </button>
+        <div class="line" style="margin: 2px 0"></div>
+        <button class="context-item" id="move-up-button">
+          <svg class="icon">
+            <use href="#icon-up"></use>
+          </svg>
+          <span>위로</span>
+        </button>
+        <button class="context-item" id="move-down-button">
+          <svg class="icon">
+            <use href="#icon-down"></use>
+          </svg>
+          <span>아래로</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- [추가] 알림 팝업 -->
+    <div id="alert-popup" class="alert-popup">
+      <div class="alert-content">
+        <div class="left">
+          <div class="alert-icon-wrapper" id="alert-icon-wrapper">
+            <svg class="icon"><use id="alert-icon-use" href=""></use></svg>
+          </div>
+        </div>
+        <div class="right">
+          <div class="alert-title">알림</div>
+          <div id="alert-message" class="alert-message"></div>
+        </div>
+      </div>
+    </div>
 
     <script>
       // 1. 각 컴포넌트 로드를 Promise로 정의
@@ -129,13 +221,48 @@
       // 2. 모든 Promise가 완료되기를 기다림
       Promise.all([loadWindowControl, loadSidebar, loadTodoToday, loadIcons])
         .then(() => {
+          // [수정] 모든 HTML이 로드된 후 스크립트를 로드하고 실행합니다.
+          const loadScript = (src) => {
+            const script = document.createElement("script");
+            script.src = src;
+            document.body.appendChild(script);
+            return new Promise((resolve) => (script.onload = resolve));
+          };
+
           console.log("✅ All components and icons loaded.");
 
-          // 3. 모든 HTML이 로드된 후, 필요한 스크립트와 앱을 초기화
+          // ✅ [추가] 로딩 애니메이션 실행
+          const openingScreen = document.querySelector(".opening");
+          if (openingScreen) {
+            openingScreen.classList.add("hide");
+            // 애니메이션 시간(0.5s) 후에 display: none 처리
+            setTimeout(() => {
+              openingScreen.style.display = "none";
+            }, 500);
+          }
+
           // ✅ window-control.js 로드
-          const script = document.createElement("script");
-          script.src = "../js/window-control.js";
-          document.body.appendChild(script);
+          loadScript("../js/window-control.js");
+
+          // [수정] 모든 UI 스크립트 로드가 완료된 후 초기화 함수들을 호출합니다.
+          Promise.all([
+            loadScript("../js/tooltip.js"),
+            loadScript("../js/context-menu.js"),
+            loadScript("../js/alert-popup.js"),
+            loadScript("../js/sidebar.js"),
+          ]).then(() => {
+            // ✅ 툴팁, 사이드바, 컨텍스트 메뉴 초기화
+            initTooltip();
+            initAlertPopups();
+
+            if (typeof initContextMenus === "function") {
+              initContextMenus(); // 👈 컨텍스트 메뉴 초기화 (가장 먼저)
+            } else {
+              console.error("⚠️ initContextMenus is not defined.");
+            }
+
+            initializeSidebarApp(); // 👈 사이드바 앱 초기화
+          });
 
           // ✅ 사이드바의 프로필 버튼에 data- 속성 동적 추가
           const sidebarContainer = document.getElementById("sidebar");
@@ -164,11 +291,15 @@
                 if (window.firebaseAuth) {
                   const auth = window.firebaseAuth;
                   await auth.signOut();
-                  console.log("✅ 로그아웃 성공 (렌더러). 로그인 페이지로 이동합니다.");
-                  
+                  console.log(
+                    "✅ 로그아웃 성공 (렌더러). 로그인 페이지로 이동합니다."
+                  );
+
                   // IPC를 통해 로그인 페이지로 이동
                   if (window.appAPI && window.appAPI.navigateToPage) {
-                    window.appAPI.navigateToPage("login", { status: "loggedout" });
+                    window.appAPI.navigateToPage("login", {
+                      status: "loggedout",
+                    });
                   } else {
                     window.location.href = "./login.html?status=loggedout";
                   }
@@ -178,7 +309,9 @@
                   if (result.ok) {
                     console.log("로그아웃 성공. 로그인 페이지로 이동합니다.");
                     if (window.appAPI && window.appAPI.navigateToPage) {
-                      window.appAPI.navigateToPage("login", { status: "loggedout" });
+                      window.appAPI.navigateToPage("login", {
+                        status: "loggedout",
+                      });
                     } else {
                       window.location.href = "./login.html?status=loggedout";
                     }
@@ -201,17 +334,6 @@
             );
           }
           // --- [개선 끝] ---
-
-          // ✅ 툴팁, 사이드바, 컨텍스트 메뉴 초기화
-          initTooltip();
-
-          if (typeof initContextMenus === "function") {
-            initContextMenus(); // 👈 컨텍스트 메뉴 초기화 (가장 먼저)
-          } else {
-            console.error("⚠️ initContextMenus is not defined.");
-          }
-
-          initializeSidebarApp(); // 👈 사이드바 앱 초기화
         })
         .catch((err) => {
           console.error("Component loading failed:", err);
